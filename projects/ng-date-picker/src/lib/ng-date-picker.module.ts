@@ -3,17 +3,35 @@
  *
  * @author Aakash Kumar
  */
+import { OverlayModule } from '@angular/cdk/overlay';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { CalendarComponent } from './calendar/calendar.component';
 import { NgDatePickerComponent } from './ng-date-picker.component';
 
 @NgModule({
-  declarations: [
-    NgDatePickerComponent
-  ],
+  declarations: [NgDatePickerComponent, CalendarComponent],
   imports: [
+    FormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    OverlayModule,
+    MatIconModule,
+    MatButtonModule,
+    MatListModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
-  exports: [
-    NgDatePickerComponent
-  ]
+  exports: [NgDatePickerComponent],
 })
-export class NgDatePickerModule { }
+export class NgDatePickerModule {}
