@@ -3,3 +3,8 @@
 
  * @author Aakash Kumar
  */
+
+ //Disable Backdrop css
+::ng-deep.cdk-overlay-dark-backdrop {
+  background: none;
+}

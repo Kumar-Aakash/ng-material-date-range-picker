@@ -1,5 +1,5 @@
 /**
- * @(#)ng-date-picker.component.ts.ts Sept 05, 2023
+ * @(#)ng-date-picker.service.ts Sept 05, 2023
  *
  * @author Aakash Kumar
  */

@@ -3,11 +3,18 @@
 
  * @author Aakash Kumar
  *-->
-<lib-calendar></lib-calendar>
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
-  <mat-form-field class="w-100">
+  <mat-form-field class="w-100" (click)="toggleDateSelectionOptions()">
     <mat-label>Select Date Range</mat-label>
     <input matInput readonly="readonly" #dateInput>
     <mat-icon matSuffix>date_range</mat-icon>
   </mat-form-field>
+  <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isDateSelectionOptionVisible" [cdkConnectedOverlayPush]="true"
+    [cdkConnectedOverlayOffsetX]="0" [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleDateSelectionOptions()">
+    <mat-action-list class="w-100">
+      <mat-list-item *ngFor="let item of _defaultDateList"
+        [activated]="item.isSelected">{{item.optionLabel}}</mat-list-item>
+    </mat-action-list>
+  </ng-template>
 </div>
