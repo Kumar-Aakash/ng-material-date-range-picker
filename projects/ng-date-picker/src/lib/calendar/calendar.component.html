@@ -3,3 +3,13 @@
 
  * @author Aakash Kumar
  *-->
+<div class="row">
+  <div class="col-sm-6">
+    <mat-calendar id="firstCalendarView" #firstCalendarView [startAt]="firstCalendarViewData.startDate"
+      [selected]="selectedDates"></mat-calendar>
+  </div>
+  <div class="col-sm-6">
+    <mat-calendar id="secondCalendarView" #secondCalendarView [startAt]="secondCalendarViewData.startDate"
+      [minDate]="secondCalendarViewData.minDate" [selected]="selectedDates"></mat-calendar>
+  </div>
+</div>

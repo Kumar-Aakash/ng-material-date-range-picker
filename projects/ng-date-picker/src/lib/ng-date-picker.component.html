@@ -13,8 +13,29 @@
     [cdkConnectedOverlayOpen]="isDateSelectionOptionVisible" [cdkConnectedOverlayPush]="true"
     [cdkConnectedOverlayOffsetX]="0" [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleDateSelectionOptions()">
     <mat-action-list class="w-100">
-      <mat-list-item *ngFor="let item of _defaultDateList"
-        [activated]="item.isSelected">{{item.optionLabel}}</mat-list-item>
+      <mat-list-item *ngFor="let option of _defaultDateList" [activated]="option.isSelected"
+        (click)="updateSelection(option, dateInput)">{{option.optionLabel}}</mat-list-item>
     </mat-action-list>
+  </ng-template>
+
+  <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
+    [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleCustomDateRangeView()">
+    <div class="row">
+      <div class="row">
+        <div class="col-md-3 pt-custom br-right"> <mat-action-list>
+            <mat-list-item *ngFor="let option of _defaultDateList" (click)="updateSelection(option, dateInput)"
+              [activated]="option.isSelected">{{option.optionLabel}}</mat-list-item>
+          </mat-action-list></div>
+        <div class="col-md-9"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
+      </div>
+      <div class="row br-top">
+        <div class="col-12 text-end p-2">
+          {{calendar?.selectedDates?.start | date: 'dd/MM/yyyy'}}
+          <span *ngIf="calendar?.selectedDates?.end">- {{calendar.selectedDates.end | date:
+            'dd/MM/yyyy'}} </span>
+        </div>
+      </div>
+    </div>
   </ng-template>
 </div>
