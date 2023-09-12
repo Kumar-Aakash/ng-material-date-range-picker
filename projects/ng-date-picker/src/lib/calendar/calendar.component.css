@@ -3,3 +3,6 @@
 
  * @author Aakash Kumar
  */
+.mat-calendar {
+  min-width: 250px;
+}

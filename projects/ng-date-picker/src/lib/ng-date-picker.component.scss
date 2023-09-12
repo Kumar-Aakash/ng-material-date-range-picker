@@ -4,7 +4,41 @@
  * @author Aakash Kumar
  */
 
- //Disable Backdrop css
+//Disable Backdrop css
 ::ng-deep.cdk-overlay-dark-backdrop {
   background: none;
+}
+
+$border-color: #ddd;
+
+mat-list-item {
+  height: 35px;
+}
+
+::ng-deep.cdk-overlay-pane {
+  width: 100%;
+  background-color: white;
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 700px;
+  margin-top: -22px;
+  border: 1px solid $border-color;
+}
+
+// ::ng-deep.cdk-overlay-pane:has(app-calendar) {
+//   border: 1px solid $border-color;
+// }
+
+.br-top {
+  border-top: 1px solid $border-color;
+}
+
+.br-right {
+  border-right: 1px solid $border-color;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }

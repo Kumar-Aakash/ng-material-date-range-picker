@@ -5,10 +5,12 @@
  */
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   OnInit,
 } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { DateRange } from '@angular/material/datepicker';
 import { DEFAULT_DATE_OPTION_ENUM } from './constant/date-filter-enum';
 import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
@@ -21,10 +23,15 @@ import { ISelectDateOption } from './model/select-date-option';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgDatePickerComponent implements OnInit {
-  isDateSelectionOptionVisible: boolean = false;
+  isDateOptionList: boolean = false;
   isCustomRange: boolean = false;
-  _defaultDateList: ISelectDateOption[] = [];
   selectedDates!: DateRange<Date>;
+
+  @Input() dateFormat: string = 'dd/MM/yyyy';
+
+  private _defaultDateList: ISelectDateOption[] = [];
+
+  constructor(private cdref: ChangeDetectorRef) {}
 
   @Input()
   set defaultDateList(defaultDateList: ISelectDateOption[]) {
@@ -44,8 +51,8 @@ export class NgDatePickerComponent implements OnInit {
   /**
    * This method toggles the visibility of default date option's List.
    */
-  toggleDateSelectionOptions(): void {
-    this.isDateSelectionOptionVisible = !this.isDateSelectionOptionVisible;
+  toggleDateOptionSelectionList(): void {
+    this.isDateOptionList = !this.isDateOptionList;
   }
 
   /**
@@ -55,10 +62,14 @@ export class NgDatePickerComponent implements OnInit {
    * @param input HTMLInputElement
    */
   updateSelection(option: ISelectDateOption, input: HTMLInputElement): void {
-    // this.toggleDateSelectionOptions(item);
+    this.resetOptionSelection(option);
 
+    this.isDateOptionList = false;
     if (option.optionKey !== DEFAULT_DATE_OPTION_ENUM.CUSTOM) {
-      // this.updateDateOnOptionSelect(option, input);
+      this.isCustomRange = false;
+      this.updateDateOnOptionSelect(option, input);
+    } else {
+      this.isCustomRange = true;
     }
   }
 
@@ -70,10 +81,19 @@ export class NgDatePickerComponent implements OnInit {
   }
 
   /**
+   * This method sets clicked element as selected.
+   * @param option ISelectDateOption
+   */
+  private resetOptionSelection(option: ISelectDateOption): void {
+    this.defaultDateList.forEach((option) => (option.isSelected = false));
+    option.isSelected = true;
+  }
+
+  /**
    * This method update date if specified option is not custom range.
    *
-   * @param option item
-   * @param input input
+   * @param option ISelectDateOption
+   * @param input HTMLInputElement
    */
   private updateDateOnOptionSelect(
     option: ISelectDateOption,
@@ -83,7 +103,7 @@ export class NgDatePickerComponent implements OnInit {
     let startDate: Date = new Date();
     let lastDate: Date = new Date();
     if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.DATE_DIFF) {
-      startDate.setDate(startDate.getDate() - option.dateDiff);
+      startDate.setDate(startDate.getDate() + option.dateDiff);
     } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.LAST_MONTH) {
       startDate = new Date(currDate.getFullYear(), currDate.getMonth() - 1, 1);
       lastDate = new Date(
@@ -99,12 +119,47 @@ export class NgDatePickerComponent implements OnInit {
         this.getDaysInMonth(currDate)
       );
     } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE) {
-      startDate = new Date(currDate.getFullYear(), 1, 1);
+      startDate = new Date(currDate.getFullYear(), 0, 1);
     }
-    console.log(startDate + ' : ' + lastDate);
+    this.updateSelectedDates(input, startDate, lastDate);
   }
 
+  /**
+   * This method updates dates on selection.
+   *
+   * @param input HTMLInputElement
+   * @param startDate Date
+   * @param endDate Date
+   */
+  private updateSelectedDates(
+    input: HTMLInputElement,
+    startDate: Date,
+    endDate: Date
+  ): void {
+    this.selectedDates = new DateRange<Date>(startDate, endDate);
+    const datePipe = new DatePipe('en');
+    input.value =
+      this.getDateString(startDate) + ' - ' + this.getDateString(endDate);
+  }
+
+  /**
+   * This method converts the given date into specified string format.
+   *
+   * @param date Date
+   * @returns formatted date.
+   */
+  private getDateString(date: Date): string {
+    const datePipe = new DatePipe('en');
+    return datePipe.transform(date, this.dateFormat) || '';
+  }
+
+  /**
+   * This method return the number of days in moth on specified date.
+   *
+   * @param date Date
+   * @returns number
+   */
   private getDaysInMonth(date: Date): number {
-    return new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   }
 }
