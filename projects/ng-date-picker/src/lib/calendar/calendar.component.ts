@@ -16,7 +16,6 @@ import {
 } from '@angular/core';
 import { DateRange, MatCalendar } from '@angular/material/datepicker';
 import { CalendarViewData } from './../model/calendar-view-data';
-import * as moment from 'moment';
 
 @Component({
   selector: 'lib-calendar',

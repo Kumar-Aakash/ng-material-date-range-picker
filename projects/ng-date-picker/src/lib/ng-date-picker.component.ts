@@ -39,7 +39,7 @@ export class NgDatePickerComponent implements OnInit {
   }
 
   get defaultDateList(): ISelectDateOption[] {
-    return this._defaultDateList || [];
+    return this._defaultDateList ?? [];
   }
 
   ngOnInit(): void {
@@ -53,6 +53,23 @@ export class NgDatePickerComponent implements OnInit {
    */
   toggleDateOptionSelectionList(): void {
     this.isDateOptionList = !this.isDateOptionList;
+  }
+
+  /**
+   * This method updates the date range on button click.
+   *
+   * @param input HTMLInputElement
+   * @param selectedDates DateRange<Date>
+   */
+  updateCustomRange(
+    input: HTMLInputElement,
+    selectedDates: DateRange<Date>
+  ): void {
+    this.updateSelectedDates(
+      input,
+      selectedDates.start ?? new Date(),
+      selectedDates.end ?? new Date()
+    );
   }
 
   /**
@@ -137,7 +154,6 @@ export class NgDatePickerComponent implements OnInit {
     endDate: Date
   ): void {
     this.selectedDates = new DateRange<Date>(startDate, endDate);
-    const datePipe = new DatePipe('en');
     input.value =
       this.getDateString(startDate) + ' - ' + this.getDateString(endDate);
   }
@@ -150,7 +166,7 @@ export class NgDatePickerComponent implements OnInit {
    */
   private getDateString(date: Date): string {
     const datePipe = new DatePipe('en');
-    return datePipe.transform(date, this.dateFormat) || '';
+    return datePipe.transform(date, this.dateFormat) ?? '';
   }
 
   /**

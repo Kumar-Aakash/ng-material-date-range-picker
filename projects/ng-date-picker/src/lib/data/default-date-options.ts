@@ -61,6 +61,6 @@ export const DEFAULT_DATE_OPTIONS: ISelectDateOption[] = <ISelectDateOption[]>[
     optionKey: DEFAULT_DATE_OPTION_ENUM.CUSTOM,
     dateDiff: 0,
     isSelected: false,
-    isVisible: false,
+    isVisible: true,
   },
 ];
