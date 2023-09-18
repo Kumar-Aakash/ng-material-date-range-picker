@@ -27,6 +27,7 @@ export class CalendarComponent implements AfterViewInit {
   firstCalendarViewData!: CalendarViewData;
   secondCalendarViewData!: CalendarViewData;
   @Input() selectedDates!: DateRange<Date>;
+  private isAllowHoverEvent: boolean = false;
 
   @ViewChild('firstCalendarView') firstCalendarView!: MatCalendar<Date>;
   @ViewChild('secondCalendarView') secondCalendarView!: MatCalendar<Date>;
@@ -42,6 +43,9 @@ export class CalendarComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.addFirstCalendarButtonEvents();
+    this.attachHoverEventOnFirstViewDates();
+    this.attachHoverEventOnSecondViewDates();
+    this.addSecondCalendarButtonEvents();
   }
 
   /**
@@ -59,7 +63,7 @@ export class CalendarComponent implements AfterViewInit {
    *
    * @param date Date
    */
-  updateDateRangeSelection(date: Date | null) {
+  updateDateRangeSelection(date: Date | null): void {
     const selectedDates = this.selectedDates;
     if (
       !selectedDates ||
@@ -67,7 +71,9 @@ export class CalendarComponent implements AfterViewInit {
       (selectedDates.start && date && selectedDates.start > date)
     ) {
       this.selectedDates = new DateRange<Date>(date, null);
+      this.isAllowHoverEvent = true;
     } else {
+      this.isAllowHoverEvent = false;
       this.selectedDates = new DateRange<Date>(selectedDates.start, date);
     }
     this.cdref.markForCheck();
@@ -85,6 +91,27 @@ export class CalendarComponent implements AfterViewInit {
         classRef.getFirstDateOfNextMonth(date);
       classRef.cdref.markForCheck();
     }
+    classRef.attachHoverEventOnFirstViewDates();
+  }
+
+  /**
+   * This method gets all eligible cells on first view for hover event.
+   */
+  private attachHoverEventOnFirstViewDates() {
+    const nodes = this.el.nativeElement.querySelectorAll(
+      '#firstCalendarView .mat-calendar-body-cell'
+    );
+    setTimeout(() => this.addHoverEvents(nodes), 200);
+  }
+
+ /**
+   * This method gets all eligible cells on second view for hover event.
+   */
+  private attachHoverEventOnSecondViewDates() {
+    const nodes = this.el.nativeElement.querySelectorAll(
+      '#secondCalendarView .mat-calendar-body-cell'
+    );
+    setTimeout(() => this.addHoverEvents(nodes), 200);
   }
 
   /**
@@ -114,6 +141,8 @@ export class CalendarComponent implements AfterViewInit {
       }, 1);
       classRef.cdref.markForCheck();
     }
+    classRef.attachHoverEventOnFirstViewDates();
+    classRef.attachHoverEventOnSecondViewDates();
   }
 
   /**
@@ -132,19 +161,89 @@ export class CalendarComponent implements AfterViewInit {
   }
 
   /**
+   * This method attaches next and prev events on buttons.
+   *
+   */
+  private addSecondCalendarButtonEvents(): void {
+    const monthPrevBtn: any[] = this.el.nativeElement.querySelectorAll(
+      '#secondCalendarView .mat-calendar-previous-button'
+    );
+    const monthNextBtn: any[] = this.el.nativeElement.querySelectorAll(
+      '#secondCalendarView .mat-calendar-next-button'
+    );
+    if (!monthPrevBtn || !monthNextBtn) {
+      return;
+    }
+    this.attachSecondViewClickEvent(monthPrevBtn);
+    this.attachSecondViewClickEvent(monthNextBtn);
+  }
+
+  /**
+   * This method attach click event of next and prev button on second view.
+   *
+   */
+  private attachSecondViewClickEvent(nodes: any): void {
+    Array.from(nodes).forEach((button) => {
+      this.renderer.listen(button, 'click', () => {
+        this.attachHoverEventOnSecondViewDates();
+      });
+    });
+  }
+
+  /**
+   * This method will update the range selection on mouse hover event.
+   *
+   * @param date Date
+   */
+  private updateSelectionOnMouseHover(date: Date): void {
+    const selectedDates = this.selectedDates;
+    if (selectedDates?.start && date && selectedDates.start < date) {
+      const dateRange: DateRange<Date> = new DateRange<Date>(
+        selectedDates.start,
+        date
+      );
+      this.firstCalendarView.selected = dateRange;
+      this.secondCalendarView.selected = dateRange;
+      this.firstCalendarView['_changeDetectorRef'].markForCheck();
+      this.secondCalendarView['_changeDetectorRef'].markForCheck();
+      this.isAllowHoverEvent = true;
+    }
+  }
+
+  /**
+   * This method attach hover event on specified nodes.
+   *
+   * @param nodes any
+   */
+  private addHoverEvents(nodes: any): void {
+    if (!nodes) {
+      return;
+    }
+    Array.from(nodes).forEach((button) => {
+      this.renderer.listen(button, 'mouseover', (event) => {
+        if (this.isAllowHoverEvent) {
+          const date = new Date(event.target['ariaLabel']);
+          this.updateSelectionOnMouseHover(date);
+        }
+      });
+    });
+  }
+
+  /**
    * This method attach the next and prev events on specified nodes.
    *
    * @param nodes any
    * @param handler Function
    */
   private attachClickEvent(nodes: any, handler: Function): void {
-    if (nodes) {
-      Array.from(nodes).forEach((button) => {
-        this.renderer.listen(button, 'click', () => {
-          handler(this);
-        });
-      });
+    if (!nodes) {
+      return;
     }
+    Array.from(nodes).forEach((button) => {
+      this.renderer.listen(button, 'click', () => {
+        handler(this);
+      });
+    });
   }
 
   /**
