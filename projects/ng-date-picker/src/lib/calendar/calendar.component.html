@@ -12,6 +12,7 @@
   <div class="col-sm-6">
     <mat-calendar id="secondCalendarView" #secondCalendarView [startAt]="secondCalendarViewData.startDate"
       [minDate]="secondCalendarViewData.minDate" [selected]="selectedDates"
-      (selectedChange)="updateDateRangeSelection($event)"></mat-calendar>
+      (selectedChange)="updateDateRangeSelection($event)"
+      (monthSelected)=" secondViewMonthSelected($event)"></mat-calendar>
   </div>
 </div>

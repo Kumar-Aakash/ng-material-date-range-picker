@@ -12,7 +12,7 @@ export const DEFAULT_DATE_OPTIONS: ISelectDateOption[] = <ISelectDateOption[]>[
     optionKey: DEFAULT_DATE_OPTION_ENUM.DATE_DIFF,
     dateDiff: 0,
     isSelected: false,
-    isVisible: false,
+    isVisible: true,
   },
   {
     optionLabel: 'Yesterday',
@@ -40,21 +40,21 @@ export const DEFAULT_DATE_OPTIONS: ISelectDateOption[] = <ISelectDateOption[]>[
     optionKey: DEFAULT_DATE_OPTION_ENUM.LAST_MONTH,
     dateDiff: 0,
     isSelected: false,
-    isVisible: false,
+    isVisible: true,
   },
   {
     optionLabel: 'This Month',
     optionKey: DEFAULT_DATE_OPTION_ENUM.THIS_MONTH,
     dateDiff: 0,
     isSelected: false,
-    isVisible: false,
+    isVisible: true,
   },
   {
     optionLabel: 'Year To Date',
     optionKey: DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE,
     dateDiff: 0,
     isSelected: false,
-    isVisible: false,
+    isVisible: true,
   },
   {
     optionLabel: 'Custom Range',

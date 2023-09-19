@@ -49,6 +49,27 @@ export class CalendarComponent implements AfterViewInit {
   }
 
   /**
+   * This method gets all eligible cells on second view for hover event.
+   */
+  attachHoverEventOnSecondViewDates() {
+    const nodes = this.el.nativeElement.querySelectorAll(
+      '#secondCalendarView .mat-calendar-body-cell'
+    );
+    setTimeout(() => this.addHoverEvents(nodes), 200);
+  }
+
+  /**
+   * This method handles second calendar view month selection.
+   *
+   * @param event Date
+   */
+  secondViewMonthSelected(event: Date) {
+    setTimeout(() => {
+      this.attachHoverEventOnSecondViewDates();
+    }, 300);
+  }
+
+  /**
    * This method handles first calendar view month selection.
    *
    * @param event Date
@@ -56,6 +77,10 @@ export class CalendarComponent implements AfterViewInit {
   monthSelected(event: Date) {
     this.secondCalendarView._goToDateInView(event, 'year');
     this.handleFirstCalendarNextEvent(this, true);
+    setTimeout(() => {
+      this.attachHoverEventOnFirstViewDates();
+      this.attachHoverEventOnSecondViewDates();
+    }, 500);
   }
 
   /**
@@ -104,16 +129,6 @@ export class CalendarComponent implements AfterViewInit {
     setTimeout(() => this.addHoverEvents(nodes), 200);
   }
 
- /**
-   * This method gets all eligible cells on second view for hover event.
-   */
-  private attachHoverEventOnSecondViewDates() {
-    const nodes = this.el.nativeElement.querySelectorAll(
-      '#secondCalendarView .mat-calendar-body-cell'
-    );
-    setTimeout(() => this.addHoverEvents(nodes), 200);
-  }
-
   /**
    * This method handle the next button event.
    *
@@ -141,8 +156,10 @@ export class CalendarComponent implements AfterViewInit {
       }, 1);
       classRef.cdref.markForCheck();
     }
-    classRef.attachHoverEventOnFirstViewDates();
-    classRef.attachHoverEventOnSecondViewDates();
+    setTimeout(() => {
+      classRef.attachHoverEventOnFirstViewDates();
+      classRef.attachHoverEventOnSecondViewDates();
+    }, 300);
   }
 
   /**

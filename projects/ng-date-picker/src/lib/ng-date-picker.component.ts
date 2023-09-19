@@ -7,8 +7,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { DateRange } from '@angular/material/datepicker';
@@ -25,27 +27,33 @@ import { ISelectDateOption } from './model/select-date-option';
 export class NgDatePickerComponent implements OnInit {
   isDateOptionList: boolean = false;
   isCustomRange: boolean = false;
-  selectedDates!: DateRange<Date>;
 
+  @Input() selectedDates!: DateRange<Date>;
   @Input() dateFormat: string = 'dd/MM/yyyy';
+  @Output() onDateSelectionChanged: EventEmitter<DateRange<Date>>;
+  @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
 
-  private _defaultDateList: ISelectDateOption[] = [];
+  private _dateDropDownOptions: ISelectDateOption[] = [];
 
-  constructor(private cdref: ChangeDetectorRef) {}
-
-  @Input()
-  set defaultDateList(defaultDateList: ISelectDateOption[]) {
-    this._defaultDateList = DEFAULT_DATE_OPTIONS.concat(defaultDateList);
+  constructor(private cdref: ChangeDetectorRef) {
+    this.onDateSelectionChanged = new EventEmitter<DateRange<Date>>();
+    this.dateListOptions = new EventEmitter<ISelectDateOption[]>();
   }
 
-  get defaultDateList(): ISelectDateOption[] {
-    return this._defaultDateList ?? [];
+  @Input()
+  set dateDropDownOptions(defaultDateList: ISelectDateOption[]) {
+    this._dateDropDownOptions = DEFAULT_DATE_OPTIONS.concat(defaultDateList);
+  }
+
+  get dateDropDownOptions(): ISelectDateOption[] {
+    return this._dateDropDownOptions ?? [];
   }
 
   ngOnInit(): void {
-    if (!this._defaultDateList.length) {
-      this._defaultDateList = DEFAULT_DATE_OPTIONS;
+    if (!this._dateDropDownOptions.length) {
+      this._dateDropDownOptions = DEFAULT_DATE_OPTIONS;
     }
+    this.dateListOptions.emit(this.dateDropDownOptions);
   }
 
   /**
@@ -102,7 +110,7 @@ export class NgDatePickerComponent implements OnInit {
    * @param option ISelectDateOption
    */
   private resetOptionSelection(option: ISelectDateOption): void {
-    this.defaultDateList.forEach((option) => (option.isSelected = false));
+    this.dateDropDownOptions.forEach((option) => (option.isSelected = false));
     option.isSelected = true;
   }
 
@@ -156,6 +164,8 @@ export class NgDatePickerComponent implements OnInit {
     this.selectedDates = new DateRange<Date>(startDate, endDate);
     input.value =
       this.getDateString(startDate) + ' - ' + this.getDateString(endDate);
+    this.onDateSelectionChanged.emit(this.selectedDates);
+    this.cdref.markForCheck();
   }
 
   /**
