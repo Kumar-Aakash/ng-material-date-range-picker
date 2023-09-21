@@ -42,3 +42,12 @@ mat-list-item {
   pointer-events: none;
   opacity: 0.5;
 }
+
+.mat-button,
+.mdc-button {
+  font-family: var(--mdc-list-list-item-label-text-font);
+  line-height: var(--mdc-list-list-item-label-text-line-height);
+  font-size: var(--mdc-list-list-item-label-text-size);
+  font-weight: var(--mdc-list-list-item-label-text-weight);
+  letter-spacing: var(--mdc-list-list-item-label-text-tracking);
+}

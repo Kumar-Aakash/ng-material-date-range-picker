@@ -64,6 +64,7 @@ export class CalendarComponent implements AfterViewInit {
    * @param event Date
    */
   secondViewMonthSelected(event: Date) {
+    this.removeDefaultFocus(this);
     setTimeout(() => {
       this.attachHoverEventOnSecondViewDates();
     }, 300);
@@ -145,21 +146,30 @@ export class CalendarComponent implements AfterViewInit {
       const nextMonthDate = classRef.getFirstDateOfNextMonth(date);
       classRef.secondCalendarView.minDate = nextMonthDate;
       classRef.secondCalendarView._goToDateInView(nextMonthDate, 'month');
-      setTimeout(() => {
-        const btn: HTMLButtonElement[] =
-          classRef.el.nativeElement.querySelectorAll(
-            '#secondCalendarView button.mat-calendar-body-active'
-          );
-        if (btn?.length) {
-          btn[0].blur();
-        }
-      }, 1);
+      classRef.removeDefaultFocus(classRef);
       classRef.cdref.markForCheck();
     }
     setTimeout(() => {
       classRef.attachHoverEventOnFirstViewDates();
       classRef.attachHoverEventOnSecondViewDates();
     }, 300);
+  }
+
+  /**
+   * This method remove active focus on second view.
+   *
+   * @param classRef CalendarComponent
+   */
+  removeDefaultFocus(classRef: CalendarComponent): void {
+    setTimeout(() => {
+      const btn: HTMLButtonElement[] =
+        classRef.el.nativeElement.querySelectorAll(
+          '#secondCalendarView button.mat-calendar-body-active'
+        );
+      if (btn?.length) {
+        btn[0].blur();
+      }
+    }, 1);
   }
 
   /**

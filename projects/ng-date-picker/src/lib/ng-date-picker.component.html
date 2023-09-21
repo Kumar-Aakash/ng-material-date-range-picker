@@ -32,7 +32,7 @@
             </ng-container>
           </mat-action-list>
         </div>
-        <div class="col-md-9"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
+        <div class="col-md-9 mt-2"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
       </div>
       <div class="row br-top">
         <div class="col-12 text-end p-2">
@@ -40,10 +40,10 @@
           <span *ngIf="calendar?.selectedDates?.end"> - {{calendar.selectedDates.end | date:
             'dd/MM/yyyy'}} </span>
           <div class="d-inline">
-            <button mat-button mat-raised-button class="p-2 mx-2" (click)="isCustomRange=false;">cancel</button>
-            <button mat-button mat-raised-button color="primary"
+            <button mat-button mat-raised-button class="p-3 mx-2" (click)="isCustomRange=false;">cancel</button>
+            <button mat-button mat-raised-button color="primary" class="ms-2 p-3"
               [class.disabled]="!(calendar?.selectedDates?.start && calendar?.selectedDates?.end)"
-              (click)="updateCustomRange(dateInput,calendar.selectedDates); isCustomRange=false;">apply</button>
+              (click)="updateCustomRange(dateInput,calendar.selectedDates); isCustomRange=false;">&nbsp;apply&nbsp;</button>
           </div>
         </div>
       </div>
