@@ -11,6 +11,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnInit,
   Renderer2,
   ViewChild,
 } from '@angular/core';
@@ -23,7 +24,7 @@ import { CalendarViewData } from './../model/calendar-view-data';
   styleUrls: ['./calendar.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CalendarComponent implements AfterViewInit {
+export class CalendarComponent implements OnInit, AfterViewInit {
   firstCalendarViewData!: CalendarViewData;
   secondCalendarViewData!: CalendarViewData;
   @Input() selectedDates!: DateRange<Date>;
@@ -36,7 +37,9 @@ export class CalendarComponent implements AfterViewInit {
     private cdref: ChangeDetectorRef,
     private el: ElementRef,
     private renderer: Renderer2
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.initFirstCalendar();
     this.initSecondCalendar();
   }
@@ -290,7 +293,9 @@ export class CalendarComponent implements AfterViewInit {
     this.secondCalendarViewData.minDate =
       this.getFirstDateOfNextMonth(currDate);
     currDate.setMonth(currDate.getMonth() + 1);
-    this.secondCalendarViewData.startDate = currDate;
+    this.secondCalendarViewData.startDate = this.selectedDates?.end
+      ? this.selectedDates.end
+      : currDate;
   }
 
   /**
