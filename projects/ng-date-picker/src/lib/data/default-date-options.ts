@@ -50,6 +50,20 @@ export const DEFAULT_DATE_OPTIONS: ISelectDateOption[] = <ISelectDateOption[]>[
     isVisible: true,
   },
   {
+    optionLabel: 'Month To Date',
+    optionKey: DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE,
+    dateDiff: 0,
+    isSelected: false,
+    isVisible: true,
+  },
+  {
+    optionLabel: 'Week To Date',
+    optionKey: DEFAULT_DATE_OPTION_ENUM.WEEK_TO_DATE,
+    dateDiff: 0,
+    isSelected: false,
+    isVisible: false,
+  },
+  {
     optionLabel: 'Year To Date',
     optionKey: DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE,
     dateDiff: 0,

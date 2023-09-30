@@ -145,6 +145,8 @@ export class NgDatePickerComponent implements OnInit {
       );
     } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE) {
       startDate = new Date(currDate.getFullYear(), 0, 1);
+    } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE) {
+      startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
     }
     this.updateSelectedDates(input, startDate, lastDate);
   }

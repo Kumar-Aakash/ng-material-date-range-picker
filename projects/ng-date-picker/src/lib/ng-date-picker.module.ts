@@ -15,14 +15,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { BrowserModule } from '@angular/platform-browser';
 import { CalendarComponent } from './calendar/calendar.component';
 import { NgDatePickerComponent } from './ng-date-picker.component';
 
 @NgModule({
   declarations: [NgDatePickerComponent, CalendarComponent],
   imports: [
-    BrowserModule,
     CommonModule,
     FormsModule,
     MatDatepickerModule,
@@ -34,7 +32,6 @@ import { NgDatePickerComponent } from './ng-date-picker.component';
     MatButtonModule,
     MatListModule,
     MatFormFieldModule,
-    MatInputModule,
   ],
   exports: [NgDatePickerComponent],
 })
