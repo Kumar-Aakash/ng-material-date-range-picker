@@ -12,7 +12,7 @@
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
     [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleDateOptionSelectionList()">
-    <mat-action-list class="w-100" *ngIf="dateDropDownOptions && dateDropDownOptions.length">
+    <mat-action-list class="w-100 custom-ckd-container" *ngIf="dateDropDownOptions && dateDropDownOptions.length">
       <ng-container *ngFor="let option of dateDropDownOptions">
         <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, dateInput)"
           *ngIf="option.isVisible">{{option.optionLabel}}</mat-list-item>
@@ -23,7 +23,7 @@
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
     [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleCustomDateRangeView()">
-    <div class="row">
+    <div class="row custom-ckd-container">
       <div class="row">
         <div class="col-md-3 pt-custom br-right"> <mat-action-list>
             <ng-container *ngFor="let option of dateDropDownOptions">

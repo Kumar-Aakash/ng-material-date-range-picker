@@ -60,7 +60,17 @@ export class NgDatePickerComponent implements OnInit {
    * This method toggles the visibility of default date option's List.
    */
   toggleDateOptionSelectionList(): void {
-    this.isDateOptionList = !this.isDateOptionList;
+    const selectedOption = this.dateDropDownOptions.filter(
+      (option) => option.isSelected
+    );
+    if (
+      selectedOption.length &&
+      selectedOption[0].optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM
+    ) {
+      this.toggleCustomDateRangeView();
+    } else {
+      this.isDateOptionList = !this.isDateOptionList;
+    }
   }
 
   /**

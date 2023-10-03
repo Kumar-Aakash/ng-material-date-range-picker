@@ -9,33 +9,27 @@
   background: none;
 }
 
-$border-color: #ddd;
-
 mat-list-item {
   height: 35px;
 }
 
-::ng-deep.cdk-overlay-pane {
+::ng-deep.cdk-overlay-pane:has(.custom-ckd-container) {
   width: 100%;
-  background-color: white;
+  background-color: var(--bg-color, white);
   max-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
   max-width: 700px;
   margin-top: -22px;
-  border: 1px solid $border-color;
+  border: 1px solid var(--border-color, #ddd);
 }
 
-// ::ng-deep.cdk-overlay-pane:has(app-calendar) {
-//   border: 1px solid $border-color;
-// }
-
 .br-top {
-  border-top: 1px solid $border-color;
+  border-top: 1px solid var(--border-color, #ddd);
 }
 
 .br-right {
-  border-right: 1px solid $border-color;
+  border-right: 1px solid var(--border-color, #ddd);
 }
 
 .disabled {
