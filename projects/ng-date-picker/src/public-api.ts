@@ -5,6 +5,5 @@
  */
 
 // Public API Surface of ng-date-picker
-export * from './lib/ng-date-picker.service';
 export * from './lib/ng-date-picker.component';
 export * from './lib/ng-date-picker.module';

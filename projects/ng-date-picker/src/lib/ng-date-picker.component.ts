@@ -42,7 +42,10 @@ export class NgDatePickerComponent implements OnInit {
 
   @Input()
   set dateDropDownOptions(defaultDateList: ISelectDateOption[]) {
-    this._dateDropDownOptions = DEFAULT_DATE_OPTIONS.concat(defaultDateList);
+    this._dateDropDownOptions =
+      this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS).concat(
+        defaultDateList
+      );
   }
 
   get dateDropDownOptions(): ISelectDateOption[] {
@@ -51,7 +54,8 @@ export class NgDatePickerComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this._dateDropDownOptions.length) {
-      this._dateDropDownOptions = DEFAULT_DATE_OPTIONS;
+      this._dateDropDownOptions =
+        this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
     }
     this.dateListOptions.emit(this.dateDropDownOptions);
   }
@@ -199,5 +203,15 @@ export class NgDatePickerComponent implements OnInit {
    */
   private getDaysInMonth(date: Date): number {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  }
+
+  /**
+   * This method clone the data.
+   *
+   * @param data T
+   * @returns T
+   */
+  private getClone<T>(data: T): T {
+    return JSON.parse(JSON.stringify(data));
   }
 }
