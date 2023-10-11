@@ -1,27 +1,166 @@
 # ng-date-range-picker
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.4.
+## Getting Started with Ng Date Range Picker
 
-## Development server
+The following section explains the steps required to create a simple 2 view Date Range Picker component and demonstrates its basic usage.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Dependencies
 
-## Code scaffolding
+To use the 2 view Date Range Picker component in your application, install the following dependency packages:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+    1. angular (version 16.x)
+    2. angular-material (version 16.x)
+    2. bootstrap (version 5.0)
 
-## Build
+### Setup Angular Environment
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Angular provides an easy way to set up Angular CLI projects using the Angular CLI tool.
 
-## Running unit tests
+1. Install the CLI application globally:
+```bash
+npm install -g @angular/cli
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+2. Create a new application:
+```bash
+ng new ng-date-range-picker-app
+```
 
-## Running end-to-end tests
+3. Navigate to the created project folder:
+```bash
+cd ng-date-range-picker-app
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Installing Dependencies
+To use the 2 view Date Range Picker component in your application, install the following dependency packages:
 
-## Further help
+1. **Angular Material Lib**:
+```bash
+npm i @angular/material@16.2.6
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+2. **Bootstrap CSS**:
+```bash
+npm i bootstrap
+```
+
+3. **Add bootstrap css inside angular.json**:
+```bash
+"styles": [
+        "src/styles.css",
+        "node_modules/bootstrap/dist/css/bootstrap.min.css"
+      ],
+```
+
+### Installing Ng Date Range Picker Package
+Range Picker package can be installed using the following command:
+
+```bash
+npm i ng-date-range-picker
+```
+
+### Registering Ng Date Range Picker Module
+
+Import the 2 view Date Range Picker module into your Angular application (`src/app/app.module.ts`):
+
+```typescript
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgDatePickerModule } from 'ng-date-range-picker';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, NgDatePickerModule,  CommonModule],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+### Adding Ng Date Range Picker Component
+
+Modify the template in `src/app/app.component.ts` to render the 2 view Date Range Picker component:
+
+```typescript
+import { Component } from '@angular/core';
+@Component({
+  selector: 'app-root',
+  template: `<date-range-picker></date-range-picker>`
+})
+export class AppComponent {
+  title = 'ng-date-range-picker-test';
+}
+```
+
+### Running the Application
+
+After completing the required configuration, run the following command:
+
+```bash
+ng serve
+```
+
+This will display the Date Range Picker in your default browser.
+
+## Features
+
+- Allow to select date range with two views.
+- Predefined date support with list items.
+- User can modify predefined date list.
+- Provides complete controls on predefined date action items.
+
+
+## API Reference
+
+#### Properties:
+
+| Name | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `selectedDates` | `DateRange<Date>` | **optional**. default selection of start and end date |
+| `dateFormat` | `string`| **optional**. default is 'dd/MM/yyyy' |
+| `dateDropDownOptions` | `ISelectDateOption[]`| **optional**. Addition options to predefined date action list. |
+
+#### Events
+
+| Name | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `onDateSelectionChanged` | `DateRange<Date>` | Emits when date selection is changed. |
+| `dateListOptions` | `ISelectDateOption[]`| Emits pre-defined date action list items for configuration purpose. |
+
+#### Example to configure predefined visibility of predefined date action list items:
+
+```typescript
+import { Component } from '@angular/core';
+import { ISelectDateOption } from 'ng-date-range-picker/lib/model/select-date-option';
+
+@Component({
+  selector: 'app-root',
+  template:` <ng-date-range-picker (dateListOptions)="dateListOptions($event)"></ng-date-range-picker>`
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+})
+export class AppComponent {
+  title = 'ng-date-range-picker-test';
+
+  dateListOptions(optionList: ISelectDateOption[]) {
+    optionList[0].isSelected = true;
+    optionList[1].isVisible = false;
+  }
+}
+```
+In Above example first item of action list is selected and second option is hidden.
+
+
+## Demo's
+
+https://techtose-ng-date-range-picker.netlify.app/dashboards/analytics
+
+https://techtose-ng-date-range-picker-materio.netlify.app/dashboard
+
+## GitHub
+https://github.com/Kumar-Aakash/ng-date-range-picker
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

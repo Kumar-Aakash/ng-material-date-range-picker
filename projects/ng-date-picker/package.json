@@ -1,5 +1,5 @@
 {
-  "name": "ng-date-picker",
+  "name": "ng-date-range-picker",
   "version": "1.0.0",
   "peerDependencies": {
     "@angular/common": "^16.1.6",

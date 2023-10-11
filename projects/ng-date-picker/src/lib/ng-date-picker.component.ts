@@ -19,7 +19,7 @@ import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
 import { ISelectDateOption } from './model/select-date-option';
 
 @Component({
-  selector: 'ng-date-picker',
+  selector: 'ng-date-range-picker',
   templateUrl: './ng-date-picker.component.html',
   styleUrls: ['./ng-date-picker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
