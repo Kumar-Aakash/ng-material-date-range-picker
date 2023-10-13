@@ -1,6 +1,10 @@
-# ng-date-range-picker
+# ng-material-date-range-picker
 
-## Getting Started with Ng Date Range Picker
+## Description:
+
+This library is build on top of angular material date-picker to provide date range selection with two views and predefined date options.
+
+## Getting Started with Ng Material Date Range Picker
 
 The following section explains the steps required to create a simple 2 view Date Range Picker component and demonstrates its basic usage.
 
@@ -48,7 +52,8 @@ npm i bootstrap
 ```bash
 "styles": [
         "src/styles.css",
-        "node_modules/bootstrap/dist/css/bootstrap.min.css"
+        "@angular/material/prebuilt-themes/indigo-pink.css"
+        "node_modules/bootstrap/dist/css/bootstrap.min.css",
       ],
 ```
 
@@ -56,10 +61,10 @@ npm i bootstrap
 Range Picker package can be installed using the following command:
 
 ```bash
-npm i ng-date-range-picker
+npm i ng-material-date-range-picker
 ```
 
-### Registering Ng Date Range Picker Module
+### Registering Ng Material Date Range Picker Module
 
 Import the 2 view Date Range Picker module into your Angular application (`src/app/app.module.ts`):
 
@@ -67,7 +72,7 @@ Import the 2 view Date Range Picker module into your Angular application (`src/a
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgDatePickerModule } from 'ng-date-range-picker';
+import { NgDatePickerModule } from 'ng-material-date-range-picker';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -86,7 +91,7 @@ Modify the template in `src/app/app.component.ts` to render the 2 view Date Rang
 import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
-  template: `<date-range-picker></date-range-picker>`
+  template: `<ng-date-range-picker></ng-date-range-picker>`
 })
 export class AppComponent {
   title = 'ng-date-range-picker-test';
@@ -153,14 +158,10 @@ In Above example first item of action list is selected and second option is hidd
 
 
 ## Demo's
+[Demo 1](https://techtose-ng-date-range-picker.netlify.app/dashboards/analytics)
 
-https://techtose-ng-date-range-picker.netlify.app/dashboards/analytics
+[Demo 2](https://techtose-ng-date-range-picker-materio.netlify.app)
 
-https://techtose-ng-date-range-picker-materio.netlify.app/dashboard
+## Playground
 
-## GitHub
-https://github.com/Kumar-Aakash/ng-date-range-picker
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
+[Stackblitz](https://stackblitz.com/edit/ng-material-date-range-picker)

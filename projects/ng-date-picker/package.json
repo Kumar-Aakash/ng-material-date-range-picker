@@ -1,12 +1,28 @@
 {
-  "name": "ng-date-range-picker",
-  "version": "1.0.0",
+  "name": "ng-material-date-range-picker",
+  "version": "1.0.2",
+  "description": "This library provides the date range selection with two views.",
   "peerDependencies": {
     "@angular/common": "^16.1.6",
     "@angular/core": "^16.1.6"
   },
+  "author": {
+      "name": "Aakash Kumar",
+      "email": "aakash@techtose.com"
+  },
   "dependencies": {
     "tslib": "^2.3.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "license": "MIT",
+  "keywords": [
+    "dateRange",
+    "date",
+    "datePicker"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kumar-Aakash/ng-material-date-range-picker.git"
+  },
+  "homepage": "https://github.com/Kumar-Aakash/ng-material-date-range-picker"
 }
