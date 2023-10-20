@@ -26,14 +26,14 @@
     [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleCustomDateRangeView()">
     <div class="row custom-ckd-container">
       <div class="row">
-        <div class="col-md-3 pt-custom br-right"> <mat-action-list>
+        <div class="col-sm-3 pt-custom br-right"> <mat-action-list>
             <ng-container *ngFor="let option of dateDropDownOptions">
               <mat-list-item *ngIf="option.isVisible" (click)="updateSelection(option, dateInput)"
                 [activated]="option.isSelected">{{option.optionLabel}}</mat-list-item>
             </ng-container>
           </mat-action-list>
         </div>
-        <div class="col-md-9 mt-2"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
+        <div class="col-sm-9 mt-2"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
       </div>
       <div class="row br-top">
         <div class="col-12 text-end my-2">

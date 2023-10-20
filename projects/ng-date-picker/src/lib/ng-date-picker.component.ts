@@ -141,6 +141,13 @@ export class NgDatePickerComponent implements OnInit {
     const currDate = new Date();
     let startDate: Date = new Date();
     let lastDate: Date = new Date();
+    if (!!option.callBackFunction) {
+      const dateRange: DateRange<Date> = option.callBackFunction();
+      if (dateRange && dateRange.start && dateRange.end) {
+        this.updateSelectedDates(input, dateRange.start, dateRange.end);
+        return;
+      }
+    }
     if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.DATE_DIFF) {
       startDate.setDate(startDate.getDate() + option.dateDiff);
     } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.LAST_MONTH) {

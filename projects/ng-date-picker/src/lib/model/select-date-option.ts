@@ -1,3 +1,4 @@
+import { DateRange } from '@angular/material/datepicker';
 import { DEFAULT_DATE_OPTION_ENUM } from '../constant/date-filter-enum';
 
 /**
@@ -22,6 +23,7 @@ export interface ISelectDateOption {
 
   // boolean value used to show or hide label in list.
   isVisible: boolean;
+  callBackFunction: () => DateRange<Date>;
 }
 
 export class SelectDateOption implements ISelectDateOption {
@@ -30,4 +32,5 @@ export class SelectDateOption implements ISelectDateOption {
   dateDiff = 0;
   isSelected = false;
   isVisible = false;
+  callBackFunction!: () =>  DateRange<Date>;
 }

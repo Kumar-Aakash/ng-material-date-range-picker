@@ -24,6 +24,12 @@ mat-list-item {
   border: 1px solid var(--border-color, #ddd);
 }
 
+@media (max-width: 600px) {
+  ::ng-deep.cdk-overlay-pane:has(.custom-ckd-container) {
+    max-width: 350px;
+  }
+}
+
 ::ng-deep.cdk-overlay-pane:has(.range-input) {
   max-width: 250px;
 }
