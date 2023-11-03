@@ -1,5 +1,7 @@
 # ng-material-date-range-picker
 
+![Date range view](./assets/date-range-view.jpg)
+
 ## Description:
 
 This library is build on top of angular material date-picker to provide date range selection with two views and predefined date options.
