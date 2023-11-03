@@ -3,13 +3,13 @@
 
  * @author Aakash Kumar
  *-->
-<div class="row">
-  <div class="col-sm-6">
+<div class="calendar-container">
+  <div class="first-view">
     <mat-calendar id="firstCalendarView" #firstCalendarView [startAt]="firstCalendarViewData.startDate"
       [selected]="selectedDates" (selectedChange)="updateDateRangeSelection($event)"
       (monthSelected)="monthSelected($event)"></mat-calendar>
   </div>
-  <div class="col-sm-6">
+  <div class="second-view">
     <mat-calendar id="secondCalendarView" #secondCalendarView [startAt]="secondCalendarViewData.startDate"
       [minDate]="secondCalendarViewData.minDate" [selected]="selectedDates"
       (selectedChange)="updateDateRangeSelection($event)"

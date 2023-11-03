@@ -4,7 +4,7 @@
  * @author Aakash Kumar
  *-->
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
-  <mat-form-field class="w-100" (click)="toggleDateOptionSelectionList()">
+  <mat-form-field class="w-full" (click)="toggleDateOptionSelectionList()">
     <mat-label>Select Date Range</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
@@ -12,7 +12,7 @@
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
     [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleDateOptionSelectionList()">
-    <mat-action-list class="w-100 custom-ckd-container range-input"
+    <mat-action-list class="w-full custom-ckd-container range-input"
       *ngIf="dateDropDownOptions && dateDropDownOptions.length">
       <ng-container *ngFor="let option of dateDropDownOptions">
         <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, dateInput)"
@@ -24,27 +24,31 @@
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
     [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleCustomDateRangeView()">
-    <div class="row custom-ckd-container">
-      <div class="row">
-        <div class="col-sm-3 pt-custom br-right"> <mat-action-list>
+    <div class="custom-ckd-container custom-calendar-container">
+      <div class="row-1">
+        <div class="pt-custom br-right col-1"> <mat-action-list>
             <ng-container *ngFor="let option of dateDropDownOptions">
               <mat-list-item *ngIf="option.isVisible" (click)="updateSelection(option, dateInput)"
                 [activated]="option.isSelected">{{option.optionLabel}}</mat-list-item>
             </ng-container>
           </mat-action-list>
         </div>
-        <div class="col-sm-9 mt-2"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
+        <div class="mt-2 col-2"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
       </div>
-      <div class="row br-top">
-        <div class="col-12 text-end my-2">
-          {{calendar?.selectedDates?.start | date: 'dd/MM/yyyy'}}
-          <span *ngIf="calendar?.selectedDates?.end"> - {{calendar.selectedDates.end | date:
-            'dd/MM/yyyy'}} </span>
-          <div class="d-inline">
-            <button mat-button mat-raised-button class="p-3 mx-2" (click)="isCustomRange=false;">Cancel</button>
-            <button mat-button mat-raised-button color="primary" class="ms-2 p-3"
-              [class.disabled]="!(calendar?.selectedDates?.start && calendar?.selectedDates?.end)"
-              (click)="updateCustomRange(dateInput,calendar.selectedDates); isCustomRange=false;">&nbsp;Apply&nbsp;</button>
+      <div class="row-2 br-top">
+        <div class="text-end my-2 w-full">
+          <div class="footer-content">
+            <span id="range-label-text">
+            {{calendar?.selectedDates?.start | date: 'dd/MM/yyyy'}}
+            <span *ngIf="calendar?.selectedDates?.end"> - {{calendar.selectedDates.end | date:
+              'dd/MM/yyyy'}} </span>
+            </span>
+            <div class="d-inline buttons">
+              <button mat-button mat-raised-button class="p-3 mx-2" (click)="isCustomRange=false;">Cancel</button>
+              <button mat-button mat-raised-button color="primary" class="ms-2 p-3"
+                [class.disabled]="!(calendar?.selectedDates?.start && calendar?.selectedDates?.end)"
+                (click)="updateCustomRange(dateInput,calendar.selectedDates); isCustomRange=false;">&nbsp;Apply&nbsp;</button>
+            </div>
           </div>
         </div>
       </div>

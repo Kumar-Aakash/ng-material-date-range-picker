@@ -24,12 +24,6 @@ mat-list-item {
   border: 1px solid var(--border-color, #ddd);
 }
 
-@media (max-width: 600px) {
-  ::ng-deep.cdk-overlay-pane:has(.custom-ckd-container) {
-    max-width: 350px;
-  }
-}
-
 ::ng-deep.cdk-overlay-pane:has(.range-input) {
   max-width: 250px;
 }
@@ -54,4 +48,84 @@ mat-list-item {
   font-size: var(--mdc-list-list-item-label-text-size);
   font-weight: var(--mdc-list-list-item-label-text-weight);
   letter-spacing: var(--mdc-list-list-item-label-text-tracking);
+}
+
+.w-full {
+  width: 100%;
+}
+
+.custom-calendar-container {
+  width: 100%;
+  display: block;
+  float: left;
+}
+
+.row-1,
+.row-2 {
+  width: 100%;
+  display: block;
+  float: left;
+}
+
+.row-2 {
+  padding: 0.7rem;
+}
+
+.footer-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: right;
+  justify-content: end;
+  gap: 10px;
+  margin-right: 2rem;
+  text-overflow: ellipsis;
+}
+
+.buttons {
+  margin-right: 1.5rem;
+  display: flex;
+  gap: 10px;
+}
+
+.col-1 {
+  width: 25%;
+  display: block;
+  float: left;
+}
+.col-2 {
+  width: 73;
+  display: block;
+  float: left;
+}
+
+@media (max-width: 400px) {
+  .footer-content {
+    display: block;
+  }
+
+  #range-label-text {
+    margin-right: 1.5rem;
+  }
+
+  .buttons {
+    float: right;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 650px) {
+  .col-1,
+  .col-2 {
+    width: 100%;
+  }
+}
+
+@media (min-width: 650px) {
+  .col-1 {
+    width: 25%;
+  }
+  .col-2 {
+    width: 74%;
+  }
 }

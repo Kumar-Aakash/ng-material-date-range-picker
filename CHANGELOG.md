@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.0] - 2023-11-04
+- Removed Bootstrap Library Dependency.
+- Exposed actions on predefined date menu items.
+- Added more keywords.
+
 ## [1.0.2] - 2023-10-14
 
 ### Added
