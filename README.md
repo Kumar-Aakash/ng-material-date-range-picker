@@ -16,7 +16,6 @@ To use the 2 view Date Range Picker component in your application, install the f
 
     1. angular (version 16.x)
     2. angular-material (version 16.x)
-    2. bootstrap (version 5.0)
 
 ### Setup Angular Environment
 
@@ -45,17 +44,11 @@ To use the 2 view Date Range Picker component in your application, install the f
 npm i @angular/material@16.2.6
 ```
 
-2. **Bootstrap CSS**:
-```bash
-npm i bootstrap
-```
-
-3. **Add bootstrap css inside angular.json**:
+2. **Add bootstrap css inside angular.json**:
 ```bash
 "styles": [
         "src/styles.css",
         "@angular/material/prebuilt-themes/indigo-pink.css"
-        "node_modules/bootstrap/dist/css/bootstrap.min.css",
       ],
 ```
 
