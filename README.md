@@ -14,8 +14,8 @@ The following section explains the steps required to create a simple 2 view Date
 
 To use the 2 view Date Range Picker component in your application, install the following dependency packages:
 
-    1. angular (version 16.x)
-    2. angular-material (version 16.x)
+    1. angular (version 17.x)
+    2. angular-material (version 17.x)
 
 ### Setup Angular Environment
 
@@ -41,7 +41,7 @@ To use the 2 view Date Range Picker component in your application, install the f
 
 1. **Angular Material Lib**:
 ```bash
-npm i @angular/material@16.2.6
+npm i @angular/material@17
 ```
 
 2. **Add bootstrap css inside angular.json**:
