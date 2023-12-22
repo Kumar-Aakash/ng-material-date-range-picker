@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.1] - 2023-11-04
+- Added default preset options flag
+- Updated md file
+
 ## [1.1.0] - 2023-11-04
 - Removed Bootstrap Library Dependency.
 - Exposed actions on predefined date menu items.
