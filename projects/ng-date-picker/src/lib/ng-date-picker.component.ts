@@ -30,6 +30,7 @@ export class NgDatePickerComponent implements OnInit {
 
   @Input() selectedDates!: DateRange<Date>;
   @Input() dateFormat: string = 'dd/MM/yyyy';
+  @Input() isShowDefaultOptions: boolean = false;
   @Output() onDateSelectionChanged: EventEmitter<DateRange<Date>>;
   @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
 
@@ -58,6 +59,9 @@ export class NgDatePickerComponent implements OnInit {
         this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
     }
     this.dateListOptions.emit(this.dateDropDownOptions);
+    if(this.isShowDefaultOptions) {
+      this.toggleDateOptionSelectionList();
+    }
   }
 
   /**
@@ -109,6 +113,10 @@ export class NgDatePickerComponent implements OnInit {
       this.updateDateOnOptionSelect(option, input);
     } else {
       this.isCustomRange = true;
+    }
+    
+    if(this.isShowDefaultOptions) {
+      this.isDateOptionList = true;
     }
   }
 

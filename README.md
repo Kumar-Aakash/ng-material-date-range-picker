@@ -119,6 +119,7 @@ This will display the Date Range Picker in your default browser.
 | :-------- | :------- | :------------------------- |
 | `selectedDates` | `DateRange<Date>` | **optional**. default selection of start and end date |
 | `dateFormat` | `string`| **optional**. default is 'dd/MM/yyyy' |
+| `isShowDefaultOptions` | `boolean`| **optional**. default is false |
 | `dateDropDownOptions` | `ISelectDateOption[]`| **optional**. Addition options to predefined date action list. |
 
 #### Events

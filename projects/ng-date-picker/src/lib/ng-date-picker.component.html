@@ -4,14 +4,15 @@
  * @author Aakash Kumar
  *-->
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
-  <mat-form-field class="w-full" (click)="toggleDateOptionSelectionList()">
+  <mat-form-field [class]="{'display-hidden':isShowDefaultOptions}" class="w-full"
+    (click)="toggleDateOptionSelectionList()">
     <mat-label>Select Date Range</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
-    [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleDateOptionSelectionList()">
+    [cdkConnectedOverlayOffsetY]="0" (backdropClick)="!isShowDefaultOptions && toggleDateOptionSelectionList()">
 
     @if(dateDropDownOptions && dateDropDownOptions.length) {
     <mat-action-list class="w-full custom-ckd-container range-input">
@@ -29,16 +30,16 @@
 
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
-    [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleCustomDateRangeView()">
+    [cdkConnectedOverlayOffsetY]="0" (backdropClick)="!isShowDefaultOptions && toggleCustomDateRangeView()">
     <div class="custom-ckd-container custom-calendar-container">
       <div class="row-1">
         <div class="pt-custom br-right col-1">
           <mat-action-list>
             @for (option of dateDropDownOptions; track option.optionKey) {
-                @if(option.isVisible) {
-                    <mat-list-item (click)="updateSelection(option, dateInput)"
-                    [activated]="option.isSelected">{{option.optionLabel}}</mat-list-item>
-                 }
+               @if(option.isVisible) {
+                <mat-list-item (click)="updateSelection(option, dateInput)"
+                  [activated]="option.isSelected">{{option.optionLabel}}</mat-list-item>
+              }
             }
           </mat-action-list>
         </div>

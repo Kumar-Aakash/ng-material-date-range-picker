@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.1] - 2023-11-04
+- Added default preset options flag
+- Updated md file
+
 ## [2.0.0] - 2023-12-08
 - Upgraded Angular 16 to Angular 17 Version
 - Replaced existing directives with Angular 17 directives
