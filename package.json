@@ -1,6 +1,6 @@
 {
   "name": "ng-date-picker",
-  "version": "1.0",
+  "version": "1.2.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +9,7 @@
     "test": "ng test"
   },
   "private": true,
-   "dependencies": {
+  "dependencies": {
     "@angular/animations": "^16.1.6",
     "@angular/cdk": "^16.1.5",
     "@angular/common": "^16.1.6",

@@ -4,14 +4,15 @@
  * @author Aakash Kumar
  *-->
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
-  <mat-form-field class="w-full" (click)="toggleDateOptionSelectionList()">
+  <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}"
+    (click)="toggleDateOptionSelectionList()">
     <mat-label>Select Date Range</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
-    [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleDateOptionSelectionList()">
+    [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="listCdkConnectedOverlayOffsetX"
+    [cdkConnectedOverlayOffsetY]="listCdkConnectedOverlayOffsetY" (backdropClick)="!isShowStaticDefaultOptions && toggleDateOptionSelectionList()">
     <mat-action-list class="w-full custom-ckd-container range-input"
       *ngIf="dateDropDownOptions && dateDropDownOptions.length">
       <ng-container *ngFor="let option of dateDropDownOptions">
@@ -22,26 +23,27 @@
   </ng-template>
 
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
-    [cdkConnectedOverlayOffsetY]="0" (backdropClick)="toggleCustomDateRangeView()">
-    <div class="custom-ckd-container custom-calendar-container">
+    [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true"
+    [cdkConnectedOverlayOffsetX]="cdkConnectedOverlayOffsetX" [cdkConnectedOverlayOffsetY]="cdkConnectedOverlayOffsetY"
+    (backdropClick)="!isShowStaticDefaultOptions && toggleCustomDateRangeView()">
+    <div class="custom-ckd-container custom-calendar-container" [class]="{'without-default-opt':hideDefaultOptions}">
       <div class="row-1">
-        <div class="pt-custom br-right col-1"> <mat-action-list>
+        <div class="pt-custom br-right column-1" *ngIf="!hideDefaultOptions"> <mat-action-list>
             <ng-container *ngFor="let option of dateDropDownOptions">
               <mat-list-item *ngIf="option.isVisible" (click)="updateSelection(option, dateInput)"
                 [activated]="option.isSelected">{{option.optionLabel}}</mat-list-item>
             </ng-container>
           </mat-action-list>
         </div>
-        <div class="mt-2 col-2"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
+        <div class="mt-2 column-2"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
       </div>
       <div class="row-2 br-top">
         <div class="text-end my-2 w-full">
           <div class="footer-content">
             <span id="range-label-text">
-            {{calendar?.selectedDates?.start | date: 'dd/MM/yyyy'}}
-            <span *ngIf="calendar?.selectedDates?.end"> - {{calendar.selectedDates.end | date:
-              'dd/MM/yyyy'}} </span>
+              {{calendar?.selectedDates?.start | date: 'dd/MM/yyyy'}}
+              <span *ngIf="calendar?.selectedDates?.end"> - {{calendar.selectedDates.end | date:
+                'dd/MM/yyyy'}} </span>
             </span>
             <div class="d-inline buttons">
               <button mat-button mat-raised-button class="p-3 mx-2" (click)="isCustomRange=false;">Cancel</button>

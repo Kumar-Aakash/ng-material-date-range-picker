@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.0] - 2023-11-04
+- Exposed Enum.
+- Exposed positioning attributes for cdkConnectedOverlay
+- Fixed bugs bugs around conflicting css with bootstrap.
+- Added attributes for to show options list as static list.
+
+## [1.1.1] - 2023-11-04
+- Added default preset options flag
+- Updated md file
+
 ## [1.1.0] - 2023-11-04
 - Removed Bootstrap Library Dependency.
 - Exposed actions on predefined date menu items.
