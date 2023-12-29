@@ -65,9 +65,6 @@ export class NgDatePickerComponent implements OnInit {
         this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
     }
     this.dateListOptions.emit(this.dateDropDownOptions);
-    if (this.isShowStaticDefaultOptions) {
-      this.toggleDateOptionSelectionList();
-    }
   }
 
   /**
@@ -119,10 +116,6 @@ export class NgDatePickerComponent implements OnInit {
       this.updateDateOnOptionSelect(option, input);
     } else {
       this.isCustomRange = true;
-    }
-
-    if (this.isShowStaticDefaultOptions) {
-      this.isDateOptionList = true;
     }
   }
 

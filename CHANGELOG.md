@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.2.0] - 2023-11-04
+## [1.2.1] - 2023-12-30
+- Fixed position related bugs for static position.
+
+## [1.2.0] - 2023-12-29
 - Exposed Enum.
 - Exposed positioning attributes for cdkConnectedOverlay
 - Fixed bugs bugs around conflicting css with bootstrap.

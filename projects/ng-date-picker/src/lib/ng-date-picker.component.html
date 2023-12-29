@@ -10,11 +10,21 @@
     <input matInput readonly="readonly" #dateInput class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
+  <mat-action-list class="w-full custom-ckd-container range-input"
+    *ngIf="dateDropDownOptions && dateDropDownOptions.length &&  isShowStaticDefaultOptions">
+    <ng-container *ngFor="let option of dateDropDownOptions">
+      <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, dateInput)"
+        *ngIf="option.isVisible">{{option.optionLabel}}</mat-list-item>
+    </ng-container>
+  </mat-action-list>
+
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="listCdkConnectedOverlayOffsetX"
-    [cdkConnectedOverlayOffsetY]="listCdkConnectedOverlayOffsetY" (backdropClick)="!isShowStaticDefaultOptions && toggleDateOptionSelectionList()">
+    [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true"
+    [cdkConnectedOverlayOffsetX]="listCdkConnectedOverlayOffsetX"
+    [cdkConnectedOverlayOffsetY]="listCdkConnectedOverlayOffsetY"
+    (backdropClick)="!isShowStaticDefaultOptions && toggleDateOptionSelectionList()">
     <mat-action-list class="w-full custom-ckd-container range-input"
-      *ngIf="dateDropDownOptions && dateDropDownOptions.length">
+      *ngIf="dateDropDownOptions && dateDropDownOptions.length && ! isShowStaticDefaultOptions">
       <ng-container *ngFor="let option of dateDropDownOptions">
         <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, dateInput)"
           *ngIf="option.isVisible">{{option.optionLabel}}</mat-list-item>
