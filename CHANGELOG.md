@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0] - 2024-01-01
+- Exposed Enum.
+- Exposed positioning attributes for cdkConnectedOverlay
+- Fixed bugs bugs around conflicting css with bootstrap.
+- Added attributes for to show options list as static list.
+- Fixed position related bugs for static position.
+
 ## [2.0.0] - 2023-12-08
 - Upgraded Angular 16 to Angular 17 Version
 - Replaced existing directives with Angular 17 directives

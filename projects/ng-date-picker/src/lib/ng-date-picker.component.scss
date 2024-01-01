@@ -54,6 +54,10 @@ mat-list-item {
   width: 100%;
 }
 
+.display-hidden {
+  display: none;
+}
+
 .custom-calendar-container {
   width: 100%;
   display: block;
@@ -73,8 +77,8 @@ mat-list-item {
 
 .footer-content {
   width: 100%;
-  display: flex;
   align-items: center;
+  display: flex;
   text-align: right;
   justify-content: end;
   gap: 10px;
@@ -88,15 +92,26 @@ mat-list-item {
   gap: 10px;
 }
 
-.col-1 {
+.column-1 {
   width: 25%;
   display: block;
   float: left;
 }
-.col-2 {
-  width: 73;
+.column-2 {
+  width: 73%;
   display: block;
   float: left;
+}
+
+.without-default-opt {
+  .column-1 {
+    display: none;
+  }
+  .column-2 {
+    width: 100%;
+    display: block;
+    float: left;
+  }
 }
 
 @media (max-width: 400px) {
@@ -115,17 +130,28 @@ mat-list-item {
 }
 
 @media (max-width: 650px) {
-  .col-1,
-  .col-2 {
+  .column-1,
+  .column-2 {
     width: 100%;
   }
 }
 
 @media (min-width: 650px) {
-  .col-1 {
+  .column-1 {
     width: 25%;
   }
-  .col-2 {
+  .column-2 {
     width: 74%;
+  }
+}
+
+.without-default-opt {
+  .column-1 {
+    display: none;
+  }
+  .column-2 {
+    width: 100%;
+    display: block;
+    float: left;
   }
 }

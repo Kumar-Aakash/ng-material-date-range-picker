@@ -17,6 +17,7 @@ import { DateRange } from '@angular/material/datepicker';
 import { DEFAULT_DATE_OPTION_ENUM } from './constant/date-filter-enum';
 import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
 import { ISelectDateOption } from './model/select-date-option';
+import { SelectedDateEvent } from '../public-api';
 
 @Component({
   selector: 'ng-date-range-picker',
@@ -30,13 +31,19 @@ export class NgDatePickerComponent implements OnInit {
 
   @Input() selectedDates!: DateRange<Date>;
   @Input() dateFormat: string = 'dd/MM/yyyy';
-  @Output() onDateSelectionChanged: EventEmitter<DateRange<Date>>;
+  @Input() isShowStaticDefaultOptions: boolean = false;
+  @Input() hideDefaultOptions: boolean = false;
+  @Input() cdkConnectedOverlayOffsetX = 0;
+  @Input() cdkConnectedOverlayOffsetY = 0;
+  @Input() listCdkConnectedOverlayOffsetY = 0;
+  @Input() listCdkConnectedOverlayOffsetX = 0;
+  @Output() onDateSelectionChanged: EventEmitter<SelectedDateEvent>;
   @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
 
   private _dateDropDownOptions: ISelectDateOption[] = [];
 
   constructor(private cdref: ChangeDetectorRef) {
-    this.onDateSelectionChanged = new EventEmitter<DateRange<Date>>();
+    this.onDateSelectionChanged = new EventEmitter<SelectedDateEvent>();
     this.dateListOptions = new EventEmitter<ISelectDateOption[]>();
   }
 
@@ -187,7 +194,14 @@ export class NgDatePickerComponent implements OnInit {
     this.selectedDates = new DateRange<Date>(startDate, endDate);
     input.value =
       this.getDateString(startDate) + ' - ' + this.getDateString(endDate);
-    this.onDateSelectionChanged.emit(this.selectedDates);
+    const selectedOption = this.dateDropDownOptions.filter(
+      (option) => option.isSelected
+    )[0];
+    const selectedDateEventData: SelectedDateEvent = {
+      range: this.selectedDates,
+      selectedOption: selectedOption,
+    };
+    this.onDateSelectionChanged.emit(selectedDateEventData);
     this.cdref.markForCheck();
   }
 
