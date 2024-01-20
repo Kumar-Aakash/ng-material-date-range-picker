@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.2] - 2024-01-20
+- Exposed Id for dropdown and calendar.
+- Exposed option to control default options.
+
 ## [1.2.1] - 2023-12-30
 - Fixed position related bugs for static position.
 

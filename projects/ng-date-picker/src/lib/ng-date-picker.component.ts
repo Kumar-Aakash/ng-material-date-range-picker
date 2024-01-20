@@ -28,7 +28,9 @@ import { SelectedDateEvent } from '../public-api';
 export class NgDatePickerComponent implements OnInit {
   isDateOptionList: boolean = false;
   isCustomRange: boolean = false;
-
+  @Input() defaultOptionId = 'custom-options';
+  @Input() calendarId: string = 'custom-calendar';
+  @Input() enableDefaultOptions: boolean = true;
   @Input() selectedDates!: DateRange<Date>;
   @Input() dateFormat: string = 'dd/MM/yyyy';
   @Input() isShowStaticDefaultOptions: boolean = false;
@@ -49,10 +51,14 @@ export class NgDatePickerComponent implements OnInit {
 
   @Input()
   set dateDropDownOptions(defaultDateList: ISelectDateOption[]) {
-    this._dateDropDownOptions =
-      this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS).concat(
-        defaultDateList
-      );
+    if (this.enableDefaultOptions) {
+      this._dateDropDownOptions =
+        this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS).concat(
+          defaultDateList
+        );
+    } else {
+      this._dateDropDownOptions = defaultDateList;
+    }
   }
 
   get dateDropDownOptions(): ISelectDateOption[] {
@@ -60,7 +66,7 @@ export class NgDatePickerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this._dateDropDownOptions.length) {
+    if (!this._dateDropDownOptions.length && this.enableDefaultOptions) {
       this._dateDropDownOptions =
         this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
     }
