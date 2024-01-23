@@ -7,7 +7,7 @@
   <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}"
     (click)="toggleDateOptionSelectionList()">
     <mat-label>Select Date Range</mat-label>
-    <input matInput readonly="readonly" #dateInput class="cursor-pointer">
+    <input matInput readonly="readonly" #dateInput class="cursor-pointer" id="date-input-field">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
   <mat-action-list class="w-full custom-ckd-container range-input"

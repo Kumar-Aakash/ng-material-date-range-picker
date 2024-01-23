@@ -4,9 +4,11 @@
  * @author Aakash Kumar
  */
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
@@ -25,7 +27,7 @@ import { SelectedDateEvent } from '../public-api';
   styleUrls: ['./ng-date-picker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NgDatePickerComponent implements OnInit {
+export class NgDatePickerComponent implements OnInit, AfterViewInit {
   isDateOptionList: boolean = false;
   isCustomRange: boolean = false;
   @Input() defaultOptionId = 'custom-options';
@@ -44,7 +46,7 @@ export class NgDatePickerComponent implements OnInit {
 
   private _dateDropDownOptions: ISelectDateOption[] = [];
 
-  constructor(private cdref: ChangeDetectorRef) {
+  constructor(private cdref: ChangeDetectorRef, private el: ElementRef) {
     this.onDateSelectionChanged = new EventEmitter<SelectedDateEvent>();
     this.dateListOptions = new EventEmitter<ISelectDateOption[]>();
   }
@@ -71,6 +73,19 @@ export class NgDatePickerComponent implements OnInit {
         this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
     }
     this.dateListOptions.emit(this.dateDropDownOptions);
+  }
+
+  ngAfterViewInit(): void {
+    const selectedOptions: ISelectDateOption[] =
+      this._dateDropDownOptions.filter((option) => option.isSelected);
+    if (selectedOptions.length) {
+      const input: HTMLInputElement =
+        this.el.nativeElement.querySelector('#date-input-field');
+      const dateRange: DateRange<Date> = selectedOptions[0].callBackFunction();
+      if (dateRange && dateRange.start && dateRange.end) {
+        this.updateSelectedDates(input, dateRange.start, dateRange.end);
+      }
+    }
   }
 
   /**
