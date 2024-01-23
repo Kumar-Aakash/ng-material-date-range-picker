@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.2.3] - 2024-01-23
+- Supported default date selection based on default option selection.
+
 ## [1.2.2] - 2024-01-20
 - Exposed Id for dropdown and calendar.
 - Exposed option to control default options.
