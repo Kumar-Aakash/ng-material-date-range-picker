@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.2.4] - 2024-01-23
+- Added backdrop click operations on calendar.
+
 ## [1.2.3] - 2024-01-23
 - Supported default date selection based on default option selection.
 

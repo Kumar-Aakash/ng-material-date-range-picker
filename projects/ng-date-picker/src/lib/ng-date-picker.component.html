@@ -35,7 +35,7 @@
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true"
     [cdkConnectedOverlayOffsetX]="cdkConnectedOverlayOffsetX" [cdkConnectedOverlayOffsetY]="cdkConnectedOverlayOffsetY"
-    (backdropClick)="!isShowStaticDefaultOptions && toggleCustomDateRangeView()">
+    (backdropClick)="toggleCustomDateRangeView()">
     <div [id]="calendarId" class="custom-ckd-container custom-calendar-container"
       [class]="{'without-default-opt':hideDefaultOptions}">
       <div class="row-1">
