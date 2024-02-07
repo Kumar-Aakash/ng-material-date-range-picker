@@ -30,6 +30,7 @@ import { SelectedDateEvent } from '../public-api';
 export class NgDatePickerComponent implements OnInit, AfterViewInit {
   isDateOptionList: boolean = false;
   isCustomRange: boolean = false;
+  @Input() inputLabel: string = 'Date Range';
   @Input() defaultOptionId = 'custom-options';
   @Input() calendarId: string = 'custom-calendar';
   @Input() enableDefaultOptions: boolean = true;
