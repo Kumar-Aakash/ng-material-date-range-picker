@@ -6,7 +6,7 @@
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
   <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}"
     (click)="toggleDateOptionSelectionList()">
-    <mat-label>Select Date Range</mat-label>
+    <mat-label>{{inputLabel}}</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
@@ -23,11 +23,13 @@
   }
 
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
-    [cdkConnectedOverlayOffsetY]="0" (backdropClick)="!isShowStaticDefaultOptions && toggleDateOptionSelectionList()">
+    [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true"
+    [cdkConnectedOverlayOffsetX]="listCdkConnectedOverlayOffsetX"
+    [cdkConnectedOverlayOffsetY]="listCdkConnectedOverlayOffsetY"
+    (backdropClick)="!isShowStaticDefaultOptions && toggleDateOptionSelectionList()">
 
     @if(dateDropDownOptions && dateDropDownOptions.length && !isShowStaticDefaultOptions) {
-    <mat-action-list class="w-full custom-ckd-container range-input">
+    <mat-action-list [id]="defaultOptionId" class="w-full custom-ckd-container range-input">
       @for (option of dateDropDownOptions; track option.optionKey) {
       @if (option.isVisible) {
       <mat-list-item [activated]="option.isSelected"
@@ -39,8 +41,9 @@
   </ng-template>
 
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true" [cdkConnectedOverlayOffsetX]="0"
-    [cdkConnectedOverlayOffsetY]="0" (backdropClick)="!isShowStaticDefaultOptions && toggleCustomDateRangeView()">
+    [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true"
+    [cdkConnectedOverlayOffsetX]="cdkConnectedOverlayOffsetX" [cdkConnectedOverlayOffsetY]="cdkConnectedOverlayOffsetY"
+    (backdropClick)="toggleCustomDateRangeView()">
     <div class="custom-ckd-container custom-calendar-container" [class]="{'without-default-opt':hideDefaultOptions}">
       <div class="row-1">
         <div class="pt-custom br-right column-1" *ngIf="!hideDefaultOptions">

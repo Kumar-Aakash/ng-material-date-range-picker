@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0] - 2024-02-07
+- Exposed Id for dropdown and calendar.
+- Exposed option to control default options.
+- Supported default date selection based on default option selection.
+- Added backdrop click operations on calendar.
+- Added Dynamic Label Feature For Input Field. 
+
 ## [2.1.0] - 2024-01-01
 - Exposed Enum.
 - Exposed positioning attributes for cdkConnectedOverlay

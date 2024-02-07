@@ -4,9 +4,11 @@
  * @author Aakash Kumar
  */
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
@@ -25,10 +27,13 @@ import { SelectedDateEvent } from '../public-api';
   styleUrls: ['./ng-date-picker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NgDatePickerComponent implements OnInit {
+export class NgDatePickerComponent implements OnInit, AfterViewInit {
   isDateOptionList: boolean = false;
   isCustomRange: boolean = false;
-
+  @Input() inputLabel: string = 'Date Range';
+  @Input() defaultOptionId = 'custom-options';
+  @Input() calendarId: string = 'custom-calendar';
+  @Input() enableDefaultOptions: boolean = true;
   @Input() selectedDates!: DateRange<Date>;
   @Input() dateFormat: string = 'dd/MM/yyyy';
   @Input() isShowStaticDefaultOptions: boolean = false;
@@ -42,17 +47,21 @@ export class NgDatePickerComponent implements OnInit {
 
   private _dateDropDownOptions: ISelectDateOption[] = [];
 
-  constructor(private cdref: ChangeDetectorRef) {
+  constructor(private cdref: ChangeDetectorRef, private el: ElementRef) {
     this.onDateSelectionChanged = new EventEmitter<SelectedDateEvent>();
     this.dateListOptions = new EventEmitter<ISelectDateOption[]>();
   }
 
   @Input()
   set dateDropDownOptions(defaultDateList: ISelectDateOption[]) {
-    this._dateDropDownOptions =
-      this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS).concat(
-        defaultDateList
-      );
+    if (this.enableDefaultOptions) {
+      this._dateDropDownOptions =
+        this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS).concat(
+          defaultDateList
+        );
+    } else {
+      this._dateDropDownOptions = defaultDateList;
+    }
   }
 
   get dateDropDownOptions(): ISelectDateOption[] {
@@ -60,11 +69,24 @@ export class NgDatePickerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this._dateDropDownOptions.length) {
+    if (!this._dateDropDownOptions.length && this.enableDefaultOptions) {
       this._dateDropDownOptions =
         this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
     }
     this.dateListOptions.emit(this.dateDropDownOptions);
+  }
+
+  ngAfterViewInit(): void {
+    const selectedOptions: ISelectDateOption[] =
+      this._dateDropDownOptions.filter((option) => option.isSelected);
+    if (selectedOptions.length) {
+      const input: HTMLInputElement =
+        this.el.nativeElement.querySelector('#date-input-field');
+      const dateRange: DateRange<Date> = selectedOptions[0].callBackFunction();
+      if (dateRange && dateRange.start && dateRange.end) {
+        this.updateSelectedDates(input, dateRange.start, dateRange.end);
+      }
+    }
   }
 
   /**
