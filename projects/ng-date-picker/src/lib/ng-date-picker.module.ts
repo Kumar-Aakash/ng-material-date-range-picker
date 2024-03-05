@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { CalendarComponent } from './calendar/calendar.component';
 import { NgDatePickerComponent } from './ng-date-picker.component';
+import { DatePickerHeaderComponent } from './calendar/header/date-picker-header/date-picker-header.component';
 
 @NgModule({
   declarations: [NgDatePickerComponent, CalendarComponent],

@@ -1,6 +1,4 @@
 /**
- * @(#)ng-date-picker.component.scss Sept 05, 2023
-
  * @author Aakash Kumar
  */
 
@@ -72,7 +70,7 @@ mat-list-item {
 }
 
 .row-2 {
-  padding: 0.7rem;
+  padding: 0.7rem 0;
 }
 
 .footer-content {
@@ -82,14 +80,17 @@ mat-list-item {
   text-align: right;
   justify-content: end;
   gap: 10px;
-  margin-right: 2rem;
   text-overflow: ellipsis;
 }
 
 .buttons {
   margin-right: 1.5rem;
+  margin-left: 1.5rem;
   display: flex;
-  gap: 10px;
+  flex-flow: row;
+  width: 100%;
+  align-content: space-between;
+  justify-content: space-between;
 }
 
 .column-1 {
@@ -135,6 +136,7 @@ mat-list-item {
 
 .default-options-container {
   margin-bottom: 5px;
+  border-bottom: 1px solid #E5E5E5;
 
   .option-ele {
     font-size: 13px;

@@ -1,11 +1,8 @@
-/**
- * @(#)calendar.component.scss Sept 07, 2023
-
- * @author Aakash Kumar
- */
- .mat-calendar {
+.mat-calendar {
   min-width: 250px;
   max-width: 290px;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 .calendar-container {
@@ -26,4 +23,22 @@
   .second-view {
     width: 100%;
   }
+}
+::ng-deep .mat-calendar-body-today, ::ng-deep .mat-calendar-body-selected {
+    max-height: 32px;
+    max-width: 32px;
+}
+
+::ng-deep .mat-calendar-body-cell {
+  max-height: 36px;
+}
+
+::ng-deep .mat-calendar-body-range-end {
+  max-width: 36px;
+}
+
+::ng-deep .mat-calendar-body-cell-container, ::ng-deep .mat-calendar-body-label {
+  height: 36px !important;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
 }
