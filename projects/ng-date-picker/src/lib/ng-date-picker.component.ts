@@ -13,9 +13,11 @@ import {
   Input,
   OnInit,
   Output,
+  Renderer2,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { DateRange } from '@angular/material/datepicker';
+
 import { DEFAULT_DATE_OPTION_ENUM } from './constant/date-filter-enum';
 import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
 import { ISelectDateOption } from './model/select-date-option';
@@ -29,7 +31,8 @@ import { SelectedDateEvent } from '../public-api';
 })
 export class NgDatePickerComponent implements OnInit, AfterViewInit {
   isDateOptionList: boolean = false;
-  isCustomRange: boolean = false;
+  isCustomRange: boolean = true;
+  isOpen: boolean = false;
   @Input() inputLabel: string = 'Date Range';
   @Input() defaultOptionId = 'custom-options';
   @Input() calendarId: string = 'custom-calendar';
@@ -47,7 +50,9 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
   private _dateDropDownOptions: ISelectDateOption[] = [];
 
-  constructor(private cdref: ChangeDetectorRef, private el: ElementRef) {
+  backdropClass = 'date-rage-picker-backdrop';
+
+  constructor(private cdref: ChangeDetectorRef, private el: ElementRef, private renderer: Renderer2) {
     this.onDateSelectionChanged = new EventEmitter<SelectedDateEvent>();
     this.dateListOptions = new EventEmitter<ISelectDateOption[]>();
   }
@@ -93,17 +98,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    * This method toggles the visibility of default date option's List.
    */
   toggleDateOptionSelectionList(): void {
-    const selectedOption = this.dateDropDownOptions.filter(
-      (option) => option.isSelected
-    );
-    if (
-      selectedOption.length &&
-      selectedOption[0].optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM
-    ) {
-      this.toggleCustomDateRangeView();
-    } else {
-      this.isDateOptionList = !this.isDateOptionList;
-    }
+    this.isOpen = !this.isOpen;
   }
 
   /**
@@ -134,9 +129,11 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
     this.isDateOptionList = false;
     if (option.optionKey !== DEFAULT_DATE_OPTION_ENUM.CUSTOM) {
-      this.isCustomRange = false;
+      // this.isCustomRange = false;
+      this.isOpen = false;
       this.updateDateOnOptionSelect(option, input);
     } else {
+      this.isOpen = true;
       this.isCustomRange = true;
     }
   }

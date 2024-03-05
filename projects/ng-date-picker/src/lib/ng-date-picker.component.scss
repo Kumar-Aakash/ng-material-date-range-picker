@@ -93,25 +93,14 @@ mat-list-item {
 }
 
 .column-1 {
-  width: 25%;
+  width: 100%;
   display: block;
   float: left;
 }
 .column-2 {
-  width: 73%;
+  width: 100%;
   display: block;
   float: left;
-}
-
-.without-default-opt {
-  .column-1 {
-    display: none;
-  }
-  .column-2 {
-    width: 100%;
-    display: block;
-    float: left;
-  }
 }
 
 @media (max-width: 400px) {
@@ -129,22 +118,6 @@ mat-list-item {
   }
 }
 
-@media (max-width: 650px) {
-  .column-1,
-  .column-2 {
-    width: 100%;
-  }
-}
-
-@media (min-width: 650px) {
-  .column-1 {
-    width: 25%;
-  }
-  .column-2 {
-    width: 74%;
-  }
-}
-
 .without-default-opt {
   .column-1 {
     display: none;
@@ -155,3 +128,22 @@ mat-list-item {
     float: left;
   }
 }
+
+.date-picker-main {
+  margin: 30px;
+}
+
+.default-options-container {
+  margin-bottom: 5px;
+
+  .option-ele {
+    font-size: 13px;
+    display: inline-block;
+    padding: 8px 12px;
+
+    &.option-selected {
+      color: #0000ff;
+    }
+  }
+}
+

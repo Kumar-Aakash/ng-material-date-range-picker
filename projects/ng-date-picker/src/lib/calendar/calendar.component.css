@@ -5,6 +5,7 @@
  */
  .mat-calendar {
   min-width: 250px;
+  max-width: 290px;
 }
 
 .calendar-container {
@@ -20,13 +21,7 @@
   float: left;
 }
 
-.first-view,
-.second-view {
-  margin-top: 0.5rem;
-}
-
 @media (max-width: 490px) {
-
   .first-view,
   .second-view {
     width: 100%;
