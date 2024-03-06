@@ -1,31 +1,20 @@
 <div class="example-header">
-  <button mat-icon-button (click)="previousClicked('month')">
+  <button mat-icon-button (click)="previousClicked()">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
   <span class="example-header-label">
-      <mat-select class="header-dropdown" [(value)]="monthSelected">
-        <mat-option value="1">Jan</mat-option>
-        <mat-option value="2">Feb</mat-option>
-        <mat-option value="3">Mar</mat-option>
-        <mat-option value="4">Apr</mat-option>
-        <mat-option value="5">May</mat-option>
-        <mat-option value="6">Jun</mat-option>
-        <mat-option value="7">Jul</mat-option>
-        <mat-option value="8">Aug</mat-option>
-        <mat-option value="9">Sep</mat-option>
-        <mat-option value="10">Oct</mat-option>
-        <mat-option value="11">Nov</mat-option>
-        <mat-option value="12">Dec</mat-option>
-      </mat-select>
-      <mat-select class="header-dropdown" [(value)]="yearSelected">
-        <mat-option value="2020">2020</mat-option>
-        <mat-option value="2021">2021</mat-option>
-        <mat-option value="2022">2022</mat-option>
-        <mat-option value="2023">2023</mat-option>
-        <mat-option value="2024">2024</mat-option>
-      </mat-select>
+    <label [id]="_periodButtonLabelId" class="cdk-visually-hidden">{{periodButtonDescription}}</label>
+    <button mat-button type="button" class="mat-calendar-period-button"
+            (click)="currentPeriodClicked()" [attr.aria-label]="periodButtonLabel"
+            [attr.aria-describedby]="_periodButtonLabelId" aria-live="polite">
+      <span aria-hidden="true">{{periodButtonText}}</span>
+      <svg class="mat-calendar-arrow" [class.mat-calendar-invert]="_calendar.currentView !== 'month'"
+           viewBox="0 0 10 5" focusable="false" aria-hidden="true">
+           <polygon points="0,0 5,5 10,0"/>
+      </svg>
+    </button>
   </span>
-  <button mat-icon-button (click)="nextClicked('month')">
+  <button mat-icon-button (click)="nextClicked()">
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
 </div>
