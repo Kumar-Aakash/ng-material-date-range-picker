@@ -7,7 +7,7 @@
 
   <!-- input form -->
   <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}"
-    (click)="toggleDateOptionSelectionList()">
+                  (click)="toggleDateOptionSelectionList()">
     <mat-label>{{inputLabel}}</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
@@ -56,17 +56,11 @@
       <div class="row-2 br-top">
         <div class="text-end my-2 w-full">
           <div class="footer-content">
-            <span id="range-label-text">
-              {{ calendar?.selectedDates?.start | date: 'yyyy-MM-dd' }}
-              <span *ngIf="calendar?.selectedDates?.end">
-                <span> - {{calendar.selectedDates.end | date:'yyyy-MM-dd'}} </span>
-              </span>
-            </span>
             <div class="d-inline buttons">
               <button mat-button mat-raised-button class="p-3 mx-2" (click)="isOpen=false;">Cancel</button>
               <button mat-button mat-raised-button color="primary" class="ms-2 p-3"
-                [class.disabled]="!(calendar?.selectedDates?.start && calendar?.selectedDates?.end)"
-                (click)="updateCustomRange(dateInput,calendar.selectedDates); isOpen=false;">Apply</button>
+                      [class.disabled]="!(calendar?.selectedDates?.start && calendar?.selectedDates?.end)"
+                      (click)="updateCustomRange(dateInput,calendar.selectedDates); isOpen=false;">Apply</button>
             </div>
           </div>
         </div>
