@@ -1,8 +1,3 @@
-/**
- * @(#)ng-date-picker.component.ts Sept 05, 2023
- *
- * @author Aakash Kumar
- */
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -17,11 +12,14 @@ import {
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { DateRange } from '@angular/material/datepicker';
+import moment from 'moment';
 
 import { DEFAULT_DATE_OPTION_ENUM } from './constant/date-filter-enum';
 import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
 import { ISelectDateOption } from './model/select-date-option';
 import { SelectedDateEvent } from '../public-api';
+import { LocaleConfig } from './model/locale-config.model';
+import { LocaleService } from './services/locale.service';
 
 @Component({
   selector: 'ng-date-range-picker',
@@ -33,12 +31,30 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   isDateOptionList: boolean = false;
   isCustomRange: boolean = true;
   isOpen: boolean = false;
+
+  /** Set calendar locale settings */
+  private _locale: LocaleConfig = {};
+  @Input() set locale(value: LocaleConfig | undefined) {
+    if (value) {
+      this._locale = { ...this._localeService.config, ...value };
+    }
+  }
+  /** Minimum selectable date */
+  @Input() minDate!: Date;
+  /** Maximum selectable date */
+  @Input() maxDate!: Date;
+
+
+
+
+
+  /** original inputs */
   @Input() inputLabel: string = 'Date Range';
   @Input() defaultOptionId = 'custom-options';
   @Input() calendarId: string = 'custom-calendar';
   @Input() enableDefaultOptions: boolean = true;
   @Input() selectedDates!: DateRange<Date>;
-  @Input() dateFormat: string = 'dd/MM/yyyy';
+  @Input() dateFormat: string = 'yyyy-MM-dd';
   @Input() isShowStaticDefaultOptions: boolean = false;
   @Input() hideDefaultOptions: boolean = false;
   @Input() cdkConnectedOverlayOffsetX = 0;
@@ -52,7 +68,12 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
   backdropClass = 'date-rage-picker-backdrop';
 
-  constructor(private cdref: ChangeDetectorRef, private el: ElementRef, private renderer: Renderer2) {
+  constructor(
+    private cdref: ChangeDetectorRef,
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private _localeService: LocaleService
+  ) {
     this.onDateSelectionChanged = new EventEmitter<SelectedDateEvent>();
     this.dateListOptions = new EventEmitter<ISelectDateOption[]>();
   }

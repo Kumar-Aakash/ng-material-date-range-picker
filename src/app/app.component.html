@@ -2,7 +2,32 @@
   <h1>ExoGroup DatePicker</h1>
 </div>
 <div class="date-form-content">
-  <ng-date-range-picker></ng-date-range-picker>
+  <ng-date-range-picker
+    *ngIf="isSettingsLoaded"
+    [locale]="daterangepickerOptions.options"
+    [minDate]="daterangepickerOptions.minDate"
+    [maxDate]="daterangepickerOptions.maxDate"
+  ></ng-date-range-picker>
+
+
+<!--  [readonly]="true"-->
+<!--  [locale]="daterangepickerOptions.options"-->
+<!--  [minDate]="daterangepickerOptions.minDate"-->
+<!--  [maxDate]="daterangepickerOptions.maxDate"-->
+<!--  [ranges]="daterangepickerOptions.ranges"-->
+<!--  [showApplyButton]="daterangepickerOptions.showApplyButton"-->
+<!--  [showCancelButton]="daterangepickerOptions.showCancelButton"-->
+<!--  [showDropdowns]="daterangepickerOptions.showDropdowns"-->
+<!--  [showRangeLabelOnInput]="daterangepickerOptions.showRangeLabelOnInput"-->
+<!--  [showCustomRangeLabel]="daterangepickerOptions.showCustomRangeLabel"-->
+<!--  [keepCalendarOpeningWithRange]="daterangepickerOptions.keepCalendarOpeningWithRange"-->
+<!--  [alwaysShowCalendars]="daterangepickerOptions.alwaysShowCalendars"-->
+<!--  (inputUpdate)="currentLabel = $event"-->
+<!--  (showDateRangePicker)="editDateRangePickerPosition()"-->
+
+
+
+
 </div>
 
 <mat-accordion>

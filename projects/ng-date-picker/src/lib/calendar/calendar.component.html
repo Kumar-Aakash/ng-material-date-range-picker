@@ -10,6 +10,8 @@
       #firstCalendarView
       [startAt]="firstCalendarViewData.startDate"
       [selected]="selectedDates"
+      [minDate]="minDate"
+      [maxDate]="maxDate"
       (selectedChange)="updateDateRangeSelection($event)"
       (monthSelected)="monthSelected($event)"
       [headerComponent]="datePickerHeader"
@@ -21,6 +23,7 @@
       #secondCalendarView
       [startAt]="secondCalendarViewData.startDate"
       [minDate]="secondCalendarViewData.minDate"
+      [maxDate]="maxDate"
       [selected]="selectedDates"
       (selectedChange)="updateDateRangeSelection($event)"
       (monthSelected)=" secondViewMonthSelected($event)"

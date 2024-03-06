@@ -78,7 +78,7 @@ mat-list-item {
   align-items: center;
   display: flex;
   text-align: right;
-  justify-content: end;
+  justify-content: flex-end;
   gap: 10px;
   text-overflow: ellipsis;
 }
@@ -137,6 +137,8 @@ mat-list-item {
 .default-options-container {
   margin-bottom: 5px;
   border-bottom: 1px solid #E5E5E5;
+  display: flex;
+  justify-content: center;
 
   .option-ele {
     font-size: 13px;

@@ -30,6 +30,10 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   secondCalendarViewData!: CalendarViewData;
   datePickerHeader = DatePickerHeaderComponent;
   @Input() selectedDates!: DateRange<Date>;
+  /** Minimum selectable date */
+  @Input() minDate!: Date;
+  /** Maximum selectable date */
+  @Input() maxDate!: Date;
   private isAllowHoverEvent: boolean = false;
 
   @ViewChild('firstCalendarView') firstCalendarView!: MatCalendar<Date>;
@@ -44,6 +48,9 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.initFirstCalendar();
     this.initSecondCalendar();
+
+    console.log(this.selectedDates);
+    debugger;
   }
 
   ngAfterViewInit(): void {

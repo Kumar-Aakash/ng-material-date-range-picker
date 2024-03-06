@@ -6,8 +6,7 @@
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
 
   <!-- input form -->
-  <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}"
-                  (click)="toggleDateOptionSelectionList()">
+  <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}" (click)="toggleDateOptionSelectionList()">
     <mat-label>{{inputLabel}}</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
@@ -50,7 +49,15 @@
           </span>
         </div>
         <div class="mt-2 column-2">
-          <lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar>
+          <lib-calendar
+            #calendar
+            [selectedDates]="selectedDates"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+
+
+
+          ></lib-calendar>
         </div>
       </div>
       <div class="row-2 br-top">
