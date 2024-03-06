@@ -17,6 +17,7 @@ import {
 } from '@angular/core';
 import { DateRange, MatCalendar } from '@angular/material/datepicker';
 import { CalendarViewData } from './../model/calendar-view-data';
+import { DatePickerHeaderComponent } from './header/date-picker-header/date-picker-header.component';
 
 @Component({
   selector: 'lib-calendar',
@@ -27,6 +28,7 @@ import { CalendarViewData } from './../model/calendar-view-data';
 export class CalendarComponent implements OnInit, AfterViewInit {
   firstCalendarViewData!: CalendarViewData;
   secondCalendarViewData!: CalendarViewData;
+  datePickerHeader = DatePickerHeaderComponent;
   @Input() selectedDates!: DateRange<Date>;
   private isAllowHoverEvent: boolean = false;
 

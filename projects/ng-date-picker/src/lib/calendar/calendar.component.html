@@ -12,6 +12,7 @@
       [selected]="selectedDates"
       (selectedChange)="updateDateRangeSelection($event)"
       (monthSelected)="monthSelected($event)"
+      [headerComponent]="datePickerHeader"
     ></mat-calendar>
   </div>
   <div class="second-view">
@@ -23,6 +24,7 @@
       [selected]="selectedDates"
       (selectedChange)="updateDateRangeSelection($event)"
       (monthSelected)=" secondViewMonthSelected($event)"
+      [headerComponent]="datePickerHeader"
     ></mat-calendar>
   </div>
 </div>
