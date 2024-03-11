@@ -33,8 +33,19 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   /** Minimum selectable date */
   @Input() minDate!: Date;
   /** Maximum selectable date */
-  @Input() maxDate!: Date;
+  @Input() set maxDate(maxDate: Date) {
+    if (maxDate) {
+      const maxDateCal1 = new Date(maxDate.getFullYear(), maxDate.getMonth(), 0);
+
+      this._maxDate = {
+        cal1: maxDateCal1,
+        cal2: maxDate
+      }
+    }
+  }
+
   private isAllowHoverEvent: boolean = false;
+  _maxDate!: { cal1: Date, cal2: Date };
 
   @ViewChild('firstCalendarView') firstCalendarView!: MatCalendar<Date>;
   @ViewChild('secondCalendarView') secondCalendarView!: MatCalendar<Date>;
@@ -48,9 +59,6 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.initFirstCalendar();
     this.initSecondCalendar();
-
-    console.log(this.selectedDates);
-    debugger;
   }
 
   ngAfterViewInit(): void {
@@ -88,7 +96,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
    * @param event Date
    */
   monthSelected(event: Date) {
-    this.secondCalendarView._goToDateInView(event, 'year');
+    // this.secondCalendarView._goToDateInView(event, 'year');
     this.handleFirstCalendarNextEvent(this, true);
     setTimeout(() => {
       this.attachHoverEventOnFirstViewDates();
@@ -125,11 +133,17 @@ export class CalendarComponent implements OnInit, AfterViewInit {
     const leftDateCalender = classRef.firstCalendarView;
     if (leftDateCalender.currentView.toLocaleLowerCase() === 'month') {
       const date: Date = new Date(leftDateCalender['_clampedActiveDate']);
-      classRef.secondCalendarView.minDate =
-        classRef.getFirstDateOfNextMonth(date);
+      classRef.secondCalendarView.minDate = classRef.getFirstDateOfNextMonth(date);
+
+      const currentSecondDate = new Date(classRef.secondCalendarView['_clampedActiveDate'])
+      classRef.secondCalendarView._goToDateInView(currentSecondDate, 'month');
+      classRef.removeDefaultFocus(classRef);
       classRef.cdref.markForCheck();
     }
-    classRef.attachHoverEventOnFirstViewDates();
+    setTimeout(() => {
+      classRef.attachHoverEventOnFirstViewDates();
+      classRef.attachHoverEventOnSecondViewDates();
+    }, 300);
   }
 
   /**
@@ -153,11 +167,19 @@ export class CalendarComponent implements OnInit, AfterViewInit {
     isForced = false
   ): void {
     const firstCalendar = classRef.firstCalendarView;
+    const secondCalendar = classRef.secondCalendarView;
+
     if (firstCalendar.currentView.toLocaleLowerCase() === 'month' || isForced) {
       const date: Date = new Date(firstCalendar['_clampedActiveDate']);
+      const secondDate: Date = new Date(secondCalendar['_clampedActiveDate']);
       const nextMonthDate = classRef.getFirstDateOfNextMonth(date);
+
       classRef.secondCalendarView.minDate = nextMonthDate;
-      classRef.secondCalendarView._goToDateInView(nextMonthDate, 'month');
+
+      if (nextMonthDate > secondDate) {
+        classRef.secondCalendarView._goToDateInView(nextMonthDate, 'month');
+      }
+
       classRef.removeDefaultFocus(classRef);
       classRef.cdref.markForCheck();
     }
@@ -290,7 +312,9 @@ export class CalendarComponent implements OnInit, AfterViewInit {
    */
   private initFirstCalendar(): void {
     this.firstCalendarViewData = new CalendarViewData();
-    this.firstCalendarViewData.startDate = new Date();
+    const currDate = new Date();
+    currDate.setMonth(currDate.getMonth() - 1);
+    this.firstCalendarViewData.startDate = currDate;
   }
 
   /**
@@ -299,9 +323,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   private initSecondCalendar(): void {
     const currDate = new Date();
     this.secondCalendarViewData = new CalendarViewData();
-    this.secondCalendarViewData.minDate =
-      this.getFirstDateOfNextMonth(currDate);
-    currDate.setMonth(currDate.getMonth() + 1);
+    this.secondCalendarViewData.minDate = this.firstCalendarViewData.minDate;
     this.secondCalendarViewData.startDate = this.selectedDates?.end
       ? this.selectedDates.end
       : currDate;

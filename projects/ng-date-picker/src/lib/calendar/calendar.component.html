@@ -11,10 +11,9 @@
       [startAt]="firstCalendarViewData.startDate"
       [selected]="selectedDates"
       [minDate]="minDate"
-      [maxDate]="maxDate"
+      [maxDate]="_maxDate.cal1"
       (selectedChange)="updateDateRangeSelection($event)"
       (monthSelected)="monthSelected($event)"
-      [headerComponent]="datePickerHeader"
     ></mat-calendar>
   </div>
   <div class="second-view">
@@ -23,11 +22,10 @@
       #secondCalendarView
       [startAt]="secondCalendarViewData.startDate"
       [minDate]="secondCalendarViewData.minDate"
-      [maxDate]="maxDate"
+      [maxDate]="_maxDate.cal2"
       [selected]="selectedDates"
       (selectedChange)="updateDateRangeSelection($event)"
-      (monthSelected)=" secondViewMonthSelected($event)"
-      [headerComponent]="datePickerHeader"
+      (monthSelected)="secondViewMonthSelected($event)"
     ></mat-calendar>
   </div>
 </div>

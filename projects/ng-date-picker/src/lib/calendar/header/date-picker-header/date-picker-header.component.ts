@@ -6,8 +6,12 @@ import {
   OnDestroy,
 } from '@angular/core';
 import {
-  MatCalendar, MatCalendarView,
-  MatDatepickerIntl, MatMonthView, MatMultiYearView, MatYearView,
+  MatCalendar,
+  MatCalendarView,
+  MatDatepickerIntl,
+  MatMonthView,
+  MatMultiYearView,
+  MatYearView,
   yearsPerPage
 } from '@angular/material/datepicker';
 import {
@@ -33,8 +37,6 @@ let calendarHeaderId = 1;
 })
 export class DatePickerHeaderComponent<D> implements OnDestroy {
   private _destroyed = new Subject<void>();
-  monthSelected: string;
-  yearSelected: string;
   private _id = `mat-calendar-header-${calendarHeaderId++}`;
   _periodButtonLabelId = `${this._id}-period-label`;
 
@@ -46,11 +48,6 @@ export class DatePickerHeaderComponent<D> implements OnDestroy {
     cdr: ChangeDetectorRef,
   ) {
     _calendar.stateChanges.pipe(takeUntil(this._destroyed)).subscribe(() => cdr.markForCheck());
-
-    const date = new Date(this._dateAdapter.format(this._calendar.activeDate, this._dateFormats.display.monthLabel));
-
-    this.monthSelected = (date.getMonth() + 1).toString();
-    this.yearSelected = (date.getFullYear()).toString();
   }
 
   ngOnDestroy() {
@@ -74,12 +71,12 @@ export class DatePickerHeaderComponent<D> implements OnDestroy {
 
   /** The aria description for the current calendar view. */
   get periodButtonDescription(): string {
-    if (this._calendar.currentView == 'month') {
+    if (this._calendar.currentView === 'month') {
       return this._dateAdapter
         .format(this._calendar.activeDate, this._dateFormats.display.monthYearLabel)
         .toLocaleUpperCase();
     }
-    if (this._calendar.currentView == 'year') {
+    if (this._calendar.currentView === 'year') {
       return this._dateAdapter.getYearName(this._calendar.activeDate);
     }
 

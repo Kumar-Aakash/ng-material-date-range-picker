@@ -4,13 +4,17 @@
   </button>
   <span class="example-header-label">
     <label [id]="_periodButtonLabelId" class="cdk-visually-hidden">{{periodButtonDescription}}</label>
-    <button mat-button type="button" class="mat-calendar-period-button"
-            (click)="currentPeriodClicked()" [attr.aria-label]="periodButtonLabel"
-            [attr.aria-describedby]="_periodButtonLabelId" aria-live="polite">
+    <button
+      mat-button
+      type="button"
+      class="mat-calendar-period-button"
+      (click)="currentPeriodClicked()"
+      [attr.aria-label]="periodButtonLabel"
+      [attr.aria-describedby]="_periodButtonLabelId"
+      aria-live="polite">
       <span aria-hidden="true">{{periodButtonText}}</span>
-      <svg class="mat-calendar-arrow" [class.mat-calendar-invert]="_calendar.currentView !== 'month'"
-           viewBox="0 0 10 5" focusable="false" aria-hidden="true">
-           <polygon points="0,0 5,5 10,0"/>
+      <svg class="mat-calendar-arrow" [class.mat-calendar-invert]="_calendar.currentView !== 'month'" viewBox="0 0 10 5" focusable="false" aria-hidden="true">
+        <polygon points="0,0 5,5 10,0"/>
       </svg>
     </button>
   </span>
