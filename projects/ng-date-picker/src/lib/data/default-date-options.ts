@@ -16,7 +16,7 @@ export const DEFAULT_DATE_OPTIONS: ISelectDateOption[] = <ISelectDateOption[]>[
   },
   {
     optionLabel: 'Yesterday',
-    optionKey: DEFAULT_DATE_OPTION_ENUM.DATE_DIFF,
+    optionKey: DEFAULT_DATE_OPTION_ENUM.SINGLE_DATE,
     dateDiff: -1,
     isSelected: false,
     isVisible: true,
@@ -24,14 +24,14 @@ export const DEFAULT_DATE_OPTIONS: ISelectDateOption[] = <ISelectDateOption[]>[
   {
     optionLabel: 'Last 7 Days',
     optionKey: DEFAULT_DATE_OPTION_ENUM.DATE_DIFF,
-    dateDiff: -7,
+    dateDiff: -6,
     isSelected: false,
     isVisible: true,
   },
   {
     optionLabel: 'Last 30 Days',
     optionKey: DEFAULT_DATE_OPTION_ENUM.DATE_DIFF,
-    dateDiff: -30,
+    dateDiff: -29,
     isSelected: false,
     isVisible: true,
   },

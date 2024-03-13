@@ -9,9 +9,9 @@
       id="firstCalendarView"
       #firstCalendarView
       [startAt]="firstCalendarViewData.startDate"
-      [selected]="selectedDates"
       [minDate]="minDate"
       [maxDate]="_maxDate.cal1"
+      [selected]="selectedDates"
       (selectedChange)="updateDateRangeSelection($event)"
       (monthSelected)="monthSelected($event)"
     ></mat-calendar>

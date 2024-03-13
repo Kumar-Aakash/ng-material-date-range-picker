@@ -11,4 +11,5 @@ export enum DEFAULT_DATE_OPTION_ENUM {
   CUSTOM = 5,
   MONTH_TO_DATE = 6,
   WEEK_TO_DATE = 7,
+  SINGLE_DATE = 8,
 }

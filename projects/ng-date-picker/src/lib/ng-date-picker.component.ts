@@ -195,27 +195,33 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
         return;
       }
     }
-    if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.DATE_DIFF) {
-      startDate.setDate(startDate.getDate() + option.dateDiff);
-    } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.LAST_MONTH) {
-      startDate = new Date(currDate.getFullYear(), currDate.getMonth() - 1, 1);
-      lastDate = new Date(
-        currDate.getFullYear(),
-        currDate.getMonth(),
-        this.getDaysInMonth(currDate)
-      );
-    } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.THIS_MONTH) {
-      startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
-      lastDate = new Date(
-        currDate.getFullYear(),
-        currDate.getMonth(),
-        this.getDaysInMonth(currDate)
-      );
-    } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE) {
-      startDate = new Date(currDate.getFullYear(), 0, 1);
-    } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE) {
-      startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+
+    switch (option.optionKey) {
+      case DEFAULT_DATE_OPTION_ENUM.DATE_DIFF:
+        startDate.setDate(startDate.getDate() + option.dateDiff);
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.LAST_MONTH:
+        startDate = new Date(currDate.getFullYear(), currDate.getMonth() - 1, 1);
+        const lastDayMonth = this.getDaysInMonth(startDate);
+        lastDate = new Date(currDate.getFullYear(), currDate.getMonth() - 1, lastDayMonth);
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.THIS_MONTH:
+        startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+        lastDate = new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate());
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE:
+        startDate = new Date(currDate.getFullYear(), 0, 1);
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE:
+        startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.SINGLE_DATE:
+      default:
+        startDate.setDate(startDate.getDate() + option.dateDiff);
+        lastDate.setDate(startDate.getDate());
+        break;
     }
+
     this.updateSelectedDates(input, startDate, lastDate);
   }
 
@@ -232,8 +238,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     endDate: Date
   ): void {
     this.selectedDates = new DateRange<Date>(startDate, endDate);
-    input.value =
-      this.getDateString(startDate) + ' - ' + this.getDateString(endDate);
+    input.value = this.getDateString(startDate) + ' - ' + this.getDateString(endDate);
     const selectedOption = this.dateDropDownOptions.filter(
       (option) => option.isSelected
     )[0];

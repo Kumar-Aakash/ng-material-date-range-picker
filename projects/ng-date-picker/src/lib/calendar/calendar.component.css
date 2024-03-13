@@ -45,3 +45,34 @@
   padding-bottom: 0 !important;
   padding-top: 0 !important;
 }
+
+::ng-deep .mat-calendar-controls {
+  display: block !important;
+  margin: 0 !important;
+  position: relative;
+}
+
+::ng-deep .mat-calendar-period-button {
+  position: absolute !important;
+  left: 50% !important;
+  right: 50% !important;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  margin: 20px 0 0 0 !important;
+}
+
+::ng-deep .mat-calendar-spacer {
+  display: none !important;
+}
+
+::ng-deep .mat-calendar-previous-button {
+  float: left;
+}
+
+::ng-deep .mat-calendar-next-button {
+  float: right;
+}
+
+::ng-deep .mat-calendar-header {
+  padding: 0 8px !important;
+}
