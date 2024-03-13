@@ -182,12 +182,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
    * Load default date picker settings
    */
   private loadDatePickerSettings(): void {
-    this.daterangepickerOptions.options = {
-      format: 'YYYY-MM-DD',
-      displayFormat: 'YYYY-MM-DD',
-      firstDay: 1,
-      applyLabel: this.applyLabel?.toUpperCase(),
-    };
     if (!this.timezoneDate) {
       this.timezoneDate = DateTimeParser.getBaseDate().format();
     }

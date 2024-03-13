@@ -6,23 +6,11 @@
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
 
   <!-- input form -->
-  <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}" (click)="toggleDateOptionSelectionList()">
+  <mat-form-field class="w-full" (click)="toggleDateOptionSelectionList()">
     <mat-label>{{ dateRangeLabel }}</mat-label>
     <input matInput readonly="readonly" [formControl]="date" class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
-
-  <!-- default options; to remove -->
-  <div *ngIf="dateDropDownOptions && dateDropDownOptions.length && isShowStaticDefaultOptions">
-    <mat-action-list class="w-full custom-ckd-container range-input">
-      <div *ngFor="let option of dateDropDownOptions;">
-        <mat-list-item
-          *ngIf="option.isVisible"
-          [activated]="option.isSelected"
-          (click)="updateSelection(option)">{{option.optionLabel}}</mat-list-item>
-      </div>
-    </mat-action-list>
-  </div>
 
   <!-- Panel -->
   <ng-template
@@ -35,9 +23,9 @@
     [cdkConnectedOverlayOffsetX]="cdkConnectedOverlayOffsetX"
     [cdkConnectedOverlayOffsetY]="cdkConnectedOverlayOffsetY"
     (backdropClick)="toggleCustomDateRangeView()">
-    <div class="custom-ckd-container custom-calendar-container" [class]="{'without-default-opt':hideDefaultOptions}">
+    <div class="custom-ckd-container custom-calendar-container" [class]="{ 'without-default-opt': !showDefaultOptions }">
       <div class="row-1">
-        <div class="default-options-container" *ngIf="!hideDefaultOptions">
+        <div class="default-options-container" *ngIf="dateDropDownOptions && dateDropDownOptions.length && showDefaultOptions">
           <span *ngFor="let option of dateDropDownOptions">
             <span
               *ngIf="option.isVisible"

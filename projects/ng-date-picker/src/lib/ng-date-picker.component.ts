@@ -15,15 +15,17 @@ import { DEFAULT_DATE_OPTION_ENUM } from './constant/date-filter-enum';
 import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
 import { ISelectDateOption } from './model/select-date-option';
 import { SelectedDateEvent } from '../public-api';
-import { LocaleConfig } from './model/locale-config.model';
-import { LocaleService } from './services/locale.service';
 import { FormControl } from '@angular/forms';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 
 @Component({
   selector: 'ng-date-range-picker',
   templateUrl: './ng-date-picker.component.html',
   styleUrls: ['./ng-date-picker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+  ],
 })
 export class NgDatePickerComponent implements OnInit {
   isDateOptionList: boolean = false;
@@ -31,10 +33,19 @@ export class NgDatePickerComponent implements OnInit {
   isOpen: boolean = false;
 
   /** Set calendar locale settings */
-  private _locale: LocaleConfig = {};
-  @Input() set locale(value: LocaleConfig | undefined) {
+  private _locale: string | undefined;
+  private _dateDropDownOptions: ISelectDateOption[] = [];
+  private _startDate!: Date;
+  private _endDate!: Date;
+  selectedDates!: DateRange<Date>;
+
+  backdropClass = 'date-rage-picker-backdrop';
+  date = new FormControl();
+
+  @Input() set locale(value: string) {
     if (value) {
-      this._locale = { ...this._localeService.config, ...value };
+      this._locale = value;
+      this.setLocale(this._locale);
     }
   }
   /** Label for input */
@@ -60,27 +71,27 @@ export class NgDatePickerComponent implements OnInit {
       this.updateDefaultDates();
     }
   }
-
-
+  /** Set date range options */
+  @Input() set dateDropDownOptions(defaultDateList: ISelectDateOption[]) {
+    if (defaultDateList && defaultDateList.length) {
+      this._dateDropDownOptions = defaultDateList;
+    }
+  }
+  get dateDropDownOptions(): ISelectDateOption[] {
+    return this._dateDropDownOptions ?? [];
+  }
+  /** Toggle visibility for date range options */
+  @Input() showDefaultOptions: boolean = true;
 
   // resetDates
   // labels
-  // minDate - done
-  // maxDate - done
-  // startDate
-  // endDate
   // timezone
   // isFullWidth
-  // dateRangeLabel
   // openAfterViewInit
 
   /** original inputs */
-  @Input() defaultOptionId = 'custom-options';
-  @Input() calendarId: string = 'custom-calendar';
-  @Input() enableDefaultOptions: boolean = true;
+
   @Input() dateFormat: string = 'yyyy-MM-dd';
-  @Input() isShowStaticDefaultOptions: boolean = false;
-  @Input() hideDefaultOptions: boolean = false;
   @Input() cdkConnectedOverlayOffsetX = 0;
   @Input() cdkConnectedOverlayOffsetY = 0;
   @Input() listCdkConnectedOverlayOffsetY = 0;
@@ -88,55 +99,25 @@ export class NgDatePickerComponent implements OnInit {
   @Output() onDateSelectionChanged: EventEmitter<SelectedDateEvent>;
   @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
 
-  private _dateDropDownOptions: ISelectDateOption[] = [];
-  private _startDate!: Date;
-  private _endDate!: Date;
-  selectedDates!: DateRange<Date>;
-
-  backdropClass = 'date-rage-picker-backdrop';
-  date = new FormControl();
-
   constructor(
     private cdref: ChangeDetectorRef,
-    private _localeService: LocaleService
+    private _adapter: DateAdapter<any>,
   ) {
     this.onDateSelectionChanged = new EventEmitter<SelectedDateEvent>();
     this.dateListOptions = new EventEmitter<ISelectDateOption[]>();
   }
 
-  @Input()
-  set dateDropDownOptions(defaultDateList: ISelectDateOption[]) {
-    if (this.enableDefaultOptions) {
-      this._dateDropDownOptions =
-        this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS).concat(
-          defaultDateList
-        );
-    } else {
-      this._dateDropDownOptions = defaultDateList;
-    }
-  }
-
-  get dateDropDownOptions(): ISelectDateOption[] {
-    return this._dateDropDownOptions ?? [];
-  }
-
   ngOnInit(): void {
-    if (!this._dateDropDownOptions.length && this.enableDefaultOptions) {
+    if (!this._dateDropDownOptions.length && this.showDefaultOptions) {
       this._dateDropDownOptions = this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
     }
     this.dateListOptions.emit(this.dateDropDownOptions);
     this.calculateLabel();
   }
 
-  // ngAfterViewInit(): void {
-  //   const selectedOptions: ISelectDateOption[] = this._dateDropDownOptions.filter((option) => option.isSelected);
-  //   if (selectedOptions.length) {
-  //     const dateRange: DateRange<Date> = selectedOptions[0].callBackFunction();
-  //     if (dateRange && dateRange.start && dateRange.end) {
-  //       this.updateSelectedDates(dateRange.start, dateRange.end, selectedOptions[0].optionLabel);
-  //     }
-  //   }
-  // }
+  setLocale(locale: string): void {
+    this._adapter.setLocale(locale);
+  }
 
   updateDefaultDates() {
     if (this._startDate) {

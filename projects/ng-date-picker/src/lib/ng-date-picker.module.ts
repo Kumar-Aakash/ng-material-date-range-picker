@@ -17,8 +17,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { CalendarComponent } from './calendar/calendar.component';
 import { NgDatePickerComponent } from './ng-date-picker.component';
-import { LocaleService } from './services/locale.service';
-import { LOCALE_CONFIG } from './constant/locale-config.constant';
 
 @NgModule({
   declarations: [NgDatePickerComponent, CalendarComponent],
@@ -37,9 +35,6 @@ import { LOCALE_CONFIG } from './constant/locale-config.constant';
     ReactiveFormsModule
   ],
   exports: [NgDatePickerComponent],
-  providers: [
-    { provide: LOCALE_CONFIG, useValue: {} },
-    { provide: LocaleService, useClass: LocaleService, deps: [LOCALE_CONFIG] },
-  ],
+  providers: [],
 })
 export class NgDatePickerModule {}
