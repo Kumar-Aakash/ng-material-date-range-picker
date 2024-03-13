@@ -7,8 +7,8 @@
 
   <!-- input form -->
   <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}" (click)="toggleDateOptionSelectionList()">
-    <mat-label>{{inputLabel}}</mat-label>
-    <input matInput readonly="readonly" #dateInput class="cursor-pointer">
+    <mat-label>{{ dateRangeLabel }}</mat-label>
+    <input matInput readonly="readonly" [formControl]="date" class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
 
@@ -19,7 +19,7 @@
         <mat-list-item
           *ngIf="option.isVisible"
           [activated]="option.isSelected"
-          (click)="updateSelection(option, dateInput)">{{option.optionLabel}}</mat-list-item>
+          (click)="updateSelection(option)">{{option.optionLabel}}</mat-list-item>
       </div>
     </mat-action-list>
   </div>
@@ -42,7 +42,7 @@
             <span
               *ngIf="option.isVisible"
               class="option-ele"
-              (click)="updateSelection(option, dateInput)"
+              (click)="updateSelection(option)"
               [ngClass]="{ 'option-selected': option.isSelected }">
               {{option.optionLabel}}
             </span>
@@ -54,6 +54,9 @@
             [selectedDates]="selectedDates"
             [minDate]="minDate"
             [maxDate]="maxDate"
+
+
+
           ></lib-calendar>
         </div>
       </div>
@@ -64,7 +67,7 @@
               <button mat-button mat-raised-button class="p-3 mx-2" (click)="isOpen=false;">Cancel</button>
               <button mat-button mat-raised-button color="primary" class="ms-2 p-3"
                       [class.disabled]="!(calendar?.selectedDates?.start && calendar?.selectedDates?.end)"
-                      (click)="updateCustomRange(dateInput,calendar.selectedDates); isOpen=false;">Apply</button>
+                      (click)="updateCustomRange(calendar.selectedDates); isOpen=false;">Apply</button>
             </div>
           </div>
         </div>

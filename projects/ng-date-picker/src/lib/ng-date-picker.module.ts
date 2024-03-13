@@ -6,7 +6,7 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -34,6 +34,7 @@ import { LOCALE_CONFIG } from './constant/locale-config.constant';
     MatButtonModule,
     MatListModule,
     MatFormFieldModule,
+    ReactiveFormsModule
   ],
   exports: [NgDatePickerComponent],
   providers: [

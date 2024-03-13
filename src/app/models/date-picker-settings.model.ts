@@ -9,9 +9,9 @@ export class DatePickerSettings {
   constructor(
     public minDate: Date,
     public maxDate: Date,
+    public startDate?: moment.Moment | undefined,
+    public endDate?: moment.Moment | undefined,
     public options?: LocaleConfig,
-    public startDate?: moment.Moment,
-    public endDate?: moment.Moment,
     public ranges?: Range,
     public alwaysShowCalendars?: boolean,
     public showDropdowns?: boolean,

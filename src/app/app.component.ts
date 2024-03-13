@@ -149,7 +149,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 ) {
     this.daterangepickerOptions = new DatePickerSettings(new Date(), new Date());
     this.loadTranslations();
-    // <-- REPLACED FROM THERE
   }
 
   ngAfterViewInit(): void {
@@ -212,8 +211,8 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     // if the date was updated from the input, we skip setting the start and end dates
     if (!this.isDatesUpdatedFromInput) {
       // initially loaded start date - set to begin of the current month
-      this.daterangepickerOptions.startDate = this.lastSevenDaysDate; // this.thisMonthStartDate -> this.lastSevenDaysDate
-      this.daterangepickerOptions.endDate = this.thisMonthEndDate;
+      this.daterangepickerOptions.startDate = this.lastSevenDaysDate;
+      this.daterangepickerOptions.endDate = this.todaysDate;
     }
     // Default settings
     this.daterangepickerOptions.showApplyButton = true;

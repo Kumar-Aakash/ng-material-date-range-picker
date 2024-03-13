@@ -1,14 +1,11 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
-  Renderer2,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { DateRange } from '@angular/material/datepicker';
@@ -20,6 +17,7 @@ import { ISelectDateOption } from './model/select-date-option';
 import { SelectedDateEvent } from '../public-api';
 import { LocaleConfig } from './model/locale-config.model';
 import { LocaleService } from './services/locale.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'ng-date-range-picker',
@@ -27,7 +25,7 @@ import { LocaleService } from './services/locale.service';
   styleUrls: ['./ng-date-picker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NgDatePickerComponent implements OnInit, AfterViewInit {
+export class NgDatePickerComponent implements OnInit {
   isDateOptionList: boolean = false;
   isCustomRange: boolean = true;
   isOpen: boolean = false;
@@ -39,21 +37,47 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       this._locale = { ...this._localeService.config, ...value };
     }
   }
+  /** Label for input */
+  @Input() dateRangeLabel: string = '';
+  /** Show labels on input instead of the date range selected */
+  @Input() showRangeLabelOnInput: boolean = true;
   /** Minimum selectable date */
   @Input() minDate!: Date;
   /** Maximum selectable date */
   @Input() maxDate!: Date;
 
+  /** Start date for range picker */
+  @Input() set startDate(startDate: moment.Moment | undefined) {
+    if (startDate) {
+      this._startDate = startDate.toDate();
+      this.updateDefaultDates();
+    }
+  }
+  /** End date for range picker */
+  @Input() set endDate(endDate: moment.Moment | undefined) {
+    if (endDate) {
+      this._endDate = endDate.toDate();
+      this.updateDefaultDates();
+    }
+  }
 
 
 
+  // resetDates
+  // labels
+  // minDate - done
+  // maxDate - done
+  // startDate
+  // endDate
+  // timezone
+  // isFullWidth
+  // dateRangeLabel
+  // openAfterViewInit
 
   /** original inputs */
-  @Input() inputLabel: string = 'Date Range';
   @Input() defaultOptionId = 'custom-options';
   @Input() calendarId: string = 'custom-calendar';
   @Input() enableDefaultOptions: boolean = true;
-  @Input() selectedDates!: DateRange<Date>;
   @Input() dateFormat: string = 'yyyy-MM-dd';
   @Input() isShowStaticDefaultOptions: boolean = false;
   @Input() hideDefaultOptions: boolean = false;
@@ -65,13 +89,15 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
 
   private _dateDropDownOptions: ISelectDateOption[] = [];
+  private _startDate!: Date;
+  private _endDate!: Date;
+  selectedDates!: DateRange<Date>;
 
   backdropClass = 'date-rage-picker-backdrop';
+  date = new FormControl();
 
   constructor(
     private cdref: ChangeDetectorRef,
-    private el: ElementRef,
-    private renderer: Renderer2,
     private _localeService: LocaleService
   ) {
     this.onDateSelectionChanged = new EventEmitter<SelectedDateEvent>();
@@ -96,22 +122,30 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     if (!this._dateDropDownOptions.length && this.enableDefaultOptions) {
-      this._dateDropDownOptions =
-        this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
+      this._dateDropDownOptions = this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
     }
     this.dateListOptions.emit(this.dateDropDownOptions);
+    this.calculateLabel();
   }
 
-  ngAfterViewInit(): void {
-    const selectedOptions: ISelectDateOption[] =
-      this._dateDropDownOptions.filter((option) => option.isSelected);
-    if (selectedOptions.length) {
-      const input: HTMLInputElement =
-        this.el.nativeElement.querySelector('#date-input-field');
-      const dateRange: DateRange<Date> = selectedOptions[0].callBackFunction();
-      if (dateRange && dateRange.start && dateRange.end) {
-        this.updateSelectedDates(input, dateRange.start, dateRange.end);
+  // ngAfterViewInit(): void {
+  //   const selectedOptions: ISelectDateOption[] = this._dateDropDownOptions.filter((option) => option.isSelected);
+  //   if (selectedOptions.length) {
+  //     const dateRange: DateRange<Date> = selectedOptions[0].callBackFunction();
+  //     if (dateRange && dateRange.start && dateRange.end) {
+  //       this.updateSelectedDates(dateRange.start, dateRange.end, selectedOptions[0].optionLabel);
+  //     }
+  //   }
+  // }
+
+  updateDefaultDates() {
+    if (this._startDate) {
+      let endDate = new Date();
+      if (this._endDate) {
+        endDate = this._endDate;
       }
+
+      this.selectedDates = new DateRange(this._startDate, endDate);
     }
   }
 
@@ -125,15 +159,12 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   /**
    * This method updates the date range on button click.
    *
-   * @param input HTMLInputElement
    * @param selectedDates DateRange<Date>
    */
   updateCustomRange(
-    input: HTMLInputElement,
     selectedDates: DateRange<Date>
   ): void {
     this.updateSelectedDates(
-      input,
       selectedDates.start ?? new Date(),
       selectedDates.end ?? new Date()
     );
@@ -143,16 +174,15 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    * This method update the date on specified option.
    *
    * @param option ISelectDateOption
-   * @param input HTMLInputElement
    */
-  updateSelection(option: ISelectDateOption, input: HTMLInputElement): void {
+  updateSelection(option: ISelectDateOption): void {
     this.resetOptionSelection(option);
 
     this.isDateOptionList = false;
     if (option.optionKey !== DEFAULT_DATE_OPTION_ENUM.CUSTOM) {
       // this.isCustomRange = false;
       this.isOpen = false;
-      this.updateDateOnOptionSelect(option, input);
+      this.updateDateOnOptionSelect(option);
     } else {
       this.isOpen = true;
       this.isCustomRange = true;
@@ -179,66 +209,39 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    * This method update date if specified option is not custom range.
    *
    * @param option ISelectDateOption
-   * @param input HTMLInputElement
    */
-  private updateDateOnOptionSelect(
-    option: ISelectDateOption,
-    input: HTMLInputElement
-  ): void {
-    const currDate = new Date();
-    let startDate: Date = new Date();
-    let lastDate: Date = new Date();
+  private updateDateOnOptionSelect(option: ISelectDateOption): void {
     if (!!option.callBackFunction) {
       const dateRange: DateRange<Date> = option.callBackFunction();
       if (dateRange && dateRange.start && dateRange.end) {
-        this.updateSelectedDates(input, dateRange.start, dateRange.end);
+        this.updateSelectedDates(dateRange.start, dateRange.end, option.optionLabel);
         return;
       }
     }
 
-    switch (option.optionKey) {
-      case DEFAULT_DATE_OPTION_ENUM.DATE_DIFF:
-        startDate.setDate(startDate.getDate() + option.dateDiff);
-        break;
-      case DEFAULT_DATE_OPTION_ENUM.LAST_MONTH:
-        startDate = new Date(currDate.getFullYear(), currDate.getMonth() - 1, 1);
-        const lastDayMonth = this.getDaysInMonth(startDate);
-        lastDate = new Date(currDate.getFullYear(), currDate.getMonth() - 1, lastDayMonth);
-        break;
-      case DEFAULT_DATE_OPTION_ENUM.THIS_MONTH:
-        startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
-        lastDate = new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate());
-        break;
-      case DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE:
-        startDate = new Date(currDate.getFullYear(), 0, 1);
-        break;
-      case DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE:
-        startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
-        break;
-      case DEFAULT_DATE_OPTION_ENUM.SINGLE_DATE:
-      default:
-        startDate.setDate(startDate.getDate() + option.dateDiff);
-        lastDate.setDate(startDate.getDate());
-        break;
-    }
+    const dates = this.calculateStartAndEndDateByType(option);
 
-    this.updateSelectedDates(input, startDate, lastDate);
+    this.updateSelectedDates(dates.start, dates.end, option.optionLabel);
   }
 
   /**
    * This method updates dates on selection.
    *
-   * @param input HTMLInputElement
    * @param startDate Date
+   *
    * @param endDate Date
+   *
+   * @param rangeLabel string
    */
-  private updateSelectedDates(
-    input: HTMLInputElement,
-    startDate: Date,
-    endDate: Date
-  ): void {
+  private updateSelectedDates(startDate: Date, endDate: Date, rangeLabel: string = ''): void {
     this.selectedDates = new DateRange<Date>(startDate, endDate);
-    input.value = this.getDateString(startDate) + ' - ' + this.getDateString(endDate);
+
+    if (this.showRangeLabelOnInput && rangeLabel) {
+      this.date.setValue(rangeLabel);
+    } else {
+      this.date.setValue(this.getDateString(startDate) + ' - ' + this.getDateString(endDate));
+    }
+
     const selectedOption = this.dateDropDownOptions.filter(
       (option) => option.isSelected
     )[0];
@@ -279,5 +282,74 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    */
   private getClone<T>(data: T): T {
     return JSON.parse(JSON.stringify(data));
+  }
+
+  /**
+   * Calculate possible lable range
+   */
+  private calculateLabel(): void {
+    const dateOptionsLength = this._dateDropDownOptions.length;
+
+    let calculatedLabel = '';
+
+    for (let i = 0; i < dateOptionsLength; i++) {
+      // if we have a calculated label, doesn't need to do anything else for the next ones
+      if (calculatedLabel) {
+        break;
+      }
+
+      const dates = this.calculateStartAndEndDateByType(this._dateDropDownOptions[i]);
+
+      if (
+        dates.start.toDateString() === this.selectedDates.start?.toDateString() &&
+        dates.end.toDateString() === this.selectedDates.end?.toDateString()
+      ) {
+        calculatedLabel = this._dateDropDownOptions[i].optionLabel;
+        this._dateDropDownOptions[i].isSelected = true;
+      }
+    }
+
+    if (calculatedLabel) {
+      this.date.setValue(calculatedLabel);
+    }
+  }
+
+  /**
+   * Calculate start date and end date per date option
+   *
+   * @param option
+   */
+  private calculateStartAndEndDateByType(option: ISelectDateOption): { start: Date, end: Date } {
+    const currDate: Date = new Date();
+    let startDate: Date = new Date();
+    let lastDate: Date = new Date();
+
+    switch (option.optionKey) {
+      case DEFAULT_DATE_OPTION_ENUM.DATE_DIFF:
+        startDate.setDate(startDate.getDate() + option.dateDiff);
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.LAST_MONTH:
+        startDate = new Date(currDate.getFullYear(), currDate.getMonth() - 1, 1);
+        const lastDayMonth = this.getDaysInMonth(startDate);
+        lastDate = new Date(currDate.getFullYear(), currDate.getMonth() - 1, lastDayMonth);
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.THIS_MONTH:
+        startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+        lastDate = new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate());
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE:
+        startDate = new Date(currDate.getFullYear(), 0, 1);
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE:
+        startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.SINGLE_DATE:
+      default:
+        startDate.setDate(startDate.getDate() + option.dateDiff);
+        lastDate.setDate(startDate.getDate());
+        break;
+    }
+
+    return { start: startDate, end: lastDate };
   }
 }
