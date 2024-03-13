@@ -322,10 +322,8 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   private initSecondCalendar(): void {
     const currDate = new Date();
     this.secondCalendarViewData = new CalendarViewData();
-    this.secondCalendarViewData.minDate = this.firstCalendarViewData.minDate;
-    this.secondCalendarViewData.startDate = this.selectedDates?.end
-      ? this.selectedDates.end
-      : currDate;
+    this.secondCalendarViewData.minDate = this.getFirstDateOfNextMonth(this._maxDate.cal1);
+    this.secondCalendarViewData.startDate = this.selectedDates?.end ? this.selectedDates.end : currDate;
   }
 
   /**
