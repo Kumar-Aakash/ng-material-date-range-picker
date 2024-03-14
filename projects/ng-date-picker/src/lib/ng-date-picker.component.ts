@@ -12,11 +12,13 @@ import { DateRange } from '@angular/material/datepicker';
 import moment from 'moment';
 
 import { DEFAULT_DATE_OPTION_ENUM } from './constant/date-filter-enum';
-import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
+import { DEFAULT_DATE_OPTIONS } from './constant/default-date-options';
 import { ISelectDateOption } from './model/select-date-option';
 import { SelectedDateEvent } from '../public-api';
 import { FormControl } from '@angular/forms';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { LabelsConfig } from './model/labels-config.model';
+import { DATE_DEFAULT_OPTIONS_KEYS } from './constant/date-default-options-keys.constant';
 
 @Component({
   selector: 'ng-date-range-picker',
@@ -35,6 +37,7 @@ export class NgDatePickerComponent implements OnInit {
   /** Set calendar locale settings */
   private _locale: string | undefined;
   private _dateDropDownOptions: ISelectDateOption[] = [];
+  private _defaultOptionsInUse: boolean = false;
   private _startDate!: Date;
   private _endDate!: Date;
   selectedDates!: DateRange<Date>;
@@ -48,8 +51,8 @@ export class NgDatePickerComponent implements OnInit {
       this.setLocale(this._locale);
     }
   }
-  /** Label for input */
-  @Input() dateRangeLabel: string = '';
+  /** Labels */
+  @Input() labels!: LabelsConfig | undefined;
   /** Show labels on input instead of the date range selected */
   @Input() showRangeLabelOnInput: boolean = true;
   /** Minimum selectable date */
@@ -110,9 +113,10 @@ export class NgDatePickerComponent implements OnInit {
   ngOnInit(): void {
     if (!this._dateDropDownOptions.length && this.showDefaultOptions) {
       this._dateDropDownOptions = this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
+      this._defaultOptionsInUse = true;
     }
-    this.dateListOptions.emit(this.dateDropDownOptions);
     this.calculateLabel();
+    this.dateListOptions.emit(this.dateDropDownOptions);
   }
 
   setLocale(locale: string): void {
@@ -266,7 +270,7 @@ export class NgDatePickerComponent implements OnInit {
   }
 
   /**
-   * Calculate possible lable range
+   * Calculate possible label range
    */
   private calculateLabel(): void {
     const dateOptionsLength = this._dateDropDownOptions.length;
@@ -274,9 +278,47 @@ export class NgDatePickerComponent implements OnInit {
     let calculatedLabel = '';
 
     for (let i = 0; i < dateOptionsLength; i++) {
+
+      if (this.labels && this._defaultOptionsInUse) {
+
+        // update the label with the translations
+        let optionLabel: string | undefined = '';
+
+        switch (this._dateDropDownOptions[i].dateKey) {
+          case DATE_DEFAULT_OPTIONS_KEYS.TODAY:
+            optionLabel = this.labels.todayLabel;
+            break;
+          case DATE_DEFAULT_OPTIONS_KEYS.YESTERDAY:
+            optionLabel = this.labels.yesterdayLabel;
+            break;
+          case DATE_DEFAULT_OPTIONS_KEYS.LAST7DAYS:
+            optionLabel = this.labels.last7daysLabel;
+            break;
+          case DATE_DEFAULT_OPTIONS_KEYS.LAST30DAYS:
+            optionLabel = this.labels.last30daysLabel;
+            break;
+          case DATE_DEFAULT_OPTIONS_KEYS.THIS_MONTH:
+            optionLabel = this.labels.thisMonthLabel;
+            break;
+          case DATE_DEFAULT_OPTIONS_KEYS.LAST_MONTH:
+            optionLabel = this.labels.lastMonthLabel;
+            break;
+          case DATE_DEFAULT_OPTIONS_KEYS.CUSTOM_RANGE:
+            optionLabel = this.labels.customRangeLabel;
+            break;
+          default:
+            break;
+        }
+
+        if (optionLabel) {
+          this._dateDropDownOptions[i].optionLabel = optionLabel;
+        }
+      }
+
       // if we have a calculated label, doesn't need to do anything else for the next ones
+      // don't use break because of the previous if where we are setting the translations for the labels
       if (calculatedLabel) {
-        break;
+        continue;
       }
 
       const dates = this.calculateStartAndEndDateByType(this._dateDropDownOptions[i]);

@@ -4,21 +4,19 @@
 <div class="date-form-content">
   <ng-date-range-picker
     *ngIf="isSettingsLoaded"
-    [dateRangeLabel]="'Dates'"
     [showRangeLabelOnInput]="true"
     [locale]="'pt'"
     [minDate]="daterangepickerOptions.minDate"
     [maxDate]="daterangepickerOptions.maxDate"
     [startDate]="daterangepickerOptions.startDate"
     [endDate]="daterangepickerOptions.endDate"
+    [labels]="daterangepickerOptions.labels"
   ></ng-date-range-picker>
 
 
 <!--  [readonly]="true"-->
-<!--  [locale]="daterangepickerOptions.options"-->
 <!--  [ranges]="daterangepickerOptions.ranges"-->
 <!--  [showDropdowns]="daterangepickerOptions.showDropdowns"-->
-<!--  [showRangeLabelOnInput]="daterangepickerOptions.showRangeLabelOnInput"-->
 <!--  [showCustomRangeLabel]="daterangepickerOptions.showCustomRangeLabel"-->
 <!--  [keepCalendarOpeningWithRange]="daterangepickerOptions.keepCalendarOpeningWithRange"-->
 <!--  [alwaysShowCalendars]="daterangepickerOptions.alwaysShowCalendars"-->
@@ -27,12 +25,7 @@
 
 
 
-<!--  // resetDates-->
 <!--  // labels-->
-<!--  // minDate - done-->
-<!--  // maxDate - done-->
-<!--  // startDate-->
-<!--  // endDate-->
 <!--  // timezone-->
 <!--  // isFullWidth-->
 <!--  // dateRangeLabel-->

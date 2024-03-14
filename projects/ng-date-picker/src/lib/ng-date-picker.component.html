@@ -7,7 +7,7 @@
 
   <!-- input form -->
   <mat-form-field class="w-full" (click)="toggleDateOptionSelectionList()">
-    <mat-label>{{ dateRangeLabel }}</mat-label>
+    <mat-label>{{ labels?.inputLabel }}</mat-label>
     <input matInput readonly="readonly" [formControl]="date" class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
@@ -52,10 +52,10 @@
         <div class="text-end my-2 w-full">
           <div class="footer-content">
             <div class="d-inline buttons">
-              <button mat-button mat-raised-button class="p-3 mx-2" (click)="isOpen=false;">Cancel</button>
+              <button mat-button mat-raised-button class="p-3 mx-2" (click)="isOpen=false;">{{ labels?.cancelLabel || 'Cancel' }}</button>
               <button mat-button mat-raised-button color="primary" class="ms-2 p-3"
                       [class.disabled]="!(calendar?.selectedDates?.start && calendar?.selectedDates?.end)"
-                      (click)="updateCustomRange(calendar.selectedDates); isOpen=false;">Apply</button>
+                      (click)="updateCustomRange(calendar.selectedDates); isOpen=false;">{{ labels?.applyLabel || 'Apply' }}</button>
             </div>
           </div>
         </div>

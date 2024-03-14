@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { LocaleConfig } from '../../../projects/ng-date-picker/src/lib/model/locale-config.model';
+import { LabelsConfig } from '../../../projects/ng-date-picker/src/lib/model/labels-config.model';
 
 export interface Range {
   [label: string]: [moment.Moment, moment.Moment];
@@ -12,20 +12,7 @@ export class DatePickerSettings {
     public startDate?: moment.Moment | undefined,
     public endDate?: moment.Moment | undefined,
     public locale?: string,
-    public ranges?: Range,
-    public alwaysShowCalendars?: boolean,
-    public showDropdowns?: boolean,
-    public autoApplyChanges?: boolean,
-    public closeOnAutoApply?: boolean,
-    public showRanges?: boolean,
-    public showApplyButton?: boolean,
-    public showCancelButton?: boolean,
-    public showCustomRangeLabel?: boolean,
-    public keepCalendarOpeningWithRange?: boolean,
-    public showRangeLabelOnInput?: boolean,
-    public autoUpdateInput?: boolean,
-    public showWeekNumbers?: boolean,
-    public showClearButton?: boolean,
+    public labels?: LabelsConfig | undefined
   ) {
     // do nothing
   }

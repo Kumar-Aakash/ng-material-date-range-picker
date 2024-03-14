@@ -134,7 +134,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   lastMonthEndDate: moment.Moment | undefined;
 
   daterangepickerOptions: DatePickerSettings;
-  applyLabel = 'Apply';
 
   currentLabel: string | null | undefined;
 
@@ -208,26 +207,6 @@ export class AppComponent implements OnDestroy, AfterViewInit {
       this.daterangepickerOptions.startDate = this.lastSevenDaysDate;
       this.daterangepickerOptions.endDate = this.todaysDate;
     }
-    // Default settings
-    this.daterangepickerOptions.showApplyButton = true;
-    this.daterangepickerOptions.showCancelButton = true;
-    this.daterangepickerOptions.showCustomRangeLabel = true;
-    this.daterangepickerOptions.showCancelButton = true;
-    this.daterangepickerOptions.showDropdowns = true;
-    this.daterangepickerOptions.showRangeLabelOnInput = true;
-    this.daterangepickerOptions.keepCalendarOpeningWithRange = false;
-    this.daterangepickerOptions.alwaysShowCalendars = true;
-    // Set range labels when provided
-    if (this.labels) {
-      this.daterangepickerOptions.ranges = {
-        [this.labels.today]: [ this.todaysDate, this.todaysDate ],
-        [this.labels.yesterday]: [ this.yesterdayDate, this.yesterdayDate ],
-        [this.labels.lastSevenDays]: [ this.lastSevenDaysDate, this.todaysDate ],
-        [this.labels.lastThirtyDays]: [ this.lastThirtyDaysDate, this.todaysDate ],
-        [this.labels.thisMonth]: [ this.thisMonthStartDate, this.thisMonthEndDate ],
-        [this.labels.lastMonth]: [ this.lastMonthStartDate, this.lastMonthEndDate ],
-      };
-    }
 
     this.isSettingsLoaded = true;
   }
@@ -289,12 +268,22 @@ export class AppComponent implements OnDestroy, AfterViewInit {
 
   private loadTranslations(): void {
     this.translate.get([
-      'Apply', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
-      'Sep', 'Oct', 'Nov', 'Dec', 'Custom range',
+      'Apply', 'Cancel', 'Date', 'Today', 'Yesterday', 'Last 7 Days', 'Last 30 Days', 'This Month', 'Last Month', 'Custom range'
     ])
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(translMessages => {
-        this.applyLabel = translMessages.Apply;
+        this.daterangepickerOptions.labels = {
+          inputLabel: translMessages['Date'],
+          applyLabel: translMessages['Apply'],
+          cancelLabel: translMessages['Cancel'],
+          todayLabel: translMessages['Today'],
+          yesterdayLabel: translMessages['Yesterday'],
+          last7daysLabel: translMessages['Last 7 Days'],
+          last30daysLabel: translMessages['Last 30 Days'],
+          thisMonthLabel: translMessages['This Month'],
+          lastMonthLabel: translMessages['Last Month'],
+          customRangeLabel: translMessages['Custom range'],
+        }
 
         this.loadDatePickerSettings();
         // if (!this.datepickerForm) {
