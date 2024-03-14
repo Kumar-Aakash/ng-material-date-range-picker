@@ -28,6 +28,8 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   firstCalendarViewData!: CalendarViewData;
   secondCalendarViewData!: CalendarViewData;
   @Input() selectedDates!: DateRange<Date>;
+  @Input() minDate!: Date;
+  @Input() maxDate!: Date;
   private isAllowHoverEvent: boolean = false;
 
   @ViewChild('firstCalendarView') firstCalendarView!: MatCalendar<Date>;

@@ -1,4 +1,6 @@
 # Changelog
+## [2.2.1] - 2024-03-14
+- Added min and max date support.
 
 ## [2.2.0] - 2024-02-07
 - Exposed Id for dropdown and calendar.
