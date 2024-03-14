@@ -35,17 +35,19 @@ export class NgDatePickerComponent implements OnInit {
   isOpen: boolean = false;
 
   /** Set calendar locale settings */
-  private _locale: string | undefined;
+  private _locale!: string;
   private _dateDropDownOptions: ISelectDateOption[] = [];
   private _defaultOptionsInUse: boolean = false;
   private _startDate!: Date;
   private _endDate!: Date;
+  private _timezone!: string;
+  private baseDate: Date = new Date();
   selectedDates!: DateRange<Date>;
 
   backdropClass = 'date-rage-picker-backdrop';
   date = new FormControl();
 
-  @Input() set locale(value: string) {
+  @Input() set locale(value: string | undefined) {
     if (value) {
       this._locale = value;
       this.setLocale(this._locale);
@@ -59,7 +61,6 @@ export class NgDatePickerComponent implements OnInit {
   @Input() minDate!: Date;
   /** Maximum selectable date */
   @Input() maxDate!: Date;
-
   /** Start date for range picker */
   @Input() set startDate(startDate: moment.Moment | undefined) {
     if (startDate) {
@@ -85,6 +86,16 @@ export class NgDatePickerComponent implements OnInit {
   }
   /** Toggle visibility for date range options */
   @Input() showDefaultOptions: boolean = true;
+  /** Set default timezone */
+  @Input() set timezone(timezone: string | undefined) {
+    if (timezone) {
+      this._timezone = timezone;
+      this.baseDate = moment(new Date().toLocaleString('en', { timeZone: timezone })).toDate();
+    }
+  }
+  get timezone(): string | undefined {
+    return this._timezone;
+  }
 
   // resetDates
   // labels
@@ -125,7 +136,7 @@ export class NgDatePickerComponent implements OnInit {
 
   updateDefaultDates() {
     if (this._startDate) {
-      let endDate = new Date();
+      let endDate = this.getBaseDate();
       if (this._endDate) {
         endDate = this._endDate;
       }
@@ -150,8 +161,8 @@ export class NgDatePickerComponent implements OnInit {
     selectedDates: DateRange<Date>
   ): void {
     this.updateSelectedDates(
-      selectedDates.start ?? new Date(),
-      selectedDates.end ?? new Date()
+      selectedDates.start ?? this.getBaseDate(),
+      selectedDates.end ?? this.getBaseDate()
     );
   }
 
@@ -337,15 +348,19 @@ export class NgDatePickerComponent implements OnInit {
     }
   }
 
+  private getBaseDate(): Date {
+    return new Date(this.baseDate.valueOf());
+  }
+
   /**
    * Calculate start date and end date per date option
    *
    * @param option
    */
   private calculateStartAndEndDateByType(option: ISelectDateOption): { start: Date, end: Date } {
-    const currDate: Date = new Date();
-    let startDate: Date = new Date();
-    let lastDate: Date = new Date();
+    const currDate: Date = this.getBaseDate();
+    let startDate: Date = this.getBaseDate();
+    let lastDate: Date = this.getBaseDate();
 
     switch (option.optionKey) {
       case DEFAULT_DATE_OPTION_ENUM.DATE_DIFF:

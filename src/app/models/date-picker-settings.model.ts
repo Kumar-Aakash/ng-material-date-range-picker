@@ -12,7 +12,8 @@ export class DatePickerSettings {
     public startDate?: moment.Moment | undefined,
     public endDate?: moment.Moment | undefined,
     public locale?: string,
-    public labels?: LabelsConfig | undefined
+    public labels?: LabelsConfig | undefined,
+    public timezone?: string | undefined
   ) {
     // do nothing
   }

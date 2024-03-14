@@ -5,12 +5,13 @@
   <ng-date-range-picker
     *ngIf="isSettingsLoaded"
     [showRangeLabelOnInput]="true"
-    [locale]="'pt'"
+    [locale]="daterangepickerOptions.locale"
     [minDate]="daterangepickerOptions.minDate"
     [maxDate]="daterangepickerOptions.maxDate"
     [startDate]="daterangepickerOptions.startDate"
     [endDate]="daterangepickerOptions.endDate"
     [labels]="daterangepickerOptions.labels"
+    [timezone]="daterangepickerOptions.timezone"
   ></ng-date-range-picker>
 
 
@@ -25,7 +26,6 @@
 
 
 
-<!--  // labels-->
 <!--  // timezone-->
 <!--  // isFullWidth-->
 <!--  // dateRangeLabel-->

@@ -208,6 +208,10 @@ export class AppComponent implements OnDestroy, AfterViewInit {
       this.daterangepickerOptions.endDate = this.todaysDate;
     }
 
+    this.daterangepickerOptions.locale = 'pt';
+    // this.daterangepickerOptions.timezone = 'Europe/Lisbon';
+    this.daterangepickerOptions.timezone = 'America/Buenos_Aires';
+
     this.isSettingsLoaded = true;
   }
 
