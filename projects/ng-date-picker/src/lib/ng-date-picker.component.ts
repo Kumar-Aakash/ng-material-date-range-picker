@@ -42,6 +42,8 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() cdkConnectedOverlayOffsetY = 0;
   @Input() listCdkConnectedOverlayOffsetY = 0;
   @Input() listCdkConnectedOverlayOffsetX = 0;
+  @Input() minDate = new Date(1990, 0, 1);
+  @Input() maxDate = new Date(2090, 11, 31);
   @Output() onDateSelectionChanged: EventEmitter<SelectedDateEvent>;
   @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
 

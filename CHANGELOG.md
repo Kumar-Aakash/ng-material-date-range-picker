@@ -1,4 +1,6 @@
 # Changelog
+## [1.2.6] - 2024-03-14
+- Added min and max date support.
 
 ## [1.2.5] - 2024-01-25
 - Added Dynamic Label Feature For Input Field.

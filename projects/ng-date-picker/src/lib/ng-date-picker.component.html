@@ -46,7 +46,8 @@
             </ng-container>
           </mat-action-list>
         </div>
-        <div class="mt-2 column-2"><lib-calendar [selectedDates]="selectedDates" #calendar></lib-calendar></div>
+        <div class="mt-2 column-2"><lib-calendar [selectedDates]="selectedDates" #calendar [minDate]="minDate"
+            [maxDate]="maxDate"></lib-calendar></div>
       </div>
       <div class="row-2 br-top">
         <div class="text-end my-2 w-full">
