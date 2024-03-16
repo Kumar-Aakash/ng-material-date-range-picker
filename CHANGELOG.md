@@ -1,4 +1,7 @@
 # Changelog
+## [1.2.7] - 2024-03-16
+- Added min and max date support.
+
 ## [1.2.6] - 2024-03-14
 - Added min and max date support.
 

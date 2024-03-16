@@ -134,7 +134,7 @@ This will display the Date Range Picker in your default browser.
 
 | Name | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `onDateSelectionChanged` | `DateRange<Date>` | Emits when date selection is changed. |
+| `onDateSelectionChanged` | `SelectedDateEvent` | Emits when date selection is changed. And it contains range: DateRange<Date> and  selectedOption: ISelectDateOption|
 | `dateListOptions` | `ISelectDateOption[]`| Emits pre-defined date action list items for configuration purpose. |
 
 #### Example to configure predefined visibility of predefined date action list items:

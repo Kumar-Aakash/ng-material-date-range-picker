@@ -82,11 +82,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
    */
   monthSelected(event: Date) {
     this.secondCalendarView._goToDateInView(event, 'year');
-    this.handleFirstCalendarNextEvent(this, true);
-    setTimeout(() => {
-      this.attachHoverEventOnFirstViewDates();
-      this.attachHoverEventOnSecondViewDates();
-    }, 500);
+    setTimeout(() => this.handleFirstCalendarNextEvent(this, true), 1);
   }
 
   /**
