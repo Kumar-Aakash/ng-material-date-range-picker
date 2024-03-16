@@ -1,4 +1,7 @@
 # Changelog
+## [2.2.1] - 2024-03-16
+- Fixed issue on second calendar view.
+
 ## [2.2.0] - 2024-03-14
 - Added min and max date support.
 - Exposed Id for dropdown and calendar.
