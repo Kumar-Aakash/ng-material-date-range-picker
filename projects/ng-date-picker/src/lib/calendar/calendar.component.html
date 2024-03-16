@@ -7,11 +7,11 @@
   <div class="first-view">
     <mat-calendar id="firstCalendarView" #firstCalendarView [startAt]="firstCalendarViewData.startDate"
       [selected]="selectedDates" (selectedChange)="updateDateRangeSelection($event)"
-      (monthSelected)="monthSelected($event)"></mat-calendar>
+      (monthSelected)="monthSelected($event)" [minDate]="minDate" [maxDate]="maxDate"></mat-calendar>
   </div>
   <div class="second-view">
     <mat-calendar id="secondCalendarView" #secondCalendarView [startAt]="secondCalendarViewData.startDate"
-      [minDate]="secondCalendarViewData.minDate" [selected]="selectedDates"
+      [minDate]="secondCalendarViewData.minDate" [maxDate]="maxDate" [selected]="selectedDates"
       (selectedChange)="updateDateRangeSelection($event)"
       (monthSelected)=" secondViewMonthSelected($event)"></mat-calendar>
   </div>

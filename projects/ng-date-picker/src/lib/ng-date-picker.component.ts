@@ -42,6 +42,13 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() cdkConnectedOverlayOffsetY = 0;
   @Input() listCdkConnectedOverlayOffsetY = 0;
   @Input() listCdkConnectedOverlayOffsetX = 0;
+
+   // default min date is current date - 10 years.
+   @Input() minDate =  new Date(new Date().setFullYear(new Date().getFullYear() - 10));
+
+   // default max date is current date - 10 years.
+   @Input() maxDate =  new Date(new Date().setFullYear(new Date().getFullYear() + 10));
+
   @Output() onDateSelectionChanged: EventEmitter<SelectedDateEvent>;
   @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
 

@@ -127,12 +127,14 @@ This will display the Date Range Picker in your default browser.
 | `selectedDates` | `DateRange<Date>` | **optional**. default selection of start and end date |
 | `dateFormat` | `string`| **optional**. default is 'dd/MM/yyyy' |
 | `dateDropDownOptions` | `ISelectDateOption[]`| **optional**. Addition options to predefined date action list. |
+| `minDate` | `Date`| **optional**. To specify minimum date default is current date -10 years. |
+| `maxDate` | `Date`| **optional**. To specify max date default is current date +10 years. |
 
 #### Events
 
 | Name | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `onDateSelectionChanged` | `DateRange<Date>` | Emits when date selection is changed. |
+| `onDateSelectionChanged` | `SelectedDateEvent` | Emits when date selection is changed. And it contains range: DateRange<Date> and  selectedOption: ISelectDateOption|
 | `dateListOptions` | `ISelectDateOption[]`| Emits pre-defined date action list items for configuration purpose. |
 
 #### Example to configure predefined visibility of predefined date action list items:

@@ -28,6 +28,8 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   firstCalendarViewData!: CalendarViewData;
   secondCalendarViewData!: CalendarViewData;
   @Input() selectedDates!: DateRange<Date>;
+  @Input() minDate!: Date;
+  @Input() maxDate!: Date;
   private isAllowHoverEvent: boolean = false;
 
   @ViewChild('firstCalendarView') firstCalendarView!: MatCalendar<Date>;
@@ -80,11 +82,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
    */
   monthSelected(event: Date) {
     this.secondCalendarView._goToDateInView(event, 'year');
-    this.handleFirstCalendarNextEvent(this, true);
-    setTimeout(() => {
-      this.attachHoverEventOnFirstViewDates();
-      this.attachHoverEventOnSecondViewDates();
-    }, 500);
+    setTimeout(() => this.handleFirstCalendarNextEvent(this, true), 1);
   }
 
   /**
