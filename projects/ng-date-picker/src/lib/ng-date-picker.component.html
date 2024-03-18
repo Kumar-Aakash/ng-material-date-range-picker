@@ -6,7 +6,7 @@
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
 
   <!-- input form -->
-  <mat-form-field class="w-full" (click)="toggleDateOptionSelectionList()">
+  <mat-form-field id="{{ calendarId }}" [class.w-full]="isFullWidth" (click)="toggleDateOptionSelectionList()">
     <mat-label>{{ labels?.inputLabel }}</mat-label>
     <input matInput readonly="readonly" [formControl]="date" class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>

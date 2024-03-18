@@ -16,7 +16,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { DateRange, MatCalendar } from '@angular/material/datepicker';
-import { CalendarViewData } from './../model/calendar-view-data';
+import { CalendarViewData } from '../model/calendar-view-data';
 
 @Component({
   selector: 'lib-calendar',

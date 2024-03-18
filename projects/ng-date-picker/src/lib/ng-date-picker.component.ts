@@ -1,24 +1,25 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { FormControl } from '@angular/forms';
 import { DateRange } from '@angular/material/datepicker';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import moment from 'moment';
 
 import { DEFAULT_DATE_OPTION_ENUM } from './constant/date-filter-enum';
 import { DEFAULT_DATE_OPTIONS } from './constant/default-date-options';
-import { ISelectDateOption } from './model/select-date-option';
-import { SelectedDateEvent } from '../public-api';
-import { FormControl } from '@angular/forms';
-import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
-import { LabelsConfig } from './model/labels-config.model';
 import { DATE_DEFAULT_OPTIONS_KEYS } from './constant/date-default-options-keys.constant';
+import { ISelectDateOption } from './model/select-date-option';
+import { SelectedDateEvent } from './model/date-selection-event-data';
+import { LabelsConfig } from './model/labels-config.model';
 
 @Component({
   selector: 'ng-date-range-picker',
@@ -29,7 +30,7 @@ import { DATE_DEFAULT_OPTIONS_KEYS } from './constant/date-default-options-keys.
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
   ],
 })
-export class NgDatePickerComponent implements OnInit {
+export class NgDatePickerComponent implements OnInit, AfterViewInit {
   isDateOptionList: boolean = false;
   isCustomRange: boolean = true;
   isOpen: boolean = false;
@@ -43,6 +44,7 @@ export class NgDatePickerComponent implements OnInit {
   private _timezone!: string;
   private baseDate: Date = new Date();
   selectedDates!: DateRange<Date>;
+  private dateDropDownOptionsDates: { start: string, end: string, label: string, key: DATE_DEFAULT_OPTIONS_KEYS }[] = [];
 
   backdropClass = 'date-rage-picker-backdrop';
   date = new FormControl();
@@ -96,29 +98,25 @@ export class NgDatePickerComponent implements OnInit {
   get timezone(): string | undefined {
     return this._timezone;
   }
-
-  // resetDates
-  // labels
-  // timezone
-  // isFullWidth
-  // openAfterViewInit
-
-  /** original inputs */
-
+  /** Date Format */
   @Input() dateFormat: string = 'yyyy-MM-dd';
+  /** Is Full Width */
+  @Input() isFullWidth: boolean = false;
+  /** Set flag for open modal after view init */
+  @Input() openAfterViewInit: boolean = false;
+  @Input() calendarId: string = 'formFieldDatePicker';
+  /** Overlay offset X */
   @Input() cdkConnectedOverlayOffsetX = 0;
+  /** Overlay offset Y */
   @Input() cdkConnectedOverlayOffsetY = 0;
-  @Input() listCdkConnectedOverlayOffsetY = 0;
-  @Input() listCdkConnectedOverlayOffsetX = 0;
+  /** Output for date selection when changed */
   @Output() onDateSelectionChanged: EventEmitter<SelectedDateEvent>;
-  @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
 
   constructor(
     private cdref: ChangeDetectorRef,
     private _adapter: DateAdapter<any>,
   ) {
     this.onDateSelectionChanged = new EventEmitter<SelectedDateEvent>();
-    this.dateListOptions = new EventEmitter<ISelectDateOption[]>();
   }
 
   ngOnInit(): void {
@@ -127,13 +125,31 @@ export class NgDatePickerComponent implements OnInit {
       this._defaultOptionsInUse = true;
     }
     this.calculateLabel();
-    this.dateListOptions.emit(this.dateDropDownOptions);
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.openAfterViewInit) {
+        const element = document.getElementById(this.calendarId);
+        if (element) {
+          element.click();
+        }
+      }
+    });
+  }
+
+  /**
+   * Change locale for datepicker
+   *
+   * @param locale
+   */
   setLocale(locale: string): void {
     this._adapter.setLocale(locale);
   }
 
+  /**
+   * Update default dates
+   */
   updateDefaultDates() {
     if (this._startDate) {
       let endDate = this.getBaseDate();
@@ -160,9 +176,14 @@ export class NgDatePickerComponent implements OnInit {
   updateCustomRange(
     selectedDates: DateRange<Date>
   ): void {
+    const startDate = selectedDates.start ?? this.getBaseDate();
+    const endDate = selectedDates.end ?? this.getBaseDate();
+    const getPossibleLabel = this.getLabel(startDate, endDate);
+
     this.updateSelectedDates(
-      selectedDates.start ?? this.getBaseDate(),
-      selectedDates.end ?? this.getBaseDate()
+      startDate,
+      endDate,
+      getPossibleLabel
     );
   }
 
@@ -194,6 +215,7 @@ export class NgDatePickerComponent implements OnInit {
 
   /**
    * This method sets clicked element as selected.
+   *
    * @param option ISelectDateOption
    */
   private resetOptionSelection(option: ISelectDateOption): void {
@@ -245,6 +267,7 @@ export class NgDatePickerComponent implements OnInit {
       range: this.selectedDates,
       selectedOption: selectedOption,
     };
+
     this.onDateSelectionChanged.emit(selectedDateEventData);
     this.cdref.markForCheck();
   }
@@ -253,7 +276,6 @@ export class NgDatePickerComponent implements OnInit {
    * This method converts the given date into specified string format.
    *
    * @param date Date
-   * @returns formatted date.
    */
   private getDateString(date: Date): string {
     const datePipe = new DatePipe('en');
@@ -264,7 +286,6 @@ export class NgDatePickerComponent implements OnInit {
    * This method return the number of days in moth on specified date.
    *
    * @param date Date
-   * @returns number
    */
   private getDaysInMonth(date: Date): number {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -274,7 +295,6 @@ export class NgDatePickerComponent implements OnInit {
    * This method clone the data.
    *
    * @param data T
-   * @returns T
    */
   private getClone<T>(data: T): T {
     return JSON.parse(JSON.stringify(data));
@@ -326,13 +346,25 @@ export class NgDatePickerComponent implements OnInit {
         }
       }
 
+      const dates = this.calculateStartAndEndDateByType(this._dateDropDownOptions[i]);
+
+      // we don't need for custom range
+      if (this._dateDropDownOptions[i].dateKey !== DATE_DEFAULT_OPTIONS_KEYS.CUSTOM_RANGE) {
+        this.dateDropDownOptionsDates.push(
+          {
+            start: dates.start.toDateString(),
+            end: dates.end.toDateString(),
+            label: this._dateDropDownOptions[i].optionLabel,
+            key: this._dateDropDownOptions[i].dateKey
+          }
+        );
+      }
+
       // if we have a calculated label, doesn't need to do anything else for the next ones
       // don't use break because of the previous if where we are setting the translations for the labels
       if (calculatedLabel) {
         continue;
       }
-
-      const dates = this.calculateStartAndEndDateByType(this._dateDropDownOptions[i]);
 
       if (
         dates.start.toDateString() === this.selectedDates.start?.toDateString() &&
@@ -348,6 +380,9 @@ export class NgDatePickerComponent implements OnInit {
     }
   }
 
+  /**
+   * Get base date
+   */
   private getBaseDate(): Date {
     return new Date(this.baseDate.valueOf());
   }
@@ -389,5 +424,35 @@ export class NgDatePickerComponent implements OnInit {
     }
 
     return { start: startDate, end: lastDate };
+  }
+
+  /**
+   * Get possible label for given start date and end date
+   *
+   * @param startDate
+   *
+   * @param endDate
+   */
+  private getLabel(startDate: Date, endDate: Date): string {
+    let labelString = '';
+    const findLabel = this.dateDropDownOptionsDates
+      .find(ele => ele.start === startDate.toDateString() && ele.end === endDate.toDateString());
+
+    this._dateDropDownOptions.map(opt => {
+      opt.isSelected = false;
+      return opt;
+    });
+
+    if (findLabel) {
+      labelString = findLabel.label;
+
+      const findLabelIndex = this._dateDropDownOptions.findIndex(opt => opt.dateKey === findLabel.key);
+
+      if (findLabelIndex > -1) {
+        this._dateDropDownOptions[findLabelIndex].isSelected = true;
+      }
+    }
+
+    return labelString;
   }
 }
