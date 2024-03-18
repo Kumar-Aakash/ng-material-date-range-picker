@@ -33,15 +33,20 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/moment/min/moment.min.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "moment"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1.5mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -115,7 +120,8 @@
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ng-date-picker/tsconfig.lib.prod.json"
+              "tsConfig": "projects/ng-date-picker/tsconfig.lib.prod.json",
+              "project": "projects/ng-date-picker/ng-package.json"
             },
             "development": {
               "tsConfig": "projects/ng-date-picker/tsconfig.lib.json"

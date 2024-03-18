@@ -1,10 +1,12 @@
 {
   "name": "@exogroup/ng-date-picker",
-  "version": "2.2.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:lib:prod": "ng build @exogroup/ng-date-picker --configuration production",
+    "publish:package": "npm run build:lib:prod && cd dist/@exogroup/ng-date-picker && npm publish && cd ../../../",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
