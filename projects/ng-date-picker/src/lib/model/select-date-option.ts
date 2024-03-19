@@ -27,7 +27,7 @@ export interface ISelectDateOption {
 
   // boolean value used to show or hide label in list.
   isVisible: boolean;
-  callBackFunction: () => DateRange<Date>;
+  callBackFunction?: () => DateRange<Date>;
 }
 
 export class SelectDateOption implements ISelectDateOption {
