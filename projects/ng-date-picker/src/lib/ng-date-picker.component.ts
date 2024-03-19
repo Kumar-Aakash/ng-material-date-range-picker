@@ -8,7 +8,6 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { DateRange } from '@angular/material/datepicker';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -278,8 +277,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    * @param date Date
    */
   private getDateString(date: Date): string {
-    const datePipe = new DatePipe('en');
-    return datePipe.transform(date, this.dateFormat) ?? '';
+    return moment(date).locale(this._locale || 'en').format(this.dateFormat) ?? '';
   }
 
   /**
