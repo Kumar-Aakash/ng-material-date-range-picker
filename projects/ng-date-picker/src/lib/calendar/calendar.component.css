@@ -1,8 +1,8 @@
 .mat-calendar {
   min-width: 250px;
   max-width: 290px;
-  padding-left: 30px;
-  padding-right: 30px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .calendar-container {
