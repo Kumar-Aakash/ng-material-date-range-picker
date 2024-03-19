@@ -107,7 +107,7 @@
         }
       }
     },
-    "@exogroup/ng-date-picker": {
+    "@exogroup/ng-material-date-range-picker": {
       "projectType": "library",
       "root": "projects/ng-date-picker",
       "sourceRoot": "projects/ng-date-picker/src",

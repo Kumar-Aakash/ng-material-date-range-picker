@@ -1,12 +1,12 @@
 {
-  "name": "@exogroup/ng-date-picker",
+  "name": "@exogroup/ng-material-date-range-picker",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:lib:prod": "ng build @exogroup/ng-date-picker --configuration production",
-    "publish:package": "npm run build:lib:prod && cd dist/@exogroup/ng-date-picker && npm publish && cd ../../../",
+    "build:lib:prod": "ng build @exogroup/ng-material-date-range-picker --configuration production",
+    "publish:package": "npm run build:lib:prod && cd dist/exogroup/ng-material-date-range-picker && npm publish && cd ../../../",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
