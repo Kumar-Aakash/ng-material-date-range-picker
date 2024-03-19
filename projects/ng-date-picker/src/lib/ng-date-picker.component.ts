@@ -99,7 +99,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     return this._timezone;
   }
   /** Date Format */
-  @Input() dateFormat: string = 'yyyy-MM-dd';
+  @Input() dateFormat: string = 'YYYY-MM-DD';
   /** Is Full Width */
   @Input() isFullWidth: boolean = false;
   /** Set flag for open modal after view init */
