@@ -64,16 +64,16 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   /** Maximum selectable date */
   @Input() maxDate!: Date;
   /** Start date for range picker */
-  @Input() set startDate(startDate: moment.Moment | undefined) {
+  @Input() set startDate(startDate: Date | undefined) {
     if (startDate) {
-      this._startDate = startDate.toDate();
+      this._startDate = startDate;
       this.updateDefaultDates();
     }
   }
   /** End date for range picker */
-  @Input() set endDate(endDate: moment.Moment | undefined) {
+  @Input() set endDate(endDate: Date | undefined) {
     if (endDate) {
-      this._endDate = endDate.toDate();
+      this._endDate = endDate;
       this.updateDefaultDates();
     }
   }
@@ -447,6 +447,12 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       labelString = findLabel.label;
 
       const findLabelIndex = this._dateDropDownOptions.findIndex(opt => opt.dateKey === findLabel.key);
+
+      if (findLabelIndex > -1) {
+        this._dateDropDownOptions[findLabelIndex].isSelected = true;
+      }
+    } else {
+      const findLabelIndex = this._dateDropDownOptions.findIndex(opt => opt.dateKey === DATE_DEFAULT_OPTIONS_KEYS.CUSTOM_RANGE);
 
       if (findLabelIndex > -1) {
         this._dateDropDownOptions[findLabelIndex].isSelected = true;

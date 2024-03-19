@@ -79,8 +79,8 @@ export class AppComponent implements OnDestroy {
     // if the date was updated from the input, we skip setting the start and end dates
     if (!this.isDatesUpdatedFromInput) {
       // initially loaded start date - set to begin of the current month
-      this.daterangepickerOptions.startDate = this.lastSevenDaysDate;
-      this.daterangepickerOptions.endDate = this.todaysDate;
+      this.daterangepickerOptions.startDate = this.lastSevenDaysDate.toDate();
+      this.daterangepickerOptions.endDate = this.todaysDate.toDate();
     }
 
     this.daterangepickerOptions.locale = 'pt';
