@@ -103,7 +103,8 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() isFullWidth: boolean = false;
   /** Set flag for open modal after view init */
   @Input() openAfterViewInit: boolean = false;
-  @Input() calendarId: string = 'formFieldDatePicker';
+  /** Calendar identifier */
+  @Input() calendarIdentifier: string = 'formFieldDatePicker';
   /** Overlay offset X */
   @Input() cdkConnectedOverlayOffsetX = 0;
   /** Overlay offset Y */
@@ -129,7 +130,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       if (this.openAfterViewInit) {
-        const element = document.getElementById(this.calendarId);
+        const element = document.getElementById(this.calendarIdentifier);
         if (element) {
           element.click();
         }

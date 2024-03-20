@@ -1,12 +1,7 @@
-<!--**
- * @(#)ng-date-picker.component.html Sept 05, 2023
-
- * @author Aakash Kumar
- *-->
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
 
   <!-- input form -->
-  <mat-form-field id="{{ calendarId }}" [class.w-full]="isFullWidth" (click)="toggleDateOptionSelectionList()">
+  <mat-form-field id="{{ calendarIdentifier }}" [class.w-full]="isFullWidth" (click)="toggleDateOptionSelectionList()">
     <mat-label>{{ labels?.inputLabel }}</mat-label>
     <input matInput readonly="readonly" [formControl]="date" class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
@@ -42,9 +37,6 @@
             [selectedDates]="selectedDates"
             [minDate]="minDate"
             [maxDate]="maxDate"
-
-
-
           ></lib-calendar>
         </div>
       </div>

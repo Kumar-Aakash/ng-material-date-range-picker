@@ -17,8 +17,8 @@ import { SelectedDateEvent } from '../../projects/ng-date-picker/src/lib/model/d
 export class AppComponent implements OnDestroy {
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   private timezoneDate: string | undefined;
-  title = 'exogroup-date-range-picker';
-  panelOpenState = false;
+  dateFormat = 'YYYY-MM-DD';
+  calendarIdentifier = 'exo-date-range-picker';
 
   /** Flag shows that dates been updated from inputs */
   isDatesUpdatedFromInput = false;
