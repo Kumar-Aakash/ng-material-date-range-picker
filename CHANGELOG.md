@@ -1,4 +1,7 @@
 # Changelog
+## [1.2.8] - 2024-03-23
+- Added changes to show default dates in input box.
+
 ## [1.2.7] - 2024-03-16
 - Fixed issues on second calendar view.
 
