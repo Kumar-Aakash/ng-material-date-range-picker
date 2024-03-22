@@ -1,6 +1,6 @@
 {
   "name": "@exogroup/ng-material-date-range-picker",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
