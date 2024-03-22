@@ -1,4 +1,7 @@
 # Changelog
+## [2.2.2] - 2024-03-23
+- Fixed issue on second calendar view.
+
 ## [2.2.1] - 2024-03-16
 - Fixed issue on second calendar view.
 

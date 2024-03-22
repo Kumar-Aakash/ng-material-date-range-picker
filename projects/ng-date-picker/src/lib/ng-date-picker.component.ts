@@ -43,11 +43,11 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() listCdkConnectedOverlayOffsetY = 0;
   @Input() listCdkConnectedOverlayOffsetX = 0;
 
-   // default min date is current date - 10 years.
-   @Input() minDate =  new Date(new Date().setFullYear(new Date().getFullYear() - 10));
+  // default min date is current date - 10 years.
+  @Input() minDate =  new Date(new Date().setFullYear(new Date().getFullYear() - 10));
 
-   // default max date is current date - 10 years.
-   @Input() maxDate =  new Date(new Date().setFullYear(new Date().getFullYear() + 10));
+  // default max date is current date - 10 years.
+  @Input() maxDate =  new Date(new Date().setFullYear(new Date().getFullYear() + 10));
 
   @Output() onDateSelectionChanged: EventEmitter<SelectedDateEvent>;
   @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
@@ -86,14 +86,20 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     const selectedOptions: ISelectDateOption[] =
       this._dateDropDownOptions.filter((option) => option.isSelected);
+    const input: HTMLInputElement =
+      this.el.nativeElement.querySelector('#date-input-field');
     if (selectedOptions.length) {
-      const input: HTMLInputElement =
-        this.el.nativeElement.querySelector('#date-input-field');
       const dateRange: DateRange<Date> = selectedOptions[0].callBackFunction();
       if (dateRange && dateRange.start && dateRange.end) {
         this.updateSelectedDates(input, dateRange.start, dateRange.end);
       }
+    } else if (this.selectedDates.start && this.selectedDates.end) {
+      input.value =
+        this.getDateString(this.selectedDates.start) +
+        ' - ' +
+        this.getDateString(this.selectedDates.end);
     }
+    this.cdref.detectChanges();
   }
 
   /**
