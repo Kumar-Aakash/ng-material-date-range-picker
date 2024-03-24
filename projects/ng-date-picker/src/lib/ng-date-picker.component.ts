@@ -267,20 +267,27 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    * This method update the default date values on init.
    */
   private updateDefaultDatesValues(): void {
-    const selectedOptions: ISelectDateOption[] =
-      this._dateDropDownOptions.filter((option) => option.isSelected);
     const input: HTMLInputElement =
       this.el.nativeElement.querySelector('#date-input-field');
-    if (
-      selectedOptions.length &&
-      selectedOptions[0].optionKey !== DEFAULT_DATE_OPTION_ENUM.CUSTOM
-    ) {
-      this.updatedFromListValueSelection(selectedOptions[0], input);
-    } else if (this.selectedDates.start && this.selectedDates.end) {
+    if (this.selectedDates.start && this.selectedDates.end) {
+      const customOption: ISelectDateOption[] =
+        this._dateDropDownOptions.filter(
+          (option) => option.optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM
+        );
+      customOption[0].isSelected = true;
       input.value =
         this.getDateString(this.selectedDates.start) +
         ' - ' +
         this.getDateString(this.selectedDates.end);
+    } else {
+      const selectedOptions: ISelectDateOption[] =
+        this._dateDropDownOptions.filter((option) => option.isSelected);
+      if (
+        selectedOptions.length &&
+        selectedOptions[0].optionKey !== DEFAULT_DATE_OPTION_ENUM.CUSTOM
+      ) {
+        this.updatedFromListValueSelection(selectedOptions[0], input);
+      }
     }
     this.cdref.detectChanges();
   }
