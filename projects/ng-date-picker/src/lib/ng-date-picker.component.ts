@@ -42,12 +42,17 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() cdkConnectedOverlayOffsetY = 0;
   @Input() listCdkConnectedOverlayOffsetY = 0;
   @Input() listCdkConnectedOverlayOffsetX = 0;
+  @Input() selectedOptionIndex = 3;
 
-   // default min date is current date - 10 years.
-   @Input() minDate =  new Date(new Date().setFullYear(new Date().getFullYear() - 10));
+  // default min date is current date - 10 years.
+  @Input() minDate = new Date(
+    new Date().setFullYear(new Date().getFullYear() - 10)
+  );
 
-   // default max date is current date - 10 years.
-   @Input() maxDate =  new Date(new Date().setFullYear(new Date().getFullYear() + 10));
+  // default max date is current date - 10 years.
+  @Input() maxDate = new Date(
+    new Date().setFullYear(new Date().getFullYear() + 10)
+  );
 
   @Output() onDateSelectionChanged: EventEmitter<SelectedDateEvent>;
   @Output() dateListOptions: EventEmitter<ISelectDateOption[]>;
@@ -79,21 +84,13 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     if (!this._dateDropDownOptions.length && this.enableDefaultOptions) {
       this._dateDropDownOptions =
         this.getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS);
+      this._dateDropDownOptions[this.selectedOptionIndex].isSelected = true;
     }
     this.dateListOptions.emit(this.dateDropDownOptions);
   }
 
   ngAfterViewInit(): void {
-    const selectedOptions: ISelectDateOption[] =
-      this._dateDropDownOptions.filter((option) => option.isSelected);
-    if (selectedOptions.length) {
-      const input: HTMLInputElement =
-        this.el.nativeElement.querySelector('#date-input-field');
-      const dateRange: DateRange<Date> = selectedOptions[0].callBackFunction();
-      if (dateRange && dateRange.start && dateRange.end) {
-        this.updateSelectedDates(input, dateRange.start, dateRange.end);
-      }
-    }
+    this.updateDefaultDatesValues();
   }
 
   /**
@@ -187,7 +184,8 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.DATE_DIFF) {
       startDate.setDate(startDate.getDate() + option.dateDiff);
     } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.LAST_MONTH) {
-      startDate = new Date(currDate.getFullYear(), currDate.getMonth() - 1, 1);
+      currDate.setMonth(currDate.getMonth() - 1);
+      startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
       lastDate = new Date(
         currDate.getFullYear(),
         currDate.getMonth(),
@@ -263,5 +261,49 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    */
   private getClone<T>(data: T): T {
     return JSON.parse(JSON.stringify(data));
+  }
+
+  /**
+   * This method update the default date values on init.
+   */
+  private updateDefaultDatesValues(): void {
+    const selectedOptions: ISelectDateOption[] =
+      this._dateDropDownOptions.filter((option) => option.isSelected);
+    const input: HTMLInputElement =
+      this.el.nativeElement.querySelector('#date-input-field');
+    if (
+      selectedOptions.length &&
+      selectedOptions[0].optionKey !== DEFAULT_DATE_OPTION_ENUM.CUSTOM
+    ) {
+      this.updatedFromListValueSelection(selectedOptions[0], input);
+    } else if (this.selectedDates.start && this.selectedDates.end) {
+      input.value =
+        this.getDateString(this.selectedDates.start) +
+        ' - ' +
+        this.getDateString(this.selectedDates.end);
+    }
+    this.cdref.detectChanges();
+  }
+
+  /**
+   * This method updates the date values based on default option selection.
+   *
+   * @param selectedOption ISelectDateOption
+   * @param input HTMLInputElement
+   */
+  private updatedFromListValueSelection(
+    selectedOption: ISelectDateOption,
+    input: HTMLInputElement
+  ): void {
+    // This will update value if option is selected from provided custom list.
+    if (selectedOption['callBackFunction']) {
+      const dateRange: DateRange<Date> = selectedOption.callBackFunction();
+      if (dateRange.start && dateRange.end) {
+        this.updateSelectedDates(input, dateRange.start, dateRange.end);
+      }
+    } else {
+      // This will update value if option is selected from default list.
+      this.updateDateOnOptionSelect(selectedOption, input);
+    }
   }
 }
