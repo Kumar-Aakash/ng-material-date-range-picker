@@ -122,6 +122,7 @@ This will display the Date Range Picker in your default browser.
 | `dateDropDownOptions` | `ISelectDateOption[]`| **optional**. Addition options to predefined date action list. |
 | `minDate` | `Date`| **optional**. To specify minimum date default is current date -10 years. |
 | `maxDate` | `Date`| **optional**. To specify max date default is current date +10 years. |
+| `selectedOptionIndex` | `number`| **optional**. To default selected option. (by default it is 3 which is last 30 days.) |
 
 #### Events
 

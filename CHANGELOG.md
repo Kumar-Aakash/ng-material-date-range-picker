@@ -1,6 +1,8 @@
 # Changelog
 ## [2.2.2] - 2024-03-23
 - Added changes to show default dates in input box.
+- Supported default option on init.
+- Fixed bug on last month selection.
 
 ## [2.2.1] - 2024-03-16
 - Fixed issue on second calendar view.
