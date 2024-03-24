@@ -1,5 +1,5 @@
 # Changelog
-## [2.2.2] - 2024-03-24
+## [2.2.3] - 2024-03-24
 - Bugfixes
 - Custom option selection on specifying the selected dates.
 
