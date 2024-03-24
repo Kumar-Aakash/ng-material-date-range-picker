@@ -1,6 +1,8 @@
 # Changelog
 ## [1.2.8] - 2024-03-23
 - Added changes to show default dates in input box.
+- Supported default option on init.
+- Fixed bug on last month selection.
 
 ## [1.2.7] - 2024-03-16
 - Fixed issues on second calendar view.
@@ -67,7 +69,3 @@
 - Feature 2: Predefined date support with list items.
 - Feature 3: User can modify predefined date list.
 - Feature 4: Provides complete controls on predefined date action items.
-
-
-
-
