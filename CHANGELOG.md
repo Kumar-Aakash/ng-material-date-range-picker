@@ -1,4 +1,8 @@
 # Changelog
+## [1.2.9] - 2024-03-24
+- Bugfixes
+- Custom option selection on specifying the selected dates.
+
 ## [1.2.8] - 2024-03-23
 - Added changes to show default dates in input box.
 - Supported default option on init.
