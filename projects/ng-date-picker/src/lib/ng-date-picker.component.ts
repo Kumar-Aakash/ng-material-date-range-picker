@@ -269,7 +269,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   private updateDefaultDatesValues(): void {
     const input: HTMLInputElement =
       this.el.nativeElement.querySelector('#date-input-field');
-    if (this.selectedDates.start && this.selectedDates.end) {
+    if (this.selectedDates && this.selectedDates.start && this.selectedDates.end) {
       const customOption: ISelectDateOption[] =
         this._dateDropDownOptions.filter(
           (option) => option.optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM
