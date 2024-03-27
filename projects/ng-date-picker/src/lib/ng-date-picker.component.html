@@ -2,7 +2,7 @@
 
   <!-- input form -->
   <mat-form-field id="{{ calendarIdentifier }}" [class.w-full]="isFullWidth" (click)="toggleDateOptionSelectionList()">
-    <mat-label>{{ labels?.inputLabel }}</mat-label>
+    <mat-label *ngIf="showLabel">{{ labels?.inputLabel }}</mat-label>
     <input matInput readonly="readonly" [formControl]="date" class="cursor-pointer">
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
