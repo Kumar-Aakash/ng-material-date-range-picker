@@ -212,7 +212,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    * This method toggles the custom date range selection view.
    */
   toggleCustomDateRangeView(): void {
-    this.isCustomRange = !this.isCustomRange;
+    this.isOpen = !this.isOpen;
   }
 
   /**
