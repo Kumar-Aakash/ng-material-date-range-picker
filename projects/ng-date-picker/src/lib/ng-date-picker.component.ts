@@ -59,7 +59,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   /** Show labels on input instead of the date range selected */
   @Input() showRangeLabelOnInput: boolean = true;
   /** Show label for the input */
-  @Input() showLabel: boolean = false;
+  @Input() showLabel: boolean = true;
   /** Minimum selectable date */
   @Input() minDate!: Date;
   /** Maximum selectable date */
