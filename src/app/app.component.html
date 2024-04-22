@@ -1,0 +1,21 @@
+<div>
+  <h1>ExoGroup DatePicker</h1>
+</div>
+<div class="date-form-content">
+  <ng-date-range-picker
+    *ngIf="isSettingsLoaded"
+    [showRangeLabelOnInput]="true"
+    [locale]="daterangepickerOptions.locale"
+    [minDate]="daterangepickerOptions.minDate"
+    [maxDate]="daterangepickerOptions.maxDate"
+    [startDate]="daterangepickerOptions.startDate"
+    [endDate]="daterangepickerOptions.endDate"
+    [labels]="daterangepickerOptions.labels"
+    [timezone]="daterangepickerOptions.timezone"
+    [isFullWidth]="true"
+    [openAfterViewInit]="false"
+    [dateFormat]="dateFormat"
+    [calendarIdentifier]="calendarIdentifier"
+    (onDateSelectionChanged)="onDatesUpdated($event)"
+  ></ng-date-range-picker>
+</div>

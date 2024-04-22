@@ -3,20 +3,23 @@
  *
  * @author Aakash Kumar
  */
-import { DEFAULT_DATE_OPTION_ENUM } from '../constant/date-filter-enum';
+import { DEFAULT_DATE_OPTION_ENUM } from './date-filter-enum';
 import { ISelectDateOption } from '../model/select-date-option';
+import { DATE_DEFAULT_OPTIONS_KEYS } from './date-default-options-keys.constant';
 
 export const DEFAULT_DATE_OPTIONS: ISelectDateOption[] = <ISelectDateOption[]>[
   {
     optionLabel: 'Today',
     optionKey: DEFAULT_DATE_OPTION_ENUM.DATE_DIFF,
+    dateKey: DATE_DEFAULT_OPTIONS_KEYS.TODAY,
     dateDiff: 0,
     isSelected: false,
     isVisible: true,
   },
   {
     optionLabel: 'Yesterday',
-    optionKey: DEFAULT_DATE_OPTION_ENUM.DATE_DIFF,
+    optionKey: DEFAULT_DATE_OPTION_ENUM.SINGLE_DATE,
+    dateKey: DATE_DEFAULT_OPTIONS_KEYS.YESTERDAY,
     dateDiff: -1,
     isSelected: false,
     isVisible: true,
@@ -24,48 +27,31 @@ export const DEFAULT_DATE_OPTIONS: ISelectDateOption[] = <ISelectDateOption[]>[
   {
     optionLabel: 'Last 7 Days',
     optionKey: DEFAULT_DATE_OPTION_ENUM.DATE_DIFF,
-    dateDiff: -7,
+    dateKey: DATE_DEFAULT_OPTIONS_KEYS.LAST7DAYS,
+    dateDiff: -6,
     isSelected: false,
     isVisible: true,
   },
   {
     optionLabel: 'Last 30 Days',
     optionKey: DEFAULT_DATE_OPTION_ENUM.DATE_DIFF,
-    dateDiff: -30,
-    isSelected: false,
-    isVisible: true,
-  },
-  {
-    optionLabel: 'Last Month',
-    optionKey: DEFAULT_DATE_OPTION_ENUM.LAST_MONTH,
-    dateDiff: 0,
+    dateKey: DATE_DEFAULT_OPTIONS_KEYS.LAST30DAYS,
+    dateDiff: -29,
     isSelected: false,
     isVisible: true,
   },
   {
     optionLabel: 'This Month',
     optionKey: DEFAULT_DATE_OPTION_ENUM.THIS_MONTH,
+    dateKey: DATE_DEFAULT_OPTIONS_KEYS.THIS_MONTH,
     dateDiff: 0,
     isSelected: false,
     isVisible: true,
   },
   {
-    optionLabel: 'Month To Date',
-    optionKey: DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE,
-    dateDiff: 0,
-    isSelected: false,
-    isVisible: true,
-  },
-  {
-    optionLabel: 'Week To Date',
-    optionKey: DEFAULT_DATE_OPTION_ENUM.WEEK_TO_DATE,
-    dateDiff: 0,
-    isSelected: false,
-    isVisible: false,
-  },
-  {
-    optionLabel: 'Year To Date',
-    optionKey: DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE,
+    optionLabel: 'Last Month',
+    optionKey: DEFAULT_DATE_OPTION_ENUM.LAST_MONTH,
+    dateKey: DATE_DEFAULT_OPTIONS_KEYS.LAST_MONTH,
     dateDiff: 0,
     isSelected: false,
     isVisible: true,
@@ -73,6 +59,7 @@ export const DEFAULT_DATE_OPTIONS: ISelectDateOption[] = <ISelectDateOption[]>[
   {
     optionLabel: 'Custom Range',
     optionKey: DEFAULT_DATE_OPTION_ENUM.CUSTOM,
+    dateKey: DATE_DEFAULT_OPTIONS_KEYS.CUSTOM_RANGE,
     dateDiff: 0,
     isSelected: false,
     isVisible: true,

@@ -1,10 +1,8 @@
-/**
- * @(#)calendar.component.scss Sept 07, 2023
-
- * @author Aakash Kumar
- */
- .mat-calendar {
+.mat-calendar {
   min-width: 250px;
+  max-width: 290px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .calendar-container {
@@ -20,15 +18,61 @@
   float: left;
 }
 
-.first-view,
-.second-view {
-  margin-top: 0.5rem;
-}
-
 @media (max-width: 490px) {
-
   .first-view,
   .second-view {
     width: 100%;
   }
+}
+::ng-deep .mat-calendar-body-today, ::ng-deep .mat-calendar-body-selected {
+  max-height: 32px;
+}
+
+::ng-deep mat-month-view .mat-calendar-body-today, ::ng-deep mat-month-view .mat-calendar-body-selected {
+  max-width: 32px;
+}
+
+::ng-deep .mat-calendar-body-cell {
+  max-height: 36px;
+}
+
+::ng-deep .mat-calendar-body-range-end {
+  max-width: 36px;
+}
+
+::ng-deep .mat-calendar-body-cell-container, ::ng-deep .mat-calendar-body-label {
+  height: 36px !important;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+}
+
+::ng-deep .mat-calendar-controls {
+  display: block !important;
+  margin: 0 !important;
+  position: relative;
+}
+
+::ng-deep .mat-calendar-period-button {
+  position: absolute !important;
+  left: 50% !important;
+  right: 50% !important;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  margin: 20px 0 0 0 !important;
+}
+
+::ng-deep .mat-calendar-spacer {
+  display: none !important;
+}
+
+::ng-deep .mat-calendar-previous-button {
+  float: left;
+}
+
+::ng-deep .mat-calendar-next-button {
+  float: right;
+}
+
+::ng-deep .mat-calendar-header {
+  padding: 0 8px !important;
 }

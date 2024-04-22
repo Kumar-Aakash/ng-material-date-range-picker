@@ -1,5 +1,6 @@
 import { DateRange } from '@angular/material/datepicker';
 import { DEFAULT_DATE_OPTION_ENUM } from '../constant/date-filter-enum';
+import { DATE_DEFAULT_OPTIONS_KEYS } from '../constant/date-default-options-keys.constant';
 
 /**
  * @(#)select-date-option.ts Sept 08, 2023
@@ -13,6 +14,9 @@ export interface ISelectDateOption {
   // Used to check normal date or special date.
   optionKey: DEFAULT_DATE_OPTION_ENUM;
 
+  // unique key per option
+  dateKey: DATE_DEFAULT_OPTIONS_KEYS;
+
   // Actual date difference.
   // positive number indicates date forward from today.
   // negative number indicates date backward from today.
@@ -23,12 +27,13 @@ export interface ISelectDateOption {
 
   // boolean value used to show or hide label in list.
   isVisible: boolean;
-  callBackFunction: () => DateRange<Date>;
+  callBackFunction?: () => DateRange<Date>;
 }
 
 export class SelectDateOption implements ISelectDateOption {
   optionLabel = '';
   optionKey = DEFAULT_DATE_OPTION_ENUM.DATE_DIFF;
+  dateKey = DATE_DEFAULT_OPTIONS_KEYS.CUSTOM_RANGE;
   dateDiff = 0;
   isSelected = false;
   isVisible = false;

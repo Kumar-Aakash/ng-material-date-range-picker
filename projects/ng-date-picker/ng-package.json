@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/ng-date-picker",
+  "dest": "../../dist/exogroup/ng-material-date-range-picker",
   "lib": {
     "entryFile": "src/public-api.ts"
   }

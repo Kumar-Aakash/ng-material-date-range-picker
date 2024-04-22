@@ -1,6 +1,4 @@
 /**
- * @(#)ng-date-picker.component.scss Sept 05, 2023
-
  * @author Aakash Kumar
  */
 
@@ -20,7 +18,7 @@ mat-list-item {
   overflow-y: auto;
   overflow-x: hidden;
   max-width: 700px;
-  margin-top: -22px;
+  margin-top: 8px;
   border: 1px solid var(--border-color, #ddd);
 }
 
@@ -72,7 +70,7 @@ mat-list-item {
 }
 
 .row-2 {
-  padding: 0.7rem;
+  padding: 0.7rem 0;
 }
 
 .footer-content {
@@ -80,38 +78,30 @@ mat-list-item {
   align-items: center;
   display: flex;
   text-align: right;
-  justify-content: end;
+  justify-content: flex-end;
   gap: 10px;
-  margin-right: 2rem;
   text-overflow: ellipsis;
 }
 
 .buttons {
-  margin-right: 1.5rem;
+  margin-right: 25px;
+  margin-left: 25px;
   display: flex;
-  gap: 10px;
+  flex-flow: row;
+  width: 100%;
+  align-content: space-between;
+  justify-content: space-between;
 }
 
 .column-1 {
-  width: 25%;
+  width: 100%;
   display: block;
   float: left;
 }
 .column-2 {
-  width: 73%;
+  width: 100%;
   display: block;
   float: left;
-}
-
-.without-default-opt {
-  .column-1 {
-    display: none;
-  }
-  .column-2 {
-    width: 100%;
-    display: block;
-    float: left;
-  }
 }
 
 @media (max-width: 400px) {
@@ -129,22 +119,6 @@ mat-list-item {
   }
 }
 
-@media (max-width: 650px) {
-  .column-1,
-  .column-2 {
-    width: 100%;
-  }
-}
-
-@media (min-width: 650px) {
-  .column-1 {
-    width: 25%;
-  }
-  .column-2 {
-    width: 74%;
-  }
-}
-
 .without-default-opt {
   .column-1 {
     display: none;
@@ -154,4 +128,26 @@ mat-list-item {
     display: block;
     float: left;
   }
+}
+
+.default-options-container {
+  margin-bottom: 5px;
+  border-bottom: 1px solid #E5E5E5;
+  display: flex;
+  justify-content: center;
+
+  .option-ele {
+    cursor: pointer;
+    font-size: 13px;
+    display: inline-block;
+    padding: 8px 12px;
+
+    &.option-selected {
+      color: #0072ba;
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
