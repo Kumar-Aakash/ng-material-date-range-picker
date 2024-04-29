@@ -160,6 +160,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       }
 
       this.selectedDates = new DateRange(this._startDate, endDate);
+      this.calculateLabel();
     }
   }
 
