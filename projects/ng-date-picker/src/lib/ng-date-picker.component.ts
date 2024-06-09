@@ -310,6 +310,8 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
     let calculatedLabel = '';
 
+    this._dateDropDownOptions.forEach(dropDown => dropDown.isSelected = false);
+
     for (let i = 0; i < dateOptionsLength; i++) {
 
       if (this.labels && this._defaultOptionsInUse) {
