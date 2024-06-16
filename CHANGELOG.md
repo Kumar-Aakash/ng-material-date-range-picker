@@ -1,4 +1,8 @@
 # Changelog
+## [1.2.10] - 2024-06-16
+- Bugfixes
+- Added clear functionality.
+
 ## [1.2.9] - 2024-03-24
 - Bugfixes
 - Custom option selection on specifying the selected dates.

@@ -34,7 +34,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() defaultOptionId = 'custom-options';
   @Input() calendarId: string = 'custom-calendar';
   @Input() enableDefaultOptions: boolean = true;
-  @Input() selectedDates!: DateRange<Date>;
+  @Input() selectedDates!: DateRange<Date> | null;
   @Input() dateFormat: string = 'dd/MM/yyyy';
   @Input() isShowStaticDefaultOptions: boolean = false;
   @Input() hideDefaultOptions: boolean = false;
@@ -118,12 +118,12 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    */
   updateCustomRange(
     input: HTMLInputElement,
-    selectedDates: DateRange<Date>
+    selectedDates: DateRange<Date> | null
   ): void {
     this.updateSelectedDates(
       input,
-      selectedDates.start ?? new Date(),
-      selectedDates.end ?? new Date()
+      selectedDates?.start ?? new Date(),
+      selectedDates?.end ?? new Date()
     );
   }
 
@@ -143,6 +143,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     } else {
       this.isCustomRange = true;
     }
+    this.cdref.markForCheck();
   }
 
   /**
@@ -153,19 +154,49 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * This method sets clicked element as selected.
-   * @param option ISelectDateOption
+   * Clears the selected dates and resets date-related properties.
+   *
+   * @param event - The mouse event that triggered the clear action.
    */
-  private resetOptionSelection(option: ISelectDateOption): void {
-    this.dateDropDownOptions.forEach((option) => (option.isSelected = false));
-    option.isSelected = true;
+  clearSelection(event: MouseEvent): void {
+    event.stopImmediatePropagation();
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    this.minDate = new Date(currentDate.setFullYear(year - 10));
+    this.maxDate = new Date(currentDate.setFullYear(year + 10));
+    this.selectedDates = null;
+    this.resetOptionSelection();
+
+    const dateInputField =
+      this.el.nativeElement.querySelector('#date-input-field');
+    if (dateInputField) {
+      dateInputField.value = '';
+    }
+    this.cdref.markForCheck();
+    const selectedDateEventData: SelectedDateEvent = {
+      range: null,
+      selectedOption: null,
+    };
+    this.onDateSelectionChanged.emit(selectedDateEventData);
   }
 
   /**
-   * This method update date if specified option is not custom range.
-   *
+   * This method sets clicked element as selected.
    * @param option ISelectDateOption
-   * @param input HTMLInputElement
+   */
+  private resetOptionSelection(option?: ISelectDateOption): void {
+    this.dateDropDownOptions.forEach((option) => (option.isSelected = false));
+    if (option) {
+      option.isSelected = true;
+    }
+    this.cdref.markForCheck();
+  }
+
+  /**
+   * Updates the selected dates based on the given option and input element.
+   *
+   * @param option - The date option selected by the user.
+   * @param input - The HTML input element to update.
    */
   private updateDateOnOptionSelect(
     option: ISelectDateOption,
@@ -174,35 +205,54 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     const currDate = new Date();
     let startDate: Date = new Date();
     let lastDate: Date = new Date();
-    if (!!option.callBackFunction) {
+
+    // If there is a callback function, use it to get the date range
+    if (option.callBackFunction) {
       const dateRange: DateRange<Date> = option.callBackFunction();
-      if (dateRange && dateRange.start && dateRange.end) {
+      if (dateRange?.start && dateRange?.end) {
         this.updateSelectedDates(input, dateRange.start, dateRange.end);
         return;
       }
     }
-    if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.DATE_DIFF) {
-      startDate.setDate(startDate.getDate() + option.dateDiff);
-    } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.LAST_MONTH) {
-      currDate.setMonth(currDate.getMonth() - 1);
-      startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
-      lastDate = new Date(
-        currDate.getFullYear(),
-        currDate.getMonth(),
-        this.getDaysInMonth(currDate)
-      );
-    } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.THIS_MONTH) {
-      startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
-      lastDate = new Date(
-        currDate.getFullYear(),
-        currDate.getMonth(),
-        this.getDaysInMonth(currDate)
-      );
-    } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE) {
-      startDate = new Date(currDate.getFullYear(), 0, 1);
-    } else if (option.optionKey === DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE) {
-      startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+
+    // Determine the date range based on the option key
+    switch (option.optionKey) {
+      case DEFAULT_DATE_OPTION_ENUM.DATE_DIFF:
+        startDate.setDate(startDate.getDate() + option.dateDiff);
+        break;
+
+      case DEFAULT_DATE_OPTION_ENUM.LAST_MONTH:
+        currDate.setMonth(currDate.getMonth() - 1);
+        startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+        lastDate = new Date(
+          currDate.getFullYear(),
+          currDate.getMonth(),
+          this.getDaysInMonth(currDate)
+        );
+        break;
+
+      case DEFAULT_DATE_OPTION_ENUM.THIS_MONTH:
+        startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+        lastDate = new Date(
+          currDate.getFullYear(),
+          currDate.getMonth(),
+          this.getDaysInMonth(currDate)
+        );
+        break;
+
+      case DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE:
+        startDate = new Date(currDate.getFullYear(), 0, 1);
+        break;
+
+      case DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE:
+        startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+        break;
+
+      default:
+        break;
     }
+
+    // Update the selected dates
     this.updateSelectedDates(input, startDate, lastDate);
   }
 
