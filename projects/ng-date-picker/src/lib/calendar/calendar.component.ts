@@ -27,7 +27,7 @@ import { CalendarViewData } from './../model/calendar-view-data';
 export class CalendarComponent implements OnInit, AfterViewInit {
   firstCalendarViewData!: CalendarViewData;
   secondCalendarViewData!: CalendarViewData;
-  @Input() selectedDates!: DateRange<Date>;
+  @Input() selectedDates!: DateRange<Date> | null;
   @Input() minDate!: Date;
   @Input() maxDate!: Date;
   private isAllowHoverEvent: boolean = false;
