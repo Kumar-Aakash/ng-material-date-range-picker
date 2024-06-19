@@ -8,7 +8,7 @@
     (click)="toggleDateOptionSelectionList()">
     <mat-label>{{inputLabel}}</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer" id="date-input-field">
-    <mat-icon matSuffix class="cursor-pointer pe-0" (click)="clearSelection($event)" *ngIf="!!dateInput.value">clear</mat-icon>
+    <mat-icon matSuffix class="cursor-pointer pe-0" matTooltip="Clear" (click)="clearSelection($event)" *ngIf="!!dateInput.value">clear</mat-icon>
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
   </mat-form-field>
   <mat-action-list class="w-full custom-ckd-container range-input"
