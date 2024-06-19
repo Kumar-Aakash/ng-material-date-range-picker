@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { CalendarComponent } from './calendar/calendar.component';
 import { NgDatePickerComponent } from './ng-date-picker.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [NgDatePickerComponent, CalendarComponent],
@@ -32,6 +33,7 @@ import { NgDatePickerComponent } from './ng-date-picker.component';
     MatButtonModule,
     MatListModule,
     MatFormFieldModule,
+    MatTooltipModule,
   ],
   exports: [NgDatePickerComponent],
 })

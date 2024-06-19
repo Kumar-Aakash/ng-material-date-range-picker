@@ -6,6 +6,12 @@
 
 This library is build on top of angular material date-picker to provide date range selection with two views and predefined date options.
 
+## Latest Version:
+| Angular Version | Latest Library version |
+| :-------------- | :-------------- | 
+| v16 | 1.2.10 |
+| v17 | 2.2.4 |
+
 ## Getting Started with Ng Material Date Range Picker
 
 The following section explains the steps required to create a simple 2 view Date Range Picker component and demonstrates its basic usage.
@@ -153,6 +159,9 @@ export class AppComponent {
 }
 ```
 In Above example first item of action list is selected and second option is hidden.
+
+#### Note:
+Upon clearing, it resets the minimum and maximum dates, and sets both the range and selectedOption to null.
 
 
 ## Demo's
