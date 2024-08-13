@@ -1,4 +1,8 @@
 # Changelog
+## [1.2.11] - 2024-08-14
+- Bugfixes
+- Added support to show selected option label.
+
 ## [1.2.10] - 2024-06-16
 - Bugfixes
 - Added clear functionality.
