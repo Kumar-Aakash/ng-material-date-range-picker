@@ -43,6 +43,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() listCdkConnectedOverlayOffsetY = 0;
   @Input() listCdkConnectedOverlayOffsetX = 0;
   @Input() selectedOptionIndex = 3;
+  @Input() displaySelectedLabel = false;
 
   // default min date is current date - 10 years.
   @Input() minDate = new Date(
@@ -123,7 +124,8 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     this.updateSelectedDates(
       input,
       selectedDates?.start ?? new Date(),
-      selectedDates?.end ?? new Date()
+      selectedDates?.end ?? new Date(),
+      null
     );
   }
 
@@ -143,6 +145,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     } else {
       this.isCustomRange = true;
     }
+    this.cdref.markForCheck();
   }
 
   /**
@@ -209,7 +212,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     if (option.callBackFunction) {
       const dateRange: DateRange<Date> = option.callBackFunction();
       if (dateRange?.start && dateRange?.end) {
-        this.updateSelectedDates(input, dateRange.start, dateRange.end);
+        this.updateSelectedDates(input, dateRange.start, dateRange.end, option);
         return;
       }
     }
@@ -252,7 +255,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     }
 
     // Update the selected dates
-    this.updateSelectedDates(input, startDate, lastDate);
+    this.updateSelectedDates(input, startDate, lastDate,option);
   }
 
   /**
@@ -265,16 +268,19 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   private updateSelectedDates(
     input: HTMLInputElement,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    option: ISelectDateOption | null
   ): void {
     this.selectedDates = new DateRange<Date>(startDate, endDate);
     input.value =
-      this.getDateString(startDate) + ' - ' + this.getDateString(endDate);
+      this.displaySelectedLabel && option
+        ? option.optionLabel
+        : this.getDateString(startDate) + ' - ' + this.getDateString(endDate);
     const selectedOption = this.dateDropDownOptions.filter(
       (option) => option.isSelected
     )[0];
     const selectedDateEventData: SelectedDateEvent = {
-      range: this.selectedDates,
+      range: JSON.parse(JSON.stringify(this.selectedDates)),
       selectedOption: selectedOption,
     };
     this.onDateSelectionChanged.emit(selectedDateEventData);
@@ -358,8 +364,13 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     // This will update value if option is selected from provided custom list.
     if (selectedOption['callBackFunction']) {
       const dateRange: DateRange<Date> = selectedOption.callBackFunction();
-      if (dateRange.start && dateRange.end) {
-        this.updateSelectedDates(input, dateRange.start, dateRange.end);
+      if (dateRange?.start && dateRange?.end) {
+        this.updateSelectedDates(
+          input,
+          dateRange.start,
+          dateRange.end,
+          selectedOption
+        );
       }
     } else {
       // This will update value if option is selected from default list.
