@@ -1,6 +1,6 @@
 {
   "name": "ng-date-picker",
-  "version": "1.2.11",
+  "version": "1.2.12",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
