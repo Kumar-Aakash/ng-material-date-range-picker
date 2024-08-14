@@ -1,4 +1,7 @@
 # Changelog
+## [2.2.5] - 2024-08-15
+- Supported cloned dates.
+
 ## [2.2.5] - 2024-08-14
 - Bugfixes
 - Added support to show selected option label.
