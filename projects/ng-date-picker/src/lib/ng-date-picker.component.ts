@@ -255,7 +255,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     }
 
     // Update the selected dates
-    this.updateSelectedDates(input, startDate, lastDate,option);
+    this.updateSelectedDates(input, startDate, lastDate, option);
   }
 
   /**
@@ -280,7 +280,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       (option) => option.isSelected
     )[0];
     const selectedDateEventData: SelectedDateEvent = {
-      range: JSON.parse(JSON.stringify(this.selectedDates)),
+      range: new DateRange<Date>(new Date(startDate), new Date(endDate)),
       selectedOption: selectedOption,
     };
     this.onDateSelectionChanged.emit(selectedDateEventData);
