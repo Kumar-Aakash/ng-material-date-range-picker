@@ -423,7 +423,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       case DEFAULT_DATE_OPTION_ENUM.SINGLE_DATE:
       default:
         startDate.setDate(startDate.getDate() + option.dateDiff);
-        lastDate.setDate(startDate.getDate());
+        lastDate.setDate(lastDate.getDate() + option.dateDiff);
         break;
     }
 
