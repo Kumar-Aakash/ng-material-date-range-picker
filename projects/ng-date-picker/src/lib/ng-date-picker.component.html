@@ -5,8 +5,8 @@
  *-->
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
   <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}"
-    (click)="toggleDateOptionSelectionList()">
-    <mat-label>{{inputLabel}}</mat-label>
+    (click)="toggleDateOptionSelectionList($event)">
+    <mat-label (click)="toggleDateOptionSelectionList($event)">{{inputLabel}}</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer" id="date-input-field">
     <mat-icon matSuffix class="cursor-pointer pe-0" matTooltip="Clear" (click)="clearSelection($event)" *ngIf="!!dateInput.value">clear</mat-icon>
     <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
@@ -20,7 +20,7 @@
   </mat-action-list>
 
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="true"
+    [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="cdkConnectedOverlayPush"
     [cdkConnectedOverlayOffsetX]="listCdkConnectedOverlayOffsetX"
     [cdkConnectedOverlayOffsetY]="listCdkConnectedOverlayOffsetY"
     (backdropClick)="!isShowStaticDefaultOptions && toggleDateOptionSelectionList()">
@@ -34,7 +34,7 @@
   </ng-template>
 
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="true"
+    [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="cdkConnectedOverlayPush"
     [cdkConnectedOverlayOffsetX]="cdkConnectedOverlayOffsetX" [cdkConnectedOverlayOffsetY]="cdkConnectedOverlayOffsetY"
     (backdropClick)="toggleCustomDateRangeView()">
     <div [id]="calendarId" class="custom-ckd-container custom-calendar-container"
