@@ -44,6 +44,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() listCdkConnectedOverlayOffsetX = 0;
   @Input() selectedOptionIndex = 3;
   @Input() displaySelectedLabel = false;
+  @Input() cdkConnectedOverlayPush = true;
 
   // default min date is current date - 10 years.
   @Input() minDate = new Date(
@@ -97,7 +98,11 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   /**
    * This method toggles the visibility of default date option's List.
    */
-  toggleDateOptionSelectionList(): void {
+  toggleDateOptionSelectionList(event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
     const selectedOption = this.dateDropDownOptions.filter(
       (option) => option.isSelected
     );

@@ -1,4 +1,8 @@
 # Changelog
+## [2.2.7] - 2024-08-22
+- Supported control on cdkConnectedOverlayOpen.
+- Bugfixes
+
 ## [2.2.6] - 2024-08-15
 - Supported cloned dates.
 
