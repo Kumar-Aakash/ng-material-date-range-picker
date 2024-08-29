@@ -1,4 +1,10 @@
 # Changelog
+## [1.2.14] - 2024-08-29
+- Supported control on cdkConnectedOverlayPositions.
+- Added staticOptionId - to set id for static options
+- Added dynamicOptionId - to set id for dynamic options
+- Bugfixes
+
 ## [1.2.13] - 2024-08-22
 - Supported control on cdkConnectedOverlayOpen.
 - Bugfixes

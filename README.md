@@ -137,6 +137,9 @@ This will display the Date Range Picker in your default browser.
 | `maxDate` | `Date`| **optional**. To specify max date default is current date +10 years. |
 | `selectedOptionIndex` | `number`| **optional**. To default selected option. (by default it is 3 which is last 30 days.) |
 | `displaySelectedLabel` | `boolean`| **optional**. To show the selected option label instead of date range |
+| `cdkConnectedOverlayPositions` | `ConnectedPosition[]`| **optional**. To control the overlay position |
+| `staticOptionId` | `string`| **optional**. To set id of static options container |
+| `dynamicOptionId` | `string`| **optional**. To set id of dynamic options container |
 
 
 #### Events
