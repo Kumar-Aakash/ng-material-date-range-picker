@@ -31,7 +31,8 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   isDateOptionList: boolean = false;
   isCustomRange: boolean = false;
   @Input() inputLabel: string = 'Date Range';
-  @Input() defaultOptionId = 'custom-options';
+  @Input() staticOptionId = 'static-options';
+  @Input() dynamicOptionId = 'dynamic-option';
   @Input() calendarId: string = 'custom-calendar';
   @Input() enableDefaultOptions: boolean = true;
   @Input() selectedDates!: DateRange<Date> | null;
@@ -45,6 +46,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() selectedOptionIndex = 3;
   @Input() displaySelectedLabel = false;
   @Input() cdkConnectedOverlayPush = true;
+  @Input() cdkConnectedOverlayPositions = [];
 
   // default min date is current date - 10 years.
   @Input() minDate = new Date(
@@ -132,6 +134,11 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       selectedDates?.end ?? new Date(),
       null
     );
+    if (this.isCustomRange) {
+      this.resetOptionSelection();
+      this.selectCustomOption();
+      this.isCustomRange = false;
+    }
   }
 
   /**
@@ -141,16 +148,23 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    * @param input HTMLInputElement
    */
   updateSelection(option: ISelectDateOption, input: HTMLInputElement): void {
-    this.resetOptionSelection(option);
-
     this.isDateOptionList = false;
     if (option.optionKey !== DEFAULT_DATE_OPTION_ENUM.CUSTOM) {
       this.isCustomRange = false;
       this.updateDateOnOptionSelect(option, input);
+      this.resetOptionSelection(option);
     } else {
       this.isCustomRange = true;
     }
     this.cdref.markForCheck();
+  }
+
+  // This method sets custom option as selected.
+  selectCustomOption(): void {
+    const customOption = this.dateDropDownOptions.filter(
+      (option) => option.optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM
+    );
+    customOption[0].isSelected = true;
   }
 
   /**
