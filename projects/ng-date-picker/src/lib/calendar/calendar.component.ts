@@ -329,23 +329,16 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   private initSecondCalendar(): void {
     const currDate = new Date();
     this.secondCalendarViewData = new CalendarViewData();
-    
-    if (this.selectedDates?.end && (this.selectedDates.end.getFullYear() !== currDate.getFullYear()
-      || (this.selectedDates.end.getFullYear() === currDate.getFullYear() 
-        && this.selectedDates.end.getMonth() !== currDate.getMonth()
-      )
-    )) { // custom range
-      if (this.selectedDates.end.getMonth() === this.selectedDates?.start?.getMonth() 
-        && this.selectedDates.end.getMonth() === 10 
-        && currDate.getMonth() === 11
-        && this.selectedDates.end.getFullYear() === currDate.getFullYear()
-      ) { // last month
-        this.secondCalendarViewData.minDate = this.getFirstDateOfNextMonth(this._maxDate.cal1);
-      } else {
-        this.secondCalendarViewData.minDate = this.selectedDates.end;
-      }
+
+    if (this.selectedDates.end && this.selectedDates.start 
+      && this.selectedDates.end.getMonth() === this.selectedDates.start.getMonth()
+      && this.selectedDates.end.getFullYear() === this.selectedDates.start.getFullYear()
+      && (this.selectedDates.end.getMonth() !== 11 
+      || (this.selectedDates.end.getFullYear() !== currDate.getFullYear() && this.selectedDates.end.getMonth() === 11))
+    ) { // range for same month
+      this.secondCalendarViewData.minDate = this.getFirstDateOfNextMonth(this.selectedDates.end);
     } else {
-      this.secondCalendarViewData.minDate = this.getFirstDateOfNextMonth(this._maxDate.cal1);
+      this.secondCalendarViewData.minDate = this.getSecondeCalendarMinDate(currDate);
     }
 
     this.secondCalendarViewData.startDate = this.selectedDates?.end ? this.selectedDates.end : currDate;
@@ -359,5 +352,30 @@ export class CalendarComponent implements OnInit, AfterViewInit {
    */
   private getFirstDateOfNextMonth(currDate: Date): Date {
     return new Date(currDate.getFullYear(), currDate.getMonth() + 1, 1);
+  }
+
+  /**
+   * Get second calendar min date
+   * 
+   * @param currDate
+   */
+  private getSecondeCalendarMinDate(currDate: Date): Date {
+    if (this.selectedDates?.end && (this.selectedDates.end.getFullYear() !== currDate.getFullYear()
+      || (this.selectedDates.end.getFullYear() === currDate.getFullYear() 
+        && this.selectedDates.end.getMonth() !== currDate.getMonth()
+      )
+    )) { // custom range
+      if (this.selectedDates.end.getMonth() === this.selectedDates?.start?.getMonth() 
+        && this.selectedDates.end.getMonth() === 10 
+        && currDate.getMonth() === 11
+        && this.selectedDates.end.getFullYear() === currDate.getFullYear()
+      ) { // last month
+        return this.getFirstDateOfNextMonth(this._maxDate.cal1);
+      } else {
+        return this.selectedDates.end;
+      }
+    } else {
+      return this.getFirstDateOfNextMonth(this._maxDate.cal1);
+    }
   }
 }
