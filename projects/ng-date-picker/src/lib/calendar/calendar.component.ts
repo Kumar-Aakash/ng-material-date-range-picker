@@ -338,7 +338,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
     ) { // range for same month
       this.secondCalendarViewData.minDate = this.getFirstDateOfNextMonth(this.selectedDates.end);
     } else {
-      this.secondCalendarViewData.minDate = this.getSecondeCalendarMinDate(currDate);
+      this.secondCalendarViewData.minDate = this.getSecondCalendarMinDate(currDate);
     }
 
     this.secondCalendarViewData.startDate = this.selectedDates?.end ? this.selectedDates.end : currDate;
@@ -359,7 +359,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
    * 
    * @param currDate
    */
-  private getSecondeCalendarMinDate(currDate: Date): Date {
+  private getSecondCalendarMinDate(currDate: Date): Date {
     if (this.selectedDates?.end && (this.selectedDates.end.getFullYear() !== currDate.getFullYear()
       || (this.selectedDates.end.getFullYear() === currDate.getFullYear() 
         && this.selectedDates.end.getMonth() !== currDate.getMonth()
