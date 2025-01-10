@@ -185,8 +185,8 @@ export class CalendarComponent implements OnInit, AfterViewInit {
     }
 
     // force refresh on multi year view
-    if (this.firstCalendarView.yearView && this.secondCalendarView.multiYearView) { 
-      this.secondCalendarView.multiYearView._init();
+    if (classRef.firstCalendarView.yearView && classRef.secondCalendarView.multiYearView) { 
+      classRef.secondCalendarView.multiYearView._init();
     }
 
     setTimeout(() => {
@@ -333,6 +333,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
     if (this.selectedDates.end && this.selectedDates.start 
       && this.selectedDates.end.getMonth() === this.selectedDates.start.getMonth()
       && this.selectedDates.end.getFullYear() === this.selectedDates.start.getFullYear()
+      && currDate.getMonth() !== this.selectedDates.end.getMonth()
       && (this.selectedDates.end.getMonth() !== 11 
       || (this.selectedDates.end.getFullYear() !== currDate.getFullYear() && this.selectedDates.end.getMonth() === 11))
     ) { // range for same month
