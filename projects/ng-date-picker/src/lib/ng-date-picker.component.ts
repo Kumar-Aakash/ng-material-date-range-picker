@@ -420,6 +420,10 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       case DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE:
         startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
         break;
+      case DEFAULT_DATE_OPTION_ENUM.CUSTOM:
+        startDate = this._startDate || startDate.setDate(startDate.getDate() + option.dateDiff);
+        lastDate = this._endDate || lastDate.setDate(lastDate.getDate() + option.dateDiff);
+        break;
       case DEFAULT_DATE_OPTION_ENUM.SINGLE_DATE:
       default:
         startDate.setDate(startDate.getDate() + option.dateDiff);
