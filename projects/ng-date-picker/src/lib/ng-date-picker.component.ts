@@ -374,7 +374,12 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
         dates.start.toDateString() === this.selectedDates.start?.toDateString() &&
         dates.end.toDateString() === this.selectedDates.end?.toDateString()
       ) {
-        calculatedLabel = this._dateDropDownOptions[i].optionLabel;
+        if (this._dateDropDownOptions[i].dateKey !== DATE_DEFAULT_OPTIONS_KEYS.CUSTOM_RANGE) {
+          calculatedLabel = this._dateDropDownOptions[i].optionLabel;
+        } else {
+          calculatedLabel = `${moment(dates.start).format('YYYY-MM-DD')} - ${moment(dates.end).format('YYYY-MM-DD')}`;
+        }
+        
         this._dateDropDownOptions[i].isSelected = true;
       }
     }
@@ -419,6 +424,10 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
         break;
       case DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE:
         startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+        break;
+      case DEFAULT_DATE_OPTION_ENUM.CUSTOM:
+        startDate = this._startDate || startDate.setDate(startDate.getDate() + option.dateDiff);
+        lastDate = this._endDate || lastDate.setDate(lastDate.getDate() + option.dateDiff);
         break;
       case DEFAULT_DATE_OPTION_ENUM.SINGLE_DATE:
       default:
