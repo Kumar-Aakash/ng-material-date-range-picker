@@ -47,6 +47,9 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
   backdropClass = 'date-rage-picker-backdrop';
   date = new FormControl();
+  isMobileView = false;
+  visibleStartIndex: number = 0;
+  visibleCount: number = 3;
 
   @Input() set locale(value: string | undefined) {
     if (value) {
@@ -78,6 +81,19 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       this.updateDefaultDates();
     }
   }
+
+  get visibleDateDropDownOptions(): ISelectDateOption[] {
+    return this._dateDropDownOptions.slice(this.visibleStartIndex, this.visibleStartIndex + this.visibleCount);
+  }
+
+  get isLeftDisabled(): boolean {
+    return this.visibleStartIndex === 0;
+  }
+
+  get isRightDisabled(): boolean {
+    return this.visibleStartIndex + this.visibleCount >= this._dateDropDownOptions.length;
+  }
+
   /** Set date range options */
   @Input() set dateDropDownOptions(defaultDateList: ISelectDateOption[]) {
     if (defaultDateList && defaultDateList.length) {
@@ -127,6 +143,10 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       this._defaultOptionsInUse = true;
     }
     this.calculateLabel();
+    this.isMobileView = window.innerWidth <= 768;
+    window.addEventListener('resize', () => {
+      this.isMobileView = window.innerWidth <= 768;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -140,6 +160,23 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Move to the left when user clicks on left arrow
+   */
+  scrollLeft(): void {
+    if (this.visibleStartIndex > 0) {
+      this.visibleStartIndex--;
+    }
+  }
+
+  /**
+   * Move to the right when user clicks on right arrow
+   */
+  scrollRight(): void {
+    if (this.visibleStartIndex + this.visibleCount < this._dateDropDownOptions.length) {
+      this.visibleStartIndex++;
+    }
+  }
   /**
    * Change locale for datepicker
    *
@@ -329,8 +366,14 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
           case DATE_DEFAULT_OPTIONS_KEYS.LAST7DAYS:
             optionLabel = this.labels.last7daysLabel;
             break;
+          case DATE_DEFAULT_OPTIONS_KEYS.LAST7DAYSEXCLUDETODAY:
+            optionLabel = this.labels.last7daysLabelExcludeToday;
+            break;
           case DATE_DEFAULT_OPTIONS_KEYS.LAST30DAYS:
             optionLabel = this.labels.last30daysLabel;
+            break;
+          case DATE_DEFAULT_OPTIONS_KEYS.LAST30DAYSEXCLUDETODAY:
+            optionLabel = this.labels.last30daysLabelExcludeToday;
             break;
           case DATE_DEFAULT_OPTIONS_KEYS.THIS_MONTH:
             optionLabel = this.labels.thisMonthLabel;
@@ -408,6 +451,10 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
     switch (option.optionKey) {
       case DEFAULT_DATE_OPTION_ENUM.DATE_DIFF:
+        if (option.excludeToday) {
+          lastDate.setDate(lastDate.getDate() - 1);
+        }
+        startDate = new Date(lastDate);
         startDate.setDate(startDate.getDate() + option.dateDiff);
         break;
       case DEFAULT_DATE_OPTION_ENUM.LAST_MONTH:

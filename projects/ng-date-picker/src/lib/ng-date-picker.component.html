@@ -20,16 +20,43 @@
     (backdropClick)="toggleCustomDateRangeView()">
     <div class="custom-ckd-container custom-calendar-container" [class]="{ 'without-default-opt': !showDefaultOptions }">
       <div class="row-1">
-        <div class="default-options-container" *ngIf="dateDropDownOptions && dateDropDownOptions.length && showDefaultOptions">
-          <span *ngFor="let option of dateDropDownOptions">
-            <span
-              *ngIf="option.isVisible"
-              class="option-ele"
-              (click)="updateSelection(option)"
-              [ngClass]="{ 'option-selected': option.isSelected }">
-              {{option.optionLabel}}
+        <div *ngIf="dateDropDownOptions && dateDropDownOptions.length && showDefaultOptions">
+          <div class="default-options-container mobile" *ngIf="isMobileView">
+            <button mat-button
+              (click)="scrollLeft()"
+              [disabled]="isLeftDisabled"
+              aria-label="Previous options">
+              <mat-icon class="scroll-icon">chevron_left</mat-icon>
+            </button>
+            <div class="scrollable-options-wrapper">
+              <span *ngFor="let option of visibleDateDropDownOptions">
+                <span
+                  *ngIf="option.isVisible"
+                  class="option-ele"
+                  (click)="updateSelection(option)"
+                  [ngClass]="{ 'option-selected': option.isSelected }">
+                  {{ option.optionLabel }}
+                </span>
+              </span>
+            </div>
+            <button mat-button
+              (click)="scrollRight()"
+              [disabled]="isRightDisabled"
+              aria-label="Next options">
+              <mat-icon class="scroll-icon">chevron_right</mat-icon>
+            </button>
+          </div>
+          <div class="default-options-container desktop" *ngIf="!isMobileView">
+            <span *ngFor="let option of dateDropDownOptions">
+              <span
+                *ngIf="option.isVisible"
+                class="option-ele"
+                (click)="updateSelection(option)"
+                [ngClass]="{ 'option-selected': option.isSelected }">
+                {{option.optionLabel}}
+              </span>
             </span>
-          </span>
+          </div>
         </div>
         <div class="mt-2 column-2">
           <lib-calendar

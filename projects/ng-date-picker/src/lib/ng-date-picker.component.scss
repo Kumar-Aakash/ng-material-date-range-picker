@@ -142,10 +142,18 @@ mat-list-item {
     font-size: 13px;
     display: inline-block;
     padding: 8px 12px;
+    white-space: normal;
+    max-width: 120px;
+    word-break: break-word;
 
     &.option-selected {
       color: #0072ba;
     }
+  }
+  .scroll-icon {
+    font-size: 26px;
+    height: auto;
+    width: auto;
   }
 }
 

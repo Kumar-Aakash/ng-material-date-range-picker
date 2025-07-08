@@ -27,6 +27,10 @@ export interface ISelectDateOption {
 
   // boolean value used to show or hide label in list.
   isVisible: boolean;
+
+  // boolean value used to show date excluding today
+  excludeToday?: boolean;
+
   callBackFunction?: () => DateRange<Date>;
 }
 
@@ -37,5 +41,6 @@ export class SelectDateOption implements ISelectDateOption {
   dateDiff = 0;
   isSelected = false;
   isVisible = false;
+  excludeToday = false;
   callBackFunction!: () =>  DateRange<Date>;
 }

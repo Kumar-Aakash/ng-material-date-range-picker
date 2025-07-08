@@ -91,7 +91,8 @@ export class AppComponent implements OnDestroy {
 
   private loadTranslations(): void {
     this.translate.get([
-      'Apply', 'Cancel', 'Date', 'Today', 'Yesterday', 'Last 7 Days', 'Last 30 Days', 'This Month', 'Last Month', 'Custom range'
+      'Apply', 'Cancel', 'Date', 'Today', 'Yesterday', 'Last 7 Days', 'Last 30 Days', 'This Month', 'Last Month', 'Custom range',
+      'Last 7 Days (Excl.) Today', 'Last 30 Days (Excl.) Today'
     ])
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(translMessages => {
@@ -102,6 +103,8 @@ export class AppComponent implements OnDestroy {
           todayLabel: translMessages['Today'],
           yesterdayLabel: translMessages['Yesterday'],
           last7daysLabel: translMessages['Last 7 Days'],
+          last7daysLabelExcludeToday: translMessages['Last 7 Days (Excl.) Today'],
+          last30daysLabelExcludeToday: translMessages['Last 30 Days (Excl.) Today'],
           last30daysLabel: translMessages['Last 30 Days'],
           thisMonthLabel: translMessages['This Month'],
           lastMonthLabel: translMessages['Last Month'],
