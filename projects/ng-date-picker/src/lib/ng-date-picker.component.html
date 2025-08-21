@@ -4,20 +4,19 @@
  * @author Aakash Kumar
  *-->
 <div class="date-picker-main" cdkOverlayOrigin #trigger>
-  <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}"
-  (click)="toggleDateOptionSelectionList($event)">
+  <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}" (click)="toggleDateOptionSelectionList($event)">
     <mat-label (click)="toggleDateOptionSelectionList($event)">{{inputLabel}}</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer" id="date-input-field">
-    <mat-icon matSuffix class="cursor-pointer pe-0" matTooltip="Clear" (click)="clearSelection($event)" *ngIf="!!dateInput.value">clear</mat-icon>
-    <mat-icon matSuffix class="cursor-pointer">date_range</mat-icon>
+    <button mat-icon-button matSuffix class="cursor-pointer pe-0 ps-0" matTooltip="Clear" *ngIf="!!dateInput.value"
+      (click)="clearSelection($event)"><mat-icon>clear</mat-icon></button>
+    <button mat-icon-button matSuffix class="cursor-pointer"> <mat-icon>date_range</mat-icon></button>
   </mat-form-field>
 
   @if(dateDropDownOptions && dateDropDownOptions.length && isShowStaticDefaultOptions) {
   <mat-action-list class="w-full custom-ckd-container range-input" [id]="staticOptionId">
     @for (option of dateDropDownOptions; track option.optionKey) {
     @if (option.isVisible) {
-    <mat-list-item [activated]="option.isSelected"
-      (click)="updateSelection(option, dateInput)">{{option.optionLabel}}</mat-list-item>
+    <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, dateInput)">{{option.optionLabel}}</mat-list-item>
     }
     }
   </mat-action-list>
@@ -25,16 +24,14 @@
 
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="false" [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isDateOptionList" [cdkConnectedOverlayPush]="cdkConnectedOverlayPush"
-    [cdkConnectedOverlayOffsetX]="listCdkConnectedOverlayOffsetX"
-    [cdkConnectedOverlayOffsetY]="listCdkConnectedOverlayOffsetY"
-    (overlayOutsideClick)="!isShowStaticDefaultOptions && toggleDateOptionSelectionList()" >
+    [cdkConnectedOverlayOffsetX]="listCdkConnectedOverlayOffsetX" [cdkConnectedOverlayOffsetY]="listCdkConnectedOverlayOffsetY"
+    (overlayOutsideClick)="!isShowStaticDefaultOptions && toggleDateOptionSelectionList()">
 
     @if(dateDropDownOptions && dateDropDownOptions.length && !isShowStaticDefaultOptions) {
     <mat-action-list [id]="dynamicOptionId" class="w-full custom-ckd-container range-input">
       @for (option of dateDropDownOptions; track option.optionKey) {
       @if (option.isVisible) {
-      <mat-list-item [activated]="option.isSelected"
-        (click)="updateSelection(option, dateInput)">{{option.optionLabel}}</mat-list-item>
+      <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, dateInput)">{{option.optionLabel}}</mat-list-item>
       }
       }
     </mat-action-list>
@@ -43,9 +40,8 @@
 
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="false" [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isCustomRange" [cdkConnectedOverlayPush]="cdkConnectedOverlayPush"
-    [cdkConnectedOverlayPositions]="cdkConnectedOverlayPositions"
-    [cdkConnectedOverlayOffsetX]="cdkConnectedOverlayOffsetX" [cdkConnectedOverlayOffsetY]="cdkConnectedOverlayOffsetY"
-    (overlayOutsideClick)="toggleCustomDateRangeView()">
+    [cdkConnectedOverlayPositions]="cdkConnectedOverlayPositions" [cdkConnectedOverlayOffsetX]="cdkConnectedOverlayOffsetX"
+    [cdkConnectedOverlayOffsetY]="cdkConnectedOverlayOffsetY" (overlayOutsideClick)="toggleCustomDateRangeView()">
     <div class="custom-ckd-container custom-calendar-container" [class]="{'without-default-opt':hideDefaultOptions}">
       <div class="row-1">
         <div class="pt-custom br-right column-1" *ngIf="!hideDefaultOptions">
@@ -65,10 +61,10 @@
         <div class="text-end my-2 w-full">
           <div class="footer-content">
             <span id="range-label-text">
-              {{calendar?.selectedDates?.start | date: 'dd/MM/yyyy'}}
+              {{calendar?.selectedDates?.start | date: dateFormat}}
               @if (calendar?.selectedDates?.end) {
               <span> - {{calendar.selectedDates?.end | date:
-                'dd/MM/yyyy'}} </span>
+                dateFormat}} </span>
               }
             </span>
             <div class="d-inline buttons">
