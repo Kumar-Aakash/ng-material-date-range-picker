@@ -1,4 +1,8 @@
 # Changelog
+## [1.2.15] - 2025-08-21
+- Added support for displaying the selected date range in a specified date format on the calendar.  
+- Added a button to for suffix icons. 
+
 ## [1.2.14] - 2024-08-29
 - Supported control on cdkConnectedOverlayPositions.
 - Added staticOptionId - to set id for static options
