@@ -97,6 +97,7 @@ mat-list-item {
   display: block;
   float: left;
 }
+
 .column-2 {
   width: 73%;
   display: block;
@@ -107,6 +108,7 @@ mat-list-item {
   .column-1 {
     display: none;
   }
+
   .column-2 {
     width: 100%;
     display: block;
@@ -130,6 +132,7 @@ mat-list-item {
 }
 
 @media (max-width: 650px) {
+
   .column-1,
   .column-2 {
     width: 100%;
@@ -140,6 +143,7 @@ mat-list-item {
   .column-1 {
     width: 25%;
   }
+
   .column-2 {
     width: 74%;
   }
@@ -149,9 +153,18 @@ mat-list-item {
   .column-1 {
     display: none;
   }
+
   .column-2 {
     width: 100%;
     display: block;
     float: left;
   }
+}
+
+.pe-0 {
+  padding-right: 0;
+}
+
+.ps-0 {
+  padding-left: 0;
 }
