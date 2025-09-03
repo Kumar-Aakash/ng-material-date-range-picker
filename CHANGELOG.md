@@ -1,4 +1,7 @@
 # Changelog
+## [16.0.0] - 2025-09-04
+- Upgraded Angular 17 to Angular 18 Version.  
+
 ## [2.2.9] - 2025-08-21
 - Added support for displaying the selected date range in a specified date format on the calendar.  
 - Added a button to for suffix icons. 
