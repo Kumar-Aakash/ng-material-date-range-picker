@@ -11,6 +11,7 @@ This library is build on top of angular material date-picker to provide date ran
 | :-------------- | :-------------- | 
 | v16 | 1.2.10 |
 | v17 | 2.2.4 |
+| v18 | ^18.0.0 |
 
 ## Getting Started with Ng Material Date Range Picker
 
@@ -47,7 +48,7 @@ To use the 2 view Date Range Picker component in your application, install the f
 
 1. **Angular Material Lib**:
 ```bash
-npm i @angular/material@17
+npm i @angular/material@18
 ```
 
 2. **Add bootstrap css inside angular.json**:
