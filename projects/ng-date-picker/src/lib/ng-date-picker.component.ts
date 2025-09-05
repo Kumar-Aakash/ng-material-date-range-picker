@@ -8,12 +8,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ElementRef,
   EventEmitter,
   inject,
   Input,
   OnInit,
   Output,
+  Signal,
+  signal,
+  WritableSignal,
 } from '@angular/core';
 import { DateRange } from '@angular/material/datepicker';
 import { SelectedDateEvent } from '../public-api';
@@ -39,8 +43,13 @@ import {
 export class NgDatePickerComponent implements OnInit, AfterViewInit {
   public isDateOptionList: boolean = false;
   public isCustomRange: boolean = false;
-  private _dateDropDownOptions: ISelectDateOption[] = [];
+  private _dateDropDownOptions: WritableSignal<ISelectDateOption[]> = signal(
+    []
+  );
 
+  visibleOptions = computed(() =>
+    this._dateDropDownOptions().filter((op) => op.isVisible)
+  );
   @Input() inputLabel: string = 'Date Range';
   @Input() staticOptionId = 'static-options';
   @Input() dynamicOptionId = 'dynamic-options';
@@ -73,14 +82,15 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
   @Input()
   set dateDropDownOptions(defaultDateList: ISelectDateOption[]) {
-    this._dateDropDownOptions = [
+    const options = [
       ...(this.enableDefaultOptions ? getClone(DEFAULT_DATE_OPTIONS) : []),
       ...(defaultDateList ?? []),
     ];
+    this._dateDropDownOptions.set(options);
   }
 
   get dateDropDownOptions(): ISelectDateOption[] {
-    return this._dateDropDownOptions ?? [];
+    return this._dateDropDownOptions() ?? [];
   }
 
   ngOnInit(): void {
@@ -303,7 +313,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     const input: HTMLInputElement =
       this.el.nativeElement.querySelector('#date-input-field');
     if (this.selectedDates?.start && this.selectedDates?.end) {
-      this._dateDropDownOptions.find(
+      this._dateDropDownOptions().find(
         (option) => option.optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM
       )!.isSelected = true;
       input.value = getFormattedDateString(this.selectedDates, this.dateFormat);
@@ -311,7 +321,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const selectedOptions = this._dateDropDownOptions.find(
+    const selectedOptions = this._dateDropDownOptions().find(
       (option) => option.isSelected
     );
 
@@ -362,11 +372,12 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    * Initializes the default date options with the selected index.
    */
   private initializeDefaultOptions(): void {
-    this._dateDropDownOptions = getClone<ISelectDateOption[]>(
-      DEFAULT_DATE_OPTIONS
-    ).map((opt, idx) => ({
-      ...opt,
-      isSelected: idx === this.selectedOptionIndex,
-    }));
+    const options = getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS).map(
+      (opt, idx) => ({
+        ...opt,
+        isSelected: idx === this.selectedOptionIndex,
+      })
+    );
+    this._dateDropDownOptions.set(options);
   }
 }

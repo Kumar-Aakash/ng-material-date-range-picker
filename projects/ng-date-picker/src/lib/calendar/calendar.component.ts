@@ -146,6 +146,7 @@ export class CalendarComponent implements AfterViewInit {
       classRef.cdref.markForCheck();
     }
     classRef.attachHoverEventOnFirstViewDates();
+    classRef.attachHoverEventOnSecondViewDates();
   }
 
   /**
@@ -172,7 +173,7 @@ export class CalendarComponent implements AfterViewInit {
     if (firstCalendar.currentView.toLocaleLowerCase() === 'month' || isForced) {
       const date: Date = new Date(firstCalendar['_clampedActiveDate']);
       const nextMonthDate = getFirstDateOfNextMonth(date);
-      classRef.secondViewMinDate.set(getFirstDateOfNextMonth(nextMonthDate));
+      classRef.secondViewMinDate.set(nextMonthDate);
       classRef.secondCalendarView._goToDateInView(nextMonthDate, 'month');
       classRef.removeDefaultFocus(classRef);
       classRef.cdref.markForCheck();
