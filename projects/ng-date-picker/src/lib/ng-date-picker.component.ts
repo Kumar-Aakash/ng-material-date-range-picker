@@ -21,9 +21,9 @@ import {
 } from '@angular/core';
 import { DateRange } from '@angular/material/datepicker';
 import { SelectedDateEvent } from '../public-api';
-import { DEFAULT_DATE_OPTION_ENUM } from './constant/date-filter-enum';
+import { DATE_OPTION_TYPE } from './constant/date-filter-const';
 import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
-import { ISelectDateOption } from './model/select-date-option';
+import { ISelectDateOption } from './model/select-date-option.model';
 import {
   getClone,
   getDateString,
@@ -43,13 +43,6 @@ import {
 export class NgDatePickerComponent implements OnInit, AfterViewInit {
   public isDateOptionList: boolean = false;
   public isCustomRange: boolean = false;
-  private _dateDropDownOptions: WritableSignal<ISelectDateOption[]> = signal(
-    []
-  );
-
-  visibleOptions = computed(() =>
-    this._dateDropDownOptions().filter((op) => op.isVisible)
-  );
   @Input() inputLabel: string = 'Date Range';
   @Input() staticOptionId = 'static-options';
   @Input() dynamicOptionId = 'dynamic-options';
@@ -78,6 +71,11 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
   private cdref: ChangeDetectorRef = inject(ChangeDetectorRef);
   private el: ElementRef = inject(ElementRef);
+
+  private _dateOptions: WritableSignal<ISelectDateOption[]> = signal([]);
+  visibleOptions = computed(() =>
+    this._dateOptions().filter((op) => op.isVisible)
+  );
   constructor() {}
 
   @Input()
@@ -86,16 +84,16 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       ...(this.enableDefaultOptions ? getClone(DEFAULT_DATE_OPTIONS) : []),
       ...(defaultDateList ?? []),
     ];
-    this._dateDropDownOptions.set(options);
+    this._dateOptions.set(options);
   }
 
   get dateDropDownOptions(): ISelectDateOption[] {
-    return this._dateDropDownOptions() ?? [];
+    return this._dateOptions() ?? [];
   }
 
   ngOnInit(): void {
-    if (this.isDefaultInitializationRequired()) {
-      this.initializeDefaultOptions();
+    if (this.isDefaultInitRequired()) {
+      this.initDefaultOptions();
     }
     this.dateListOptions.emit(this.dateDropDownOptions);
   }
@@ -115,7 +113,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     event?.stopImmediatePropagation();
     const isCustomSelected =
       this.dateDropDownOptions.find((option) => option.isSelected)
-        ?.optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM;
+        ?.optionType === DATE_OPTION_TYPE.CUSTOM;
 
     if (isCustomSelected) {
       this.toggleCustomDateRangeView();
@@ -153,7 +151,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    */
   updateSelection(option: ISelectDateOption, input: HTMLInputElement): void {
     this.isDateOptionList = false;
-    this.isCustomRange = option.optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM;
+    this.isCustomRange = option.optionType === DATE_OPTION_TYPE.CUSTOM;
     if (!this.isCustomRange) {
       resetOptionSelection(this.dateDropDownOptions, option);
       this.updateDateOnOptionSelect(option, input);
@@ -234,12 +232,12 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     let startDate: Date = new Date();
     let lastDate: Date = new Date();
     // Determine the date range based on the option key
-    switch (option.optionKey) {
-      case DEFAULT_DATE_OPTION_ENUM.DATE_DIFF:
-        startDate.setDate(startDate.getDate() + option.dateDiff);
+    switch (option.optionType) {
+      case DATE_OPTION_TYPE.DATE_DIFF:
+        startDate.setDate(startDate.getDate() + (option.dateDiff ?? 0));
         break;
 
-      case DEFAULT_DATE_OPTION_ENUM.LAST_MONTH:
+      case DATE_OPTION_TYPE.LAST_MONTH:
         currDate.setMonth(currDate.getMonth() - 1);
         startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
         lastDate = new Date(
@@ -249,7 +247,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
         );
         break;
 
-      case DEFAULT_DATE_OPTION_ENUM.THIS_MONTH:
+      case DATE_OPTION_TYPE.THIS_MONTH:
         startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
         lastDate = new Date(
           currDate.getFullYear(),
@@ -258,11 +256,11 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
         );
         break;
 
-      case DEFAULT_DATE_OPTION_ENUM.YEAR_TO_DATE:
+      case DATE_OPTION_TYPE.YEAR_TO_DATE:
         startDate = new Date(currDate.getFullYear(), 0, 1);
         break;
 
-      case DEFAULT_DATE_OPTION_ENUM.MONTH_TO_DATE:
+      case DATE_OPTION_TYPE.MONTH_TO_DATE:
         startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
         break;
 
@@ -313,21 +311,21 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     const input: HTMLInputElement =
       this.el.nativeElement.querySelector('#date-input-field');
     if (this.selectedDates?.start && this.selectedDates?.end) {
-      this._dateDropDownOptions().find(
-        (option) => option.optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM
+      this._dateOptions().find(
+        (option) => option.optionType === DATE_OPTION_TYPE.CUSTOM
       )!.isSelected = true;
       input.value = getFormattedDateString(this.selectedDates, this.dateFormat);
       this.cdref.detectChanges();
       return;
     }
 
-    const selectedOptions = this._dateDropDownOptions().find(
+    const selectedOptions = this._dateOptions().find(
       (option) => option.isSelected
     );
 
     if (
       selectedOptions &&
-      selectedOptions.optionKey !== DEFAULT_DATE_OPTION_ENUM.CUSTOM
+      selectedOptions.optionType !== DATE_OPTION_TYPE.CUSTOM
     ) {
       this.updatedFromListValueSelection(selectedOptions, input);
       this.cdref.detectChanges();
@@ -364,20 +362,20 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    *
    * @returns True if default options need to be initialized, otherwise false.
    */
-  private isDefaultInitializationRequired(): boolean {
-    return this.enableDefaultOptions && !this._dateDropDownOptions.length;
+  private isDefaultInitRequired(): boolean {
+    return this.enableDefaultOptions && !this._dateOptions.length;
   }
 
   /**
    * Initializes the default date options with the selected index.
    */
-  private initializeDefaultOptions(): void {
+  private initDefaultOptions(): void {
     const options = getClone<ISelectDateOption[]>(DEFAULT_DATE_OPTIONS).map(
       (opt, idx) => ({
         ...opt,
         isSelected: idx === this.selectedOptionIndex,
       })
     );
-    this._dateDropDownOptions.set(options);
+    this._dateOptions.set(options);
   }
 }

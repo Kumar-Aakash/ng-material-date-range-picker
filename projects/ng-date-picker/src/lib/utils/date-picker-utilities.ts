@@ -1,7 +1,9 @@
-import { DateRange } from '@angular/material/datepicker';
+import { DateRange, MatCalendar } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
-import { DEFAULT_DATE_OPTION_ENUM } from '../constant/date-filter-enum';
-import { ISelectDateOption } from './../model/select-date-option';
+import { DATE_OPTION_TYPE } from '../constant/date-filter-const';
+import { ISelectDateOption } from '../model/select-date-option.model';
+import { ChangeDetectorRef } from '@angular/core';
+import { ActiveDate } from '../model/active-date.model';
 
 /**
  * Resets the selection state for all options
@@ -27,7 +29,7 @@ export function resetOptionSelection(
  */
 export function selectCustomOption(options: ISelectDateOption[]): void {
   const customOption = options.find(
-    (option) => option.optionKey === DEFAULT_DATE_OPTION_ENUM.CUSTOM
+    (option) => option.optionType === DATE_OPTION_TYPE.CUSTOM
   );
   if (customOption) customOption.isSelected = true;
 }
@@ -98,13 +100,13 @@ export function getFormattedDateString(
  */
 export function createOption(
   label: string,
-  key: DEFAULT_DATE_OPTION_ENUM,
+  key: DATE_OPTION_TYPE,
   dateDiff = 0,
   isVisible = true
 ): ISelectDateOption {
   return {
     optionLabel: label,
-    optionKey: key,
+    optionType: key,
     dateDiff,
     isSelected: false,
     isVisible,
@@ -120,7 +122,7 @@ export function createOption(
 export function getDateOfNextMonth(currDate: Date): Date {
   const date = new Date(currDate);
   date.setMonth(currDate.getMonth() + 1);
-  return currDate;
+  return date;
 }
 
 /**
@@ -141,4 +143,49 @@ export function getFirstDateOfNextMonth(currDate: Date): Date {
  */
 export function getDaysInMonth(date: Date): number {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+}
+
+/**
+ * Overrides the `activeDate` setter for a MatCalendar instance, injecting custom handler logic
+ * while preserving the original setter behavior. Useful for reacting to internal date navigation
+ * events (e.g., month changes) in Angular Material's calendar.
+ *
+ * @param calendar - Instance of MatCalendar whose `activeDate` setter will be overridden.
+ * @param cdref - ChangeDetectorRef to trigger view updates after the setter runs.
+ * @param handler - Custom callback function executed whenever `activeDate` is set.
+ */
+export function overrideActiveDateSetter(
+  calendar: MatCalendar<Date>,
+  cdref: ChangeDetectorRef,
+  handler: (date: ActiveDate) => void
+): void {
+  const proto = Object.getPrototypeOf(calendar);
+  const descriptor = Object.getOwnPropertyDescriptor(proto, 'activeDate');
+
+  if (!(descriptor?.set && descriptor?.get)) {
+    console.warn(
+      'overrideActiveDateSetter: activeDate setter/getter not found on MatCalendar prototype.'
+    );
+    return;
+  }
+  const originalSetter = descriptor.set;
+  const originalGetter = descriptor.get;
+
+  Object.defineProperty(calendar, 'activeDate', {
+    configurable: true,
+    enumerable: false,
+    get() {
+      return originalGetter.call(this);
+    },
+
+    set(value: Date) {
+      const activeDate: ActiveDate = {
+        previous: originalGetter.call(this) ?? value,
+        current: value,
+      };
+      originalSetter.call(this, value);
+      handler.call(this, activeDate);
+      cdref.markForCheck();
+    },
+  });
 }

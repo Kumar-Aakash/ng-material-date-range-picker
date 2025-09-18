@@ -9,8 +9,8 @@ This library is build on top of angular material date-picker to provide date ran
 ## Latest Version:
 | Angular Version | Latest Library version |
 | :-------------- | :-------------- | 
-| v16 | 1.2.10 |
-| v17 | 2.2.4 |
+| v16 | 1.2.15 |
+| v17 | 2.3.0 |
 
 ## Getting Started with Ng Material Date Range Picker
 

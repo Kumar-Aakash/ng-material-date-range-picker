@@ -1,7 +1,20 @@
 # Changelog
-## [2.3.0] - 2025-09-04
-- Added Signals for state changes.
-- Fist view not showing start date issue fixed.
+## [2.3.0] - 2025-09-19
+### Added
+- Introduced **Signals** for managing state changes.
+
+### Enhanced
+- Improved handling of the **second view** for better user experience.
+
+### Fixed
+- Start date not showing in the first view when selecting a custom range.
+- Fixed hover issues on second view.
+- Fixed Custom range not visible properly.
+- Resolved flickering issues in the date picker.
+
+### Breaking Changes
+- Renamed `DEFAULT_DATE_OPTION_ENUM` to `OPTION_TYPE`.
+- Replaced `optionKey` with `optionType` in `ISelectDateOption`.
 
 ## [2.2.9] - 2025-08-21
 - Added support for displaying the selected date range in a specified date format on the calendar.  

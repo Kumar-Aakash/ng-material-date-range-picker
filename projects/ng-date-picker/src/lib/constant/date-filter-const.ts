@@ -3,7 +3,9 @@
  *
  * @author Aakash Kumar
  */
-export enum DEFAULT_DATE_OPTION_ENUM {
+export const ACTIVE_DATE_DEBOUNCE = 100;
+
+export enum DATE_OPTION_TYPE {
   DATE_DIFF = 1,
   LAST_MONTH = 2,
   THIS_MONTH = 3,

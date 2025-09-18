@@ -67,7 +67,7 @@
 
 <ng-template #dateOptionList let-options let-input="dateInput" let-optionId="optionId" let-className="className">
   <mat-action-list [ngClass]="className" [id]="optionId">
-    @for (option of options; track option.optionKey) {
+    @for (option of options; track option.optionLabel) {
     <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, input)">
       {{option.optionLabel}}
     </mat-list-item>
