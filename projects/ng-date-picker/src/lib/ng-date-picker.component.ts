@@ -132,15 +132,16 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     input: HTMLInputElement,
     selectedDates: DateRange<Date> | null
   ): void {
+
+    if (this.isCustomRange) {
+      resetOptionSelection(this.dateDropDownOptions);
+      selectCustomOption(this.dateDropDownOptions);
+      this.isCustomRange = false;
+    }
+
     const start = selectedDates?.start ?? new Date();
     const end = selectedDates?.end ?? new Date();
     this.updateSelectedDates(input, start, end, null);
-
-    if (!this.isCustomRange) return;
-
-    resetOptionSelection(this.dateDropDownOptions);
-    selectCustomOption(this.dateDropDownOptions);
-    this.isCustomRange = false;
   }
 
   /**
