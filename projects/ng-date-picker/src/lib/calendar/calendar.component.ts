@@ -1,22 +1,32 @@
 /**
  * @(#)calendar.component.scss Sept 07, 2023
-
+ *
+ * Custom Calendar Component that manages two side-by-side
+ * month views with support for date range selection, hover
+ * highlighting, and navigation controls.
+ *
  * @author Aakash Kumar
  */
-
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
+  inject,
   Input,
-  OnInit,
   Renderer2,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { DateRange, MatCalendar } from '@angular/material/datepicker';
-import { CalendarViewData } from './../model/calendar-view-data';
+import { ActiveDate } from '../model/active-date.model';
+import {
+  getDateOfNextMonth,
+  getFirstDateOfNextMonth,
+  overrideActiveDateSetter,
+} from '../utils/date-picker-utilities';
+import { ACTIVE_DATE_DEBOUNCE } from '../constant/date-filter-const';
 
 @Component({
   selector: 'lib-calendar',
@@ -24,71 +34,77 @@ import { CalendarViewData } from './../model/calendar-view-data';
   styleUrls: ['./calendar.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CalendarComponent implements OnInit, AfterViewInit {
-  firstCalendarViewData!: CalendarViewData;
-  secondCalendarViewData!: CalendarViewData;
-  @Input() selectedDates!: DateRange<Date> | null;
+export class CalendarComponent implements AfterViewInit {
+  firstViewStartDate = signal(new Date());
+  secondViewStartDate = signal(getDateOfNextMonth(this.firstViewStartDate()));
+  secondViewMinDate = signal(
+    getFirstDateOfNextMonth(this.firstViewStartDate())
+  );
+
   @Input() minDate!: Date;
   @Input() maxDate!: Date;
-  private isAllowHoverEvent: boolean = false;
 
   @ViewChild('firstCalendarView') firstCalendarView!: MatCalendar<Date>;
   @ViewChild('secondCalendarView') secondCalendarView!: MatCalendar<Date>;
 
-  constructor(
-    private cdref: ChangeDetectorRef,
-    private el: ElementRef,
-    private renderer: Renderer2
-  ) {}
+  private _selectedDates!: DateRange<Date> | null;
+  private isAllowHoverEvent: boolean = false;
+  private cdref = inject(ChangeDetectorRef);
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
 
-  ngOnInit(): void {
-    this.initFirstCalendar();
-    this.initSecondCalendar();
+  /**
+   * Updates the selected date range and synchronizes both calendar views.
+   */
+  @Input()
+  set selectedDates(selectedDates: DateRange<Date> | null) {
+    this._selectedDates = selectedDates;
+    if (!selectedDates || !(selectedDates.start && selectedDates.end)) return;
+
+    const startDate = selectedDates.start ?? new Date();
+    const endDate = selectedDates.end;
+    this.firstViewStartDate.set(startDate);
+    this.secondViewMinDate.set(getFirstDateOfNextMonth(startDate));
+    const computedEndDate =
+      startDate.getMonth() === endDate.getMonth()
+        ? getDateOfNextMonth(endDate)
+        : endDate;
+    this.secondViewStartDate.set(computedEndDate);
   }
 
+  get selectedDates() {
+    return this._selectedDates;
+  }
+
+  /**
+   * Lifecycle hook that is called after Angular has fully initialized
+   * the component's view (and child views).
+   *
+   * Used here to attach hover events and register active date change
+   * listeners once the calendar views are available in the DOM.
+   */
   ngAfterViewInit(): void {
-    this.addFirstCalendarButtonEvents();
-    this.attachHoverEventOnFirstViewDates();
-    this.attachHoverEventOnSecondViewDates();
-    this.addSecondCalendarButtonEvents();
+    this.attachHoverEvent('firstCalendarView');
+    this.attachHoverEvent('secondCalendarView');
+    this.registerActiveDateChangeEvents();
   }
 
   /**
-   * This method gets all eligible cells on second view for hover event.
-   */
-  attachHoverEventOnSecondViewDates() {
-    const nodes = this.el.nativeElement.querySelectorAll(
-      '#secondCalendarView .mat-calendar-body-cell'
-    );
-    setTimeout(() => this.addHoverEvents(nodes), 200);
-  }
-
-  /**
-   * This method handles second calendar view month selection.
+   * Handles month selection in the first view.
    *
-   * @param event Date
+   * @param event - Selected month date
    */
-  secondViewMonthSelected(event: Date) {
-    this.removeDefaultFocus(this);
-    setTimeout(() => {
-      this.attachHoverEventOnSecondViewDates();
-    }, 300);
+  monthSelected(viewName: string) {
+    if (viewName === 'secondCalendarView') {
+      this.removeDefaultFocus(this);
+    }
+    this.attachHoverEvent(viewName);
   }
 
   /**
-   * This method handles first calendar view month selection.
+   * Updates the selected date range when a date is clicked.
    *
-   * @param event Date
-   */
-  monthSelected(event: Date) {
-    this.secondCalendarView._goToDateInView(event, 'year');
-    setTimeout(() => this.handleFirstCalendarNextEvent(this, true), 1);
-  }
-
-  /**
-   * This method updates the date selection range.
-   *
-   * @param date Date
+   * @param date - Date clicked by the user
    */
   updateDateRangeSelection(date: Date | null): void {
     const selectedDates = this.selectedDates;
@@ -97,71 +113,122 @@ export class CalendarComponent implements OnInit, AfterViewInit {
       (selectedDates.start && selectedDates.end) ||
       (selectedDates.start && date && selectedDates.start > date)
     ) {
-      this.selectedDates = new DateRange<Date>(date, null);
+      this._selectedDates = new DateRange<Date>(date, null);
       this.isAllowHoverEvent = true;
     } else {
       this.isAllowHoverEvent = false;
-      this.selectedDates = new DateRange<Date>(selectedDates.start, date);
+      this._selectedDates = new DateRange<Date>(selectedDates.start, date);
     }
     this.cdref.markForCheck();
   }
 
   /**
-   * This method handles First calendar prev button event.
-   * @param classRef CalendarComponent
+   * Registers event handlers for active date changes on both calendar views.
+   *
+   * This method overrides the default `activeDate` property setter of each
+   * calendar view to ensure custom handlers are executed whenever the
+   * active date changes.
    */
-  private handleFirstCalDatePrevEvent(classRef: CalendarComponent): void {
-    const leftDateCalender = classRef.firstCalendarView;
-    if (leftDateCalender.currentView.toLocaleLowerCase() === 'month') {
-      const date: Date = new Date(leftDateCalender['_clampedActiveDate']);
-      classRef.secondCalendarView.minDate =
-        classRef.getFirstDateOfNextMonth(date);
-      classRef.cdref.markForCheck();
-    }
-    classRef.attachHoverEventOnFirstViewDates();
-  }
-
-  /**
-   * This method gets all eligible cells on first view for hover event.
-   */
-  private attachHoverEventOnFirstViewDates() {
-    const nodes = this.el.nativeElement.querySelectorAll(
-      '#firstCalendarView .mat-calendar-body-cell'
+  private registerActiveDateChangeEvents(): void {
+    overrideActiveDateSetter(
+      this.firstCalendarView,
+      this.cdref,
+      this.onFirstViewActiveDateChange.bind(this)
     );
-    setTimeout(() => this.addHoverEvents(nodes), 200);
+    overrideActiveDateSetter(
+      this.secondCalendarView,
+      this.cdref,
+      this.onSecondViewActiveDateChange.bind(this)
+    );
   }
 
   /**
-   * This method handle the next button event.
+   * Handles the event when the active date of the first calendar view changes.
    *
-   * @param classRef CalendarComponent
-   * @param isForced boolean
+   * @param activeDate - Object containing `previous` and `current` date values.
    */
-  private handleFirstCalendarNextEvent(
-    classRef: CalendarComponent,
-    isForced = false
-  ): void {
-    const firstCalendar = classRef.firstCalendarView;
-    if (firstCalendar.currentView.toLocaleLowerCase() === 'month' || isForced) {
-      const date: Date = new Date(firstCalendar['_clampedActiveDate']);
-      const nextMonthDate = classRef.getFirstDateOfNextMonth(date);
-      classRef.secondCalendarView.minDate = nextMonthDate;
-      classRef.secondCalendarView._goToDateInView(nextMonthDate, 'month');
-      classRef.removeDefaultFocus(classRef);
-      classRef.cdref.markForCheck();
+  private onFirstViewActiveDateChange(activeDate: ActiveDate): void {
+    const handler = this.isPrevious(activeDate)
+      ? () => this.handleFirstViewPrevEvent(activeDate)
+      : () => this.handleFirstViewNextEvent(activeDate.current);
+
+    // Delay execution because active date event fires before view update
+    setTimeout(handler, ACTIVE_DATE_DEBOUNCE);
+  }
+
+  /**
+   * Handles the event when the active date of the second calendar view changes.
+   *
+   * @param activeDate - Object containing `previous` and `current` date values.
+   */
+  private onSecondViewActiveDateChange(activeDate: ActiveDate): void {
+    this.attachHoverEvent('secondCalendarView');
+  }
+
+  /**
+   * Handles the "next" navigation event for the first calendar view.
+   *
+   * @param currDate - The currently active date in the first calendar view.
+   * @param force - Optional flag that can be used to enforce updates (not used in current logic).
+   */
+  private handleFirstViewNextEvent(currDate: Date, force?: boolean): void {
+    if (this.firstCalendarView.currentView.toLocaleLowerCase() !== 'month') {
+      return;
     }
-    setTimeout(() => {
-      classRef.attachHoverEventOnFirstViewDates();
-      classRef.attachHoverEventOnSecondViewDates();
-    }, 300);
+    this.attachHoverEvent('firstCalendarView');
+    const nextMonthDate = getFirstDateOfNextMonth(currDate);
+    let secondViewActiveDate = this.secondCalendarView.activeDate;
+    if (nextMonthDate < secondViewActiveDate) {
+      this.secondViewMinDate.set(nextMonthDate);
+      this.attachHoverEvent('secondCalendarView');
+      return;
+    }
+    secondViewActiveDate = getDateOfNextMonth(currDate);
+    this.secondViewMinDate.set(nextMonthDate);
+    this.secondCalendarView.activeDate = secondViewActiveDate;
+    this.cdref.detectChanges();
   }
 
   /**
-   * This method remove active focus on second view.
+   * Handles the "previous" navigation event for the first calendar view.
    *
-   * @param classRef CalendarComponent
+   * @param activeDate - Object containing `previous` and `current` date values.
    */
-  removeDefaultFocus(classRef: CalendarComponent): void {
+  private handleFirstViewPrevEvent(activeDate: ActiveDate): void {
+    if (this.firstCalendarView.currentView.toLocaleLowerCase() !== 'month') {
+      return;
+    }
+    this.secondViewMinDate.set(getFirstDateOfNextMonth(activeDate.current));
+    this.attachHoverEvent('firstCalendarView');
+    this.attachHoverEvent('secondCalendarView');
+  }
+
+  /**
+   * Checks whether the previous date is greater than the current date.
+   *
+   * @param activeDate - Object containing `previous` and `current` date values.
+   * @returns `true` if the previous date is later than the current date, otherwise `false`.
+   */
+  private isPrevious(activeDate: ActiveDate): boolean {
+    return activeDate.previous > activeDate.current;
+  }
+
+  /**
+   * Attaches hover events to all date cells in the first view.
+   */
+  private attachHoverEvent(viewId: string) {
+    const nodes = this.el.nativeElement.querySelectorAll(
+      `#${viewId} .mat-calendar-body-cell`
+    );
+    setTimeout(() => this.addHoverEvents(nodes), ACTIVE_DATE_DEBOUNCE);
+  }
+
+  /**
+   * Removes active focus from the second view.
+   *
+   * @param classRef - Reference to this component
+   */
+  private removeDefaultFocus(classRef: CalendarComponent): void {
     setTimeout(() => {
       const btn: HTMLButtonElement[] =
         classRef.el.nativeElement.querySelectorAll(
@@ -174,54 +241,9 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * This method attaches next and prev events on buttons.
+   * Updates the selection range dynamically on hover.
    *
-   */
-  private addFirstCalendarButtonEvents(): void {
-    const monthPrevBtn = this.el.nativeElement.querySelectorAll(
-      '#firstCalendarView .mat-calendar-previous-button'
-    );
-    const monthNextBtn = this.el.nativeElement.querySelectorAll(
-      '#firstCalendarView .mat-calendar-next-button'
-    );
-    this.attachClickEvent(monthPrevBtn, this.handleFirstCalDatePrevEvent);
-    this.attachClickEvent(monthNextBtn, this.handleFirstCalendarNextEvent);
-  }
-
-  /**
-   * This method attaches next and prev events on buttons.
-   *
-   */
-  private addSecondCalendarButtonEvents(): void {
-    const monthPrevBtn: any[] = this.el.nativeElement.querySelectorAll(
-      '#secondCalendarView .mat-calendar-previous-button'
-    );
-    const monthNextBtn: any[] = this.el.nativeElement.querySelectorAll(
-      '#secondCalendarView .mat-calendar-next-button'
-    );
-    if (!monthPrevBtn || !monthNextBtn) {
-      return;
-    }
-    this.attachSecondViewClickEvent(monthPrevBtn);
-    this.attachSecondViewClickEvent(monthNextBtn);
-  }
-
-  /**
-   * This method attach click event of next and prev button on second view.
-   *
-   */
-  private attachSecondViewClickEvent(nodes: any): void {
-    Array.from(nodes).forEach((button) => {
-      this.renderer.listen(button, 'click', () => {
-        this.attachHoverEventOnSecondViewDates();
-      });
-    });
-  }
-
-  /**
-   * This method will update the range selection on mouse hover event.
-   *
-   * @param date Date
+   * @param date - Hovered date
    */
   private updateSelectionOnMouseHover(date: Date): void {
     const selectedDates = this.selectedDates;
@@ -239,9 +261,9 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * This method attach hover event on specified nodes.
+   * Attaches hover events to given nodes to update range selection.
    *
-   * @param nodes any
+   * @param nodes - Date cell nodes
    */
   private addHoverEvents(nodes: any): void {
     if (!nodes) {
@@ -255,54 +277,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
         }
       });
     });
-  }
-
-  /**
-   * This method attach the next and prev events on specified nodes.
-   *
-   * @param nodes any
-   * @param handler Function
-   */
-  private attachClickEvent(nodes: any, handler: Function): void {
-    if (!nodes) {
-      return;
-    }
-    Array.from(nodes).forEach((button) => {
-      this.renderer.listen(button, 'click', () => {
-        handler(this);
-      });
-    });
-  }
-
-  /**
-   * This method initialize data for first calendar view.
-   */
-  private initFirstCalendar(): void {
-    this.firstCalendarViewData = new CalendarViewData();
-    this.firstCalendarViewData.startDate = new Date();
-  }
-
-  /**
-   * This method initialize data for second calendar view.
-   */
-  private initSecondCalendar(): void {
-    const currDate = new Date();
-    this.secondCalendarViewData = new CalendarViewData();
-    this.secondCalendarViewData.minDate =
-      this.getFirstDateOfNextMonth(currDate);
-    currDate.setMonth(currDate.getMonth() + 1);
-    this.secondCalendarViewData.startDate = this.selectedDates?.end
-      ? this.selectedDates.end
-      : currDate;
-  }
-
-  /**
-   * This method returns the next months first date.
-   *
-   * @param currDate Date
-   * @returns Date
-   */
-  private getFirstDateOfNextMonth(currDate: Date): Date {
-    return new Date(currDate.getFullYear(), currDate.getMonth() + 1, 1);
+    this.firstCalendarView['_changeDetectorRef'].markForCheck();
+    this.secondCalendarView['_changeDetectorRef'].markForCheck();
   }
 }

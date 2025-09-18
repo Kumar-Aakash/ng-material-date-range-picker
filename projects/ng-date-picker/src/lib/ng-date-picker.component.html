@@ -12,14 +12,10 @@
     <button mat-icon-button matSuffix class="cursor-pointer"> <mat-icon>date_range</mat-icon></button>
   </mat-form-field>
 
-  @if(dateDropDownOptions && dateDropDownOptions.length && isShowStaticDefaultOptions) {
-  <mat-action-list class="w-full custom-ckd-container range-input" [id]="staticOptionId">
-    @for (option of dateDropDownOptions; track option.optionKey) {
-    @if (option.isVisible) {
-    <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, dateInput)">{{option.optionLabel}}</mat-list-item>
-    }
-    }
-  </mat-action-list>
+  @if(dateDropDownOptions.length && isShowStaticDefaultOptions) {
+  <ng-container *ngTemplateOutlet="dateOptionList; context: { $implicit: visibleOptions(), dateInput: dateInput,
+        optionId: staticOptionId, className:'w-full custom-ckd-container range-input'
+        }"></ng-container>
   }
 
   <ng-template cdkConnectedOverlay [cdkConnectedOverlayHasBackdrop]="false" [cdkConnectedOverlayOrigin]="trigger"
@@ -27,14 +23,10 @@
     [cdkConnectedOverlayOffsetX]="listCdkConnectedOverlayOffsetX" [cdkConnectedOverlayOffsetY]="listCdkConnectedOverlayOffsetY"
     (overlayOutsideClick)="!isShowStaticDefaultOptions && toggleDateOptionSelectionList()">
 
-    @if(dateDropDownOptions && dateDropDownOptions.length && !isShowStaticDefaultOptions) {
-    <mat-action-list [id]="dynamicOptionId" class="w-full custom-ckd-container range-input">
-      @for (option of dateDropDownOptions; track option.optionKey) {
-      @if (option.isVisible) {
-      <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, dateInput)">{{option.optionLabel}}</mat-list-item>
-      }
-      }
-    </mat-action-list>
+    @if(dateDropDownOptions.length && !isShowStaticDefaultOptions) {
+    <ng-container *ngTemplateOutlet="dateOptionList; context: { $implicit: visibleOptions(), dateInput: dateInput,
+        optionId: dynamicOptionId, className:'w-full custom-ckd-container range-input'
+        }"></ng-container>
     }
   </ng-template>
 
@@ -45,14 +37,7 @@
     <div class="custom-ckd-container custom-calendar-container" [class]="{'without-default-opt':hideDefaultOptions}">
       <div class="row-1">
         <div class="pt-custom br-right column-1" *ngIf="!hideDefaultOptions">
-          <mat-action-list>
-            @for (option of dateDropDownOptions; track option.optionKey) {
-            @if(option.isVisible) {
-            <mat-list-item (click)="updateSelection(option, dateInput)"
-              [activated]="option.isSelected">{{option.optionLabel}}</mat-list-item>
-            }
-            }
-          </mat-action-list>
+          <ng-container *ngTemplateOutlet="dateOptionList; context: { $implicit: visibleOptions(), dateInput: dateInput}"></ng-container>
         </div>
         <div class="mt-2 column-2"><lib-calendar [selectedDates]="selectedDates" #calendar [minDate]="minDate"
             [maxDate]="maxDate"></lib-calendar></div>
@@ -79,3 +64,13 @@
     </div>
   </ng-template>
 </div>
+
+<ng-template #dateOptionList let-options let-input="dateInput" let-optionId="optionId" let-className="className">
+  <mat-action-list [ngClass]="className" [id]="optionId">
+    @for (option of options; track option.optionLabel) {
+    <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, input)">
+      {{option.optionLabel}}
+    </mat-list-item>
+    }
+  </mat-action-list>
+</ng-template>
