@@ -1,5 +1,5 @@
 # Changelog
-## [2.3.0] - 2025-09-19
+## [2.3.0] - 2025-09-18
 ### Added
 - Introduced **Signals** for managing state changes.
 
@@ -11,6 +11,7 @@
 - Fixed hover issues on second view.
 - Fixed Custom range not visible properly.
 - Resolved flickering issues in the date picker.
+- Fixed Custom Button issue on static calendar.
 
 ### Breaking Changes
 - Renamed `DEFAULT_DATE_OPTION_ENUM` to `OPTION_TYPE`.
