@@ -14,7 +14,7 @@
 - Fixed Custom Button issue on static calendar.
 
 ### Breaking Changes
-- Renamed `DEFAULT_DATE_OPTION_ENUM` to `OPTION_TYPE`.
+- Renamed `DEFAULT_DATE_OPTION_ENUM` to `DATE_OPTION_TYPE`.
 - Replaced `optionKey` with `optionType` in `ISelectDateOption`.
 
 ## [2.2.9] - 2025-08-21
