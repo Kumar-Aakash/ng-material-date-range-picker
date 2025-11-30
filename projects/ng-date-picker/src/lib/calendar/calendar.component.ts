@@ -29,6 +29,7 @@ import {
 import { ACTIVE_DATE_DEBOUNCE } from '../constant/date-filter-const';
 
 @Component({
+  standalone: false,
   selector: 'lib-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css'],
