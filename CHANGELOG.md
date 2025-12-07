@@ -1,6 +1,6 @@
 # Changelog
-## [3.0.0] - 2025-09-22
+## [4.0.0] - 2025-12-07
 ### Changed
-- Upgraded from Angular 17 to Angular 18
-- Upgraded from Angular Material 17 to Angular Material 18
+- Upgraded from Angular 18 to Angular 19
+- Upgraded from Angular Material 18 to Angular Material 19
 

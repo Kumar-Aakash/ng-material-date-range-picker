@@ -12,6 +12,7 @@ This library is build on top of angular material date-picker to provide date ran
 | v16 | 1.2.15 |
 | v17 | 2.3.0 |
 | v18 | 3.0.0 |
+| v19 | 4.0.0 |
 
 ## Getting Started with Ng Material Date Range Picker
 
@@ -21,8 +22,8 @@ The following section explains the steps required to create a simple 2 view Date
 
 To use the 2 view Date Range Picker component in your application, install the following dependency packages:
 
-    1. angular (version 17.x)
-    2. angular-material (version 17.x)
+    1. angular (version 19.x)
+    2. angular-material (version 19.x)
 
 ### Setup Angular Environment
 
@@ -48,10 +49,10 @@ To use the 2 view Date Range Picker component in your application, install the f
 
 1. **Angular Material Lib**:
 ```bash
-npm i @angular/material@17
+npm i @angular/material@19
 ```
 
-2. **Add bootstrap css inside angular.json**:
+2. **Add bootstrap css inside angular.json (optional)**:
 ```bash
 "styles": [
         "src/styles.css",
