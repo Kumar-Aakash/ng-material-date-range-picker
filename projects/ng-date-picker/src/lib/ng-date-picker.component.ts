@@ -35,6 +35,7 @@ import {
 } from './utils/date-picker-utilities';
 
 @Component({
+  standalone: false,
   selector: 'ng-date-range-picker',
   templateUrl: './ng-date-picker.component.html',
   styleUrls: ['./ng-date-picker.component.scss'],
