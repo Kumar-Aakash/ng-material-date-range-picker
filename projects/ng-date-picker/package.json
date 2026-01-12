@@ -1,6 +1,6 @@
 {
   "name": "ng-material-date-range-picker",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "This library provides the date range selection with two views.",
   "peerDependencies": {
     "@angular/core": "^20.0.0",
