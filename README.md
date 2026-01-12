@@ -13,7 +13,7 @@ This library is build on top of angular material date-picker to provide date ran
 | v17 | 2.3.0 |
 | v18 | 3.0.0 |
 | v19 | 4.0.1 |
-| v19 | 5.0.0 |
+| v20 | 5.0.0 |
 
 ## Getting Started with Ng Material Date Range Picker
 
