@@ -1,6 +1,6 @@
 {
   "name": "ng-date-picker",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "scripts": {
     "ng": "ng",
     "build": "ng build",
