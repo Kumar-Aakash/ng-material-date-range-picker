@@ -61,6 +61,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() displaySelectedLabel = false;
   @Input() cdkConnectedOverlayPush = true;
   @Input() cdkConnectedOverlayPositions = [];
+  @Input() allowSingleDateSelection = true;
 
   // default min date is current date - 10 years.
   @Input() minDate = getDateWithOffset(-10);
@@ -133,7 +134,10 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     input: HTMLInputElement,
     selectedDates: DateRange<Date> | null
   ): void {
-
+    if (this.allowSingleDateSelection && !selectedDates?.end) {
+      const date = selectedDates?.start  ?? new Date();
+      selectedDates = new DateRange<Date>(date, date);
+    }
     if (this.isCustomRange) {
       resetOptionSelection(this.dateDropDownOptions);
       selectCustomOption(this.dateDropDownOptions);
