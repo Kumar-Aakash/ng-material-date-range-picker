@@ -78,7 +78,7 @@
             <div class="d-inline buttons">
               <button mat-button mat-raised-button class="p-3 mx-2" (click)="isCustomRange=false;">Cancel</button>
               <button mat-button mat-raised-button color="primary" class="ms-2 p-3"
-                [class.disabled]="!(calendar?.selectedDates?.start && calendar?.selectedDates?.end)"
+                [class.disabled]="!(calendar?.selectedDates?.start && (calendar?.selectedDates?.end || allowSingleDateSelection))"
                 (click)="updateCustomRange(dateInput,calendar.selectedDates);">&nbsp;Apply&nbsp;</button>
             </div>
           </div>
