@@ -171,6 +171,10 @@ In Above example first item of action list is selected and second option is hidd
 #### Note:
 Upon clearing, it resets the minimum and maximum dates, and sets both the range and selectedOption to null.
 
+## Styleing
+
+The project prefixes custom classes with `ndp-`.
+
 
 ## Demo's
 [Demo 1](https://techtose-ng-date-range-picker.netlify.app/dashboards/analytics)

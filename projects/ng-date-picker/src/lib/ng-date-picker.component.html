@@ -3,7 +3,7 @@
 
  * @author Aakash Kumar
  *-->
-<div class="date-picker-main" cdkOverlayOrigin #trigger>
+<div class="date-picker-main ndp-main" cdkOverlayOrigin #trigger>
   <mat-form-field class="w-full" [class]="{'display-hidden':isShowStaticDefaultOptions}" (click)="toggleDateOptionSelectionList($event)">
     <mat-label (click)="toggleDateOptionSelectionList($event)">{{inputLabel}}</mat-label>
     <input matInput readonly="readonly" #dateInput class="cursor-pointer" id="date-input-field">
@@ -22,7 +22,7 @@
         $implicit: visibleOptions(),
         dateInput: dateInput,
         optionId: staticOptionId,
-        className:'w-full custom-ckd-container range-input',
+        className:'w-full custom-ckd-container ndp-cdk-container range-input',
       }"
     ></ng-container>
   }
@@ -39,7 +39,7 @@
           $implicit: visibleOptions(),
           dateInput: dateInput,
           optionId: dynamicOptionId,
-          className:'w-full custom-ckd-container range-input',
+          className:'w-full custom-ckd-container ndp-cdk-container range-input',
         }"
       ></ng-container>
     }
@@ -50,7 +50,7 @@
     [cdkConnectedOverlayPositions]="cdkConnectedOverlayPositions"
     [cdkConnectedOverlayOffsetX]="cdkConnectedOverlayOffsetX" [cdkConnectedOverlayOffsetY]="cdkConnectedOverlayOffsetY"
     (overlayOutsideClick)="toggleCustomDateRangeView()">
-    <div class="custom-ckd-container custom-calendar-container" [class]="{'without-default-opt':hideDefaultOptions}">
+    <div class="custom-ckd-container ndp-cdk-container custom-calendar-container ndp-calendar-container" [class]="{'without-default-opt':hideDefaultOptions}">
       <div class="row-1">
         @if (!hideDefaultOptions) {
           <div class="pt-custom br-right column-1">
