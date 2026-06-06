@@ -13,8 +13,10 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   inject,
   Input,
+  Output,
   Renderer2,
   signal,
   ViewChild,
@@ -44,6 +46,9 @@ export class CalendarComponent implements AfterViewInit {
 
   @Input() minDate!: Date;
   @Input() maxDate!: Date;
+
+  /** Emits when the user changes the selection by clicking dates in the views. */
+  @Output() selectedDatesChange = new EventEmitter<DateRange<Date>>();
 
   @ViewChild('firstCalendarView') firstCalendarView!: MatCalendar<Date>;
   @ViewChild('secondCalendarView') secondCalendarView!: MatCalendar<Date>;
@@ -120,6 +125,7 @@ export class CalendarComponent implements AfterViewInit {
       this.isAllowHoverEvent = false;
       this._selectedDates = new DateRange<Date>(selectedDates.start, date);
     }
+    this.selectedDatesChange.emit(this._selectedDates);
     this.cdref.markForCheck();
   }
 

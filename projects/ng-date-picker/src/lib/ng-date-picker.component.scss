@@ -113,6 +113,18 @@ mat-list-item.mdc-list-item--activated {
   }
 }
 
+// Editable start/end inputs shown in the footer when enableEditableDates is on.
+.ndp-date-inputs {
+  display: flex;
+  gap: 8px;
+  margin-right: auto; // keep the inputs left, push the buttons to the right
+  align-items: flex-start; // don't stretch one field to match the other's error height
+}
+
+.ndp-date-field {
+  width: 150px;
+}
+
 
 .column-1 {
   flex: 0 0 25%;
