@@ -13,6 +13,16 @@ mat-list-item {
   height: 35px;
 }
 
+// Make the selected (activated) option clearly visible - the M3 theme leaves
+// the activated state of an action-list item unstyled. Consumers can override
+// via the --ndp-selected-option-bg custom property.
+mat-list-item.mdc-list-item--activated {
+  background-color: var(
+    --ndp-selected-option-bg,
+    var(--mat-sys-secondary-container, rgba(0, 0, 0, 0.08))
+  );
+}
+
 ::ng-deep.cdk-overlay-pane:has(.custom-ckd-container),
 ::ng-deep.cdk-overlay-pane:has(.ndp-cdk-container) {
   width: 100%;

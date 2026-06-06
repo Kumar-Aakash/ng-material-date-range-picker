@@ -134,6 +134,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     if (this.isCustomRange) {
       resetOptionSelection(this.dateDropDownOptions);
       selectCustomOption(this.dateDropDownOptions);
+      this.syncOptionSelection();
       this.isCustomRange = false;
     }
 
@@ -158,7 +159,18 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       resetOptionSelection(this.dateDropDownOptions, option);
       this.updateDateOnOptionSelect(option, input);
     }
+    this.syncOptionSelection();
     this.cdref.markForCheck();
+  }
+
+  /**
+   * Re-emits the options signal after an in-place selection change so the
+   * OnPush views (bound to the `visibleOptions` computed) reliably reflect the
+   * new `isSelected` state - the same notification the initial signal `set`
+   * provides.
+   */
+  private syncOptionSelection(): void {
+    this._dateOptions.update((options) => [...options]);
   }
 
   /**
@@ -179,6 +191,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     this.maxDate = getDateWithOffset(10);
     this.selectedDates = null;
     resetOptionSelection(this.dateDropDownOptions);
+    this.syncOptionSelection();
     this.clearDateInput();
     this.cdref.markForCheck();
     const selectedDateEventData: SelectedDateEvent = {
