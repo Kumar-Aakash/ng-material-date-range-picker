@@ -9,26 +9,19 @@
 
 .calendar-container {
   width: 100%;
-  display: block;
-  float: left;
+  display: flex;
 }
 
 .first-view,
 .second-view {
-  width: 50%;
-  display: block;
-  float: left;
-}
-
-.first-view,
-.second-view {
+  flex: 1 1 50%;
+  min-width: 0; /* allow each calendar to shrink within its half */
   margin-top: 0.5rem;
 }
 
 @media (max-width: 490px) {
-
-  .first-view,
-  .second-view {
-    width: 100%;
+  /* Stack the two calendar views; align-items: stretch makes each full width. */
+  .calendar-container {
+    flex-direction: column;
   }
 }
