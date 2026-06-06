@@ -67,17 +67,17 @@
             [maxDate]="maxDate"></lib-calendar></div>
       </div>
       <div class="row-2 br-top">
-        <div class="text-end my-2 w-full">
-          <div class="footer-content">
+        <div class="text-end w-full">
+          <div class="footer-content ndp-footer-content">
             <span id="range-label-text">
               {{calendar?.selectedDates?.start | date: dateFormat}}
               @if (calendar?.selectedDates?.end) {
                 <span> - {{calendar.selectedDates?.end | date: dateFormat}} </span>
               }
             </span>
-            <div class="d-inline buttons">
-              <button mat-button mat-raised-button class="p-3 mx-2" (click)="isCustomRange=false;">Cancel</button>
-              <button mat-button mat-raised-button color="primary" class="ms-2 p-3"
+            <div class="buttons">
+              <button mat-button mat-raised-button (click)="isCustomRange=false;">Cancel</button>
+              <button mat-button mat-raised-button color="primary"
                 [class.disabled]="!(calendar?.selectedDates?.start && calendar?.selectedDates?.end)"
                 (click)="updateCustomRange(dateInput,calendar.selectedDates);">&nbsp;Apply&nbsp;</button>
             </div>

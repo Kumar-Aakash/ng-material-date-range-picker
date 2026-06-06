@@ -71,28 +71,27 @@ mat-list-item {
   width: 100%;
   display: block;
   float: left;
+  box-sizing: border-box;
 }
 
 .row-2 {
-  padding: 0.7rem;
+  padding: 16px;
 }
 
-.footer-content {
-  width: 100%;
+.footer-content, .ndp-footer-content {
   align-items: center;
   display: flex;
   text-align: right;
   justify-content: end;
-  gap: 10px;
-  margin-right: 2rem;
+  gap: 16px; // Gap between label and buttons
   text-overflow: ellipsis;
+
+  .buttons {
+    display: flex;
+    gap: 8px; // Gap between buttons
+  }
 }
 
-.buttons {
-  margin-right: 1.5rem;
-  display: flex;
-  gap: 10px;
-}
 
 .column-1 {
   width: 25%;
@@ -119,17 +118,17 @@ mat-list-item {
 }
 
 @media (max-width: 400px) {
-  .footer-content {
+  .footer-content, .ndp-footer-content {
     display: block;
+
+    .buttons {
+      float: right;
+      margin-top: 20px;
+    }
   }
 
   #range-label-text {
     margin-right: 1.5rem;
-  }
-
-  .buttons {
-    float: right;
-    margin-top: 20px;
   }
 }
 
