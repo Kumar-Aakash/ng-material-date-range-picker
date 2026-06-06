@@ -171,6 +171,47 @@ In Above example first item of action list is selected and second option is hidd
 #### Note:
 Upon clearing, it resets the minimum and maximum dates, and sets both the range and selectedOption to null.
 
+## Parsing human-readable dates
+
+The library exports a small, dependency-free `parseHumanDate` helper that turns
+human-readable expressions into a `Date`. It tries, in order:
+
+1. **Date math** (Grafana/Elasticsearch style): `now`, `now-7d`, `now-1M+15d`
+   (units: `y M w d h m s`, where `M` = month and `m` = minute).
+2. **ISO 8601 duration**: `P7D`, `PT1H30M`. Input is upper-cased first, so
+   lowercase (`p7d`) is also accepted. A bare duration resolves relative to the
+   base date — by default into the past (`durationSign: -1`), e.g. `p7d` → 7 days ago.
+3. **Natural language** (`3 weeks ago`) — only if you register a parser (see below).
+
+```typescript
+import { parseHumanDate } from 'ng-material-date-range-picker';
+
+parseHumanDate('now-7d');     // → Date, 7 days before now
+parseHumanDate('p7d');        // → Date, 7 days ago (lowercase ISO accepted)
+parseHumanDate('PT12H', { durationSign: 1 }); // → Date, 12 hours into the future
+```
+
+### Optional natural-language support
+
+`chrono-node` is **not** a required dependency. To enable natural-language
+parsing, install it in your app and register it once at startup:
+
+```bash
+npm i chrono-node
+```
+
+```typescript
+import * as chrono from 'chrono-node';
+import { setNaturalLanguageParser, parseHumanDate } from 'ng-material-date-range-picker';
+
+setNaturalLanguageParser((text, ref) => chrono.parseDate(text, ref));
+
+parseHumanDate('3 weeks ago'); // → Date
+```
+
+If no parser is registered, step 3 is simply skipped and `parseHumanDate`
+returns `null` for input only natural language could understand.
+
 ## Styleing
 
 The project prefixes custom classes with `ndp-`.
