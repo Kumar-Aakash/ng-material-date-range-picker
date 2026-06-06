@@ -105,19 +105,16 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
   /**
    * Toggles the visibility of the default date option list.
-   * If the custom option is selected, toggles the custom date range view instead.
+   * If the custom range panel is open, closes it instead.
    *
    * @param event Optional MouseEvent triggering the toggle.
    */
   toggleDateOptionSelectionList(event?: MouseEvent): void {
     event?.preventDefault();
     event?.stopImmediatePropagation();
-    const isCustomSelected =
-      this.dateDropDownOptions.find((option) => option.isSelected)
-        ?.optionType === DATE_OPTION_TYPE.CUSTOM;
 
-    if (isCustomSelected) {
-      this.toggleCustomDateRangeView();
+    if (this.isCustomRange) {
+      this.isCustomRange = false;
       return;
     }
     this.isDateOptionList = !this.isDateOptionList;
@@ -154,7 +151,10 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   updateSelection(option: ISelectDateOption, input: HTMLInputElement): void {
     this.isDateOptionList = false;
     this.isCustomRange = option.optionType === DATE_OPTION_TYPE.CUSTOM;
-    if (!this.isCustomRange) {
+    if (this.isCustomRange) {
+      resetOptionSelection(this.dateDropDownOptions);
+      selectCustomOption(this.dateDropDownOptions);
+    } else {
       resetOptionSelection(this.dateDropDownOptions, option);
       this.updateDateOnOptionSelect(option, input);
     }
