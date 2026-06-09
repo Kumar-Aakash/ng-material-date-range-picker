@@ -146,6 +146,91 @@ export function getDaysInMonth(date: Date): number {
 }
 
 /**
+ * Compares two dates by year, month, and day only (ignores time).
+ *
+ * @param date1 - First date
+ * @param date2 - Second date
+ * @returns true if both dates fall on the same calendar day
+ */
+export function isSameDay(date1: Date, date2: Date): boolean {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
+/**
+ * Computes the expected DateRange for a given option, mirroring the
+ * logic in updateDateWithSelectedOption. Used for auto-matching a
+ * provided selectedDates against the available options list.
+ *
+ * Returns null for CUSTOM options and any unhandled types.
+ *
+ * @param option - The date option to compute a range for
+ * @returns Computed DateRange, or null if not applicable
+ */
+export function computeOptionDateRange(
+  option: ISelectDateOption
+): DateRange<Date> | null {
+  if (option.optionType === DATE_OPTION_TYPE.CUSTOM) {
+    return null;
+  }
+
+  if (option.callBackFunction) {
+    return option.callBackFunction();
+  }
+
+  const currDate = new Date();
+  let startDate: Date = new Date();
+  let lastDate: Date = new Date();
+
+  switch (option.optionType) {
+    case DATE_OPTION_TYPE.DATE_DIFF:
+      startDate = new Date();
+      startDate.setDate(startDate.getDate() + (option.dateDiff ?? 0));
+      lastDate = new Date();
+      break;
+
+    case DATE_OPTION_TYPE.LAST_MONTH: {
+      const lastMonth = new Date(currDate);
+      lastMonth.setMonth(currDate.getMonth() - 1);
+      startDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1);
+      lastDate = new Date(
+        lastMonth.getFullYear(),
+        lastMonth.getMonth(),
+        getDaysInMonth(lastMonth)
+      );
+      break;
+    }
+
+    case DATE_OPTION_TYPE.THIS_MONTH:
+      startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+      lastDate = new Date(
+        currDate.getFullYear(),
+        currDate.getMonth(),
+        getDaysInMonth(currDate)
+      );
+      break;
+
+    case DATE_OPTION_TYPE.YEAR_TO_DATE:
+      startDate = new Date(currDate.getFullYear(), 0, 1);
+      lastDate = new Date();
+      break;
+
+    case DATE_OPTION_TYPE.MONTH_TO_DATE:
+      startDate = new Date(currDate.getFullYear(), currDate.getMonth(), 1);
+      lastDate = new Date();
+      break;
+
+    default:
+      return null;
+  }
+
+  return new DateRange<Date>(startDate, lastDate);
+}
+
+/**
  * Overrides the `activeDate` setter for a MatCalendar instance, injecting custom handler logic
  * while preserving the original setter behavior. Useful for reacting to internal date navigation
  * events (e.g., month changes) in Angular Material's calendar.
