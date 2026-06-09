@@ -14,7 +14,7 @@ This library is build on top of angular material date-picker to provide date ran
 | v18 | 3.0.0 |
 | v19 | 4.0.1 |
 | v20 | 5.0.0 |
-| v21 | 6.1.0 |
+| v21 | 6.2.0 |
 
 ## Getting Started with Ng Material Date Range Picker
 
@@ -137,7 +137,8 @@ This will display the Date Range Picker in your default browser.
 | `cdkConnectedOverlayPositions` | `ConnectedPosition[]`| **optional**. To control the overlay position |
 | `staticOptionId` | `string`| **optional**. To set id of static options container |
 | `dynamicOptionId` | `string`| **optional**. To set id of dynamic options container |
-| `allowSingleDateSelection` | `string`| **optional**. To allow or disable single date selection. Default is true | 
+| `allowSingleDateSelection` | `boolean`| **optional**. To allow or disable single date selection. Default is true |
+| `autoSelectOption` | `boolean`| **optional**. When `true` and `selectedDates` is provided, automatically selects the matching preset option (e.g. "Last 7 Days"). Falls back to "Custom Range" if no option matches. Default is `false` |
 
 #### Events
 

@@ -1,4 +1,7 @@
 # Changelog
+## [6.2.0] - 2026-06-10
+- supported auto select predefined date option from date range.
+
 ## [6.1.0] - 2026-05-04
 - Added support for single date selection
 
