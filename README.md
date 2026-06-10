@@ -235,7 +235,7 @@ custom-range footer with two Material inputs:
   a custom option an explicit relative form, set `startExpr` / `endExpr` on the
   `ISelectDateOption`.
 
-## Styleing
+## Styling
 
 The project prefixes custom classes with `ndp-`.
 
