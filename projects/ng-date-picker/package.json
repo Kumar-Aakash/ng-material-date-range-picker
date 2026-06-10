@@ -4,7 +4,13 @@
   "description": "This library provides the date range selection with two views.",
   "peerDependencies": {
     "@angular/core": "^21.0.0",
-    "@angular/material": "^21.0.0"
+    "@angular/material": "^21.0.0",
+    "chrono-node": "*"
+  },
+  "peerDependenciesMeta": {
+    "chrono-node": {
+      "optional": true
+    }
   },
   "author": {
     "name": "Aakash Kumar",

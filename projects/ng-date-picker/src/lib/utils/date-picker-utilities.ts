@@ -113,6 +113,118 @@ export function createOption(
   };
 }
 
+/** Escapes a string so it can be used as a literal inside a RegExp. */
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/** Returns true when both dates fall on the same calendar day. */
+export function isSameDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+/**
+ * Parses a date string against an Angular-style date format (the subset of
+ * tokens `yyyy`, `yy`, `MM`, `M`, `dd`, `d`). Returns `null` if the string
+ * does not match the format or is not a real calendar date (e.g. `31/02`).
+ *
+ * @param value - The user-entered date string.
+ * @param format - The expected format, e.g. `dd/MM/yyyy`.
+ * @returns The parsed Date, or `null` if it does not match.
+ */
+export function parseDateByFormat(value: string, format: string): Date | null {
+  const tokens: string[] = [];
+  const tokenRegex = /yyyy|yy|MM|M|dd|d/g;
+  let pattern = '^';
+  let lastIndex = 0;
+  let token: RegExpExecArray | null;
+  while ((token = tokenRegex.exec(format)) !== null) {
+    pattern += escapeRegExp(format.slice(lastIndex, token.index));
+    switch (token[0]) {
+      case 'yyyy':
+        pattern += '(\\d{4})';
+        break;
+      case 'yy':
+        pattern += '(\\d{2})';
+        break;
+      case 'MM':
+      case 'dd':
+        pattern += '(\\d{2})';
+        break;
+      default: // 'M' or 'd'
+        pattern += '(\\d{1,2})';
+        break;
+    }
+    tokens.push(token[0]);
+    lastIndex = token.index + token[0].length;
+  }
+  pattern += escapeRegExp(format.slice(lastIndex)) + '$';
+
+  const match = new RegExp(pattern).exec(value.trim());
+  if (!match) {
+    return null;
+  }
+
+  let year = NaN;
+  let month = NaN;
+  let day = NaN;
+  tokens.forEach((token, index) => {
+    const part = parseInt(match[index + 1], 10);
+    if (token.startsWith('y')) {
+      year = token === 'yy' ? 2000 + part : part;
+    } else if (token.startsWith('M')) {
+      month = part - 1;
+    } else {
+      day = part;
+    }
+  });
+  if (isNaN(year) || isNaN(month) || isNaN(day)) {
+    return null;
+  }
+
+  const date = new Date(year, month, day);
+  // Reject overflow dates such as 31/02 that Date silently rolls over.
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+  return date;
+}
+
+/**
+ * Derives the relative date-math expressions (start/end) for a date option,
+ * for display in editable inputs. Only day-diff options have a clean relative
+ * form (e.g. `Last 7 Days` -> `now-7d` .. `now`); an explicit `startExpr` /
+ * `endExpr` on the option overrides the derived value. Returns `null` when no
+ * relative representation applies, so the caller falls back to absolute dates.
+ *
+ * @param option - The selected date option.
+ * @returns `{ start, end }` expressions, or `null`.
+ */
+export function getRelativeExpr(
+  option?: ISelectDateOption | null
+): { start: string; end: string } | null {
+  if (!option) {
+    return null;
+  }
+  if (option.startExpr && option.endExpr) {
+    return { start: option.startExpr, end: option.endExpr };
+  }
+  if (option.optionType !== DATE_OPTION_TYPE.DATE_DIFF) {
+    return null;
+  }
+  const diff = option.dateDiff ?? 0;
+  const start = diff === 0 ? 'now' : `now${diff > 0 ? '+' : ''}${diff}d`;
+  return { start, end: 'now' };
+}
+
 /**
  * Returns the date of the next month based on the given date.
  *
