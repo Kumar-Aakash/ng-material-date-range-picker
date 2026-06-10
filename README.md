@@ -135,6 +135,8 @@ This will display the Date Range Picker in your default browser.
 | `selectedOptionIndex` | `number`| **optional**. To default selected option. (by default it is 3 which is last 30 days.) |
 | `displaySelectedLabel` | `boolean`| **optional**. To show the selected option label instead of date range |
 | `cdkConnectedOverlayPositions` | `ConnectedPosition[]`| **optional**. To control the overlay position |
+ `displaySelectedExpression` | `boolean`| **optional**. default `false`. To show the human-readable expressions (e.g. `now-7d - now`) in the main input instead of the date range. `displaySelectedLabel` takes priority when both are true. |
+| `enableEditableDates` | `boolean`| **optional**. default `false`. When `true`, the custom-range footer shows two editable inputs (start/end) that accept a `dateFormat` date, an ISO 8601 duration (`p7d`), or date math (`now-7d`), with validation. See [Editable date inputs](#editable-date-inputs). |
 | `staticOptionId` | `string`| **optional**. To set id of static options container |
 | `dynamicOptionId` | `string`| **optional**. To set id of dynamic options container |
 | `allowSingleDateSelection` | `boolean`| **optional**. To allow or disable single date selection. Default is true |
@@ -144,7 +146,7 @@ This will display the Date Range Picker in your default browser.
 
 | Name | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `onDateSelectionChanged` | `DateRange<Date>` | Emits when date selection is changed. And it contains range: DateRange and selectedOption: ISelectDateOption |
+| `onDateSelectionChanged` | `DateRange<Date>` |  Emits when date selection is changed. Contains `range: DateRange`, `selectedOption: ISelectDateOption`, and the human-readable `startExpr` / `endExpr` strings (e.g. `now-7d`, or absolute dates) — `null` on clear. |
 | `dateListOptions` | `ISelectDateOption[]`| Emits pre-defined date action list items for configuration purpose. |
 
 #### Example to configure predefined visibility of predefined date action list items:
@@ -172,6 +174,70 @@ In Above example first item of action list is selected and second option is hidd
 
 #### Note:
 Upon clearing, it resets the minimum and maximum dates, and sets both the range and selectedOption to null.
+
+## Parsing human-readable dates
+
+The library exports a small, dependency-free `parseHumanDate` helper that turns
+human-readable expressions into a `Date`. It tries, in order:
+
+1. **Date math** (Grafana/Elasticsearch style): `now`, `now-7d`, `now-1M+15d`
+   (units: `y M w d h m s`, where `M` = month and `m` = minute).
+2. **ISO 8601 duration**: `P7D`, `PT1H30M`. Input is upper-cased first, so
+   lowercase (`p7d`) is also accepted. A bare duration resolves relative to the
+   base date — by default into the past (`durationSign: -1`), e.g. `p7d` → 7 days ago.
+3. **Natural language** (`3 weeks ago`) — only if you register a parser (see below).
+
+```typescript
+import { parseHumanDate } from 'ng-material-date-range-picker';
+
+parseHumanDate('now-7d');     // → Date, 7 days before now
+parseHumanDate('p7d');        // → Date, 7 days ago (lowercase ISO accepted)
+parseHumanDate('PT12H', { durationSign: 1 }); // → Date, 12 hours into the future
+```
+
+### Optional natural-language support
+
+`chrono-node` is **not** a required dependency. To enable natural-language
+parsing, install it in your app and register it once at startup:
+
+```bash
+npm i chrono-node
+```
+
+```typescript
+import * as chrono from 'chrono-node';
+import { setNaturalLanguageParser, parseHumanDate } from 'ng-material-date-range-picker';
+
+setNaturalLanguageParser((text, ref) => chrono.parseDate(text, ref));
+
+parseHumanDate('3 weeks ago'); // → Date
+```
+
+If no parser is registered, step 3 is simply skipped and `parseHumanDate`
+returns `null` for input only natural language could understand.
+
+### Editable date inputs
+
+Set `enableEditableDates` to `true` to replace the read-only label in the
+custom-range footer with two Material inputs:
+
+```html
+<ng-date-range-picker [enableEditableDates]="true"></ng-date-range-picker>
+```
+
+- Each input accepts a date in `dateFormat` (e.g. `06/06/2026`), an ISO 8601
+  duration (`p7d`), or date math (`now-7d`). Typing a value updates the
+  calendars; **Apply** commits the range.
+- Invalid input shows a Material error and disables **Apply** until both
+  values parse and the start is not after the end.
+- Day-diff options (Today, Last 7 Days, …) pre-fill the inputs with their
+  relative form (`now-7d` .. `now`); other ranges show absolute dates. To give
+  a custom option an explicit relative form, set `startExpr` / `endExpr` on the
+  `ISelectDateOption`.
+
+## Styleing
+
+The project prefixes custom classes with `ndp-`.
 
 
 ## Demo's

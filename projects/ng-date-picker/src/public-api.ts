@@ -10,3 +10,4 @@ export * from './lib/model/select-date-option.model';
 export * from './lib/ng-date-picker.module';
 export * from './lib/constant/date-filter-const';
 export * from './lib/model/date-selection-event.model';
+export * from './lib/utils/human-date-parser';

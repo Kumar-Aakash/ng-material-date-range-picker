@@ -15,12 +15,13 @@ import {
   Input,
   OnInit,
   Output,
-  Signal,
   signal,
-  WritableSignal,
+  WritableSignal
 } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { DateRange } from '@angular/material/datepicker';
-import { SelectedDateEvent } from '../public-api';
+import { parseHumanDate, SelectedDateEvent } from '../public-api';
+import { CalendarComponent } from './calendar/calendar.component';
 import { DATE_OPTION_TYPE } from './constant/date-filter-const';
 import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
 import { ISelectDateOption } from './model/select-date-option.model';
@@ -31,7 +32,9 @@ import {
   getDateWithOffset,
   getDaysInMonth,
   getFormattedDateString,
+  getRelativeExpr,
   isSameDay,
+  parseDateByFormat,
   resetOptionSelection,
   selectCustomOption,
 } from './utils/date-picker-utilities';
@@ -71,6 +74,18 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
    */
   @Input() autoSelectOption: boolean = false;
 
+  /**
+   * When true, the main input shows the human-readable expressions
+   * (e.g. `now-7d - now`) instead of the absolute date range. If
+   * `displaySelectedLabel` is also true, the label takes priority.
+   */
+  @Input() displaySelectedExpression = false;
+  /**
+ * When true, the custom-range footer shows two editable Material inputs
+ * (start / end) that accept dates in `dateFormat`, ISO 8601 durations
+ * (`p7d`), or date math (`now-7d`). When false, a read-only label is shown.
+ */
+  @Input() enableEditableDates = false;
   // default min date is current date - 10 years.
   @Input() minDate = getDateWithOffset(-10);
   // default max date is current date + 10 years.
@@ -86,7 +101,34 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   visibleOptions = computed(() =>
     this._dateOptions().filter((op) => op.isVisible)
   );
-  constructor() {}
+
+
+  /**
+   * Reactive form backing the editable start/end inputs. Each control accepts
+   * a `dateFormat` date, an ISO 8601 duration, or a date-math expression; the
+   * group is invalid when either value is unparseable or start is after end.
+   */
+  editableForm = new FormGroup(
+    {
+      start: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, (c) => this.validateDateControl(c)],
+      }),
+      end: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, (c) => this.validateDateControl(c)],
+      }),
+    },
+    { validators: (g) => this.validateRange(g) }
+  );
+
+  // The raw expressions the user last committed via the editable inputs, kept
+  // so human-language input (e.g. `now-7d`) is shown again instead of being
+  // replaced by an absolute date - but only while it still resolves to the
+  // current range (see populateEditableForm).
+  private editableExpr: { start: string; end: string } | null = null;
+
+  constructor() { }
 
   @Input()
   set dateDropDownOptions(defaultDateList: ISelectDateOption[]) {
@@ -114,7 +156,7 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
   /**
    * Toggles the visibility of the default date option list.
-   * If the custom option is selected, toggles the custom date range view instead.
+  *  If the custom range panel is open, closes it instead.
    *
    * @param event Optional MouseEvent triggering the toggle.
    */
@@ -125,11 +167,23 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       this.dateDropDownOptions.find((option) => option.isSelected)
         ?.optionType === DATE_OPTION_TYPE.CUSTOM;
 
-    if (isCustomSelected) {
-      this.toggleCustomDateRangeView();
+    if (this.isCustomRange) {
+      this.isCustomRange = false;
       return;
     }
-    this.isDateOptionList = !this.isDateOptionList;
+    if (this.isDateOptionList) {
+      this.isDateOptionList = false;
+      return;
+    }
+    // When the active selection is a custom range, reopen straight into the
+    // custom-range view instead of the options list.
+    const selectedOption = this.dateDropDownOptions.find((o) => o.isSelected);
+    if (selectedOption?.optionType === DATE_OPTION_TYPE.CUSTOM) {
+      this.isCustomRange = true;
+      this.populateEditableForm();
+      return;
+    }
+    this.isDateOptionList = true;
   }
 
   /**
@@ -143,12 +197,13 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     selectedDates: DateRange<Date> | null
   ): void {
     if (this.allowSingleDateSelection && !selectedDates?.end) {
-      const date = selectedDates?.start  ?? new Date();
+      const date = selectedDates?.start ?? new Date();
       selectedDates = new DateRange<Date>(date, date);
     }
     if (this.isCustomRange) {
       resetOptionSelection(this.dateDropDownOptions);
       selectCustomOption(this.dateDropDownOptions);
+      this.syncOptionSelection();
       this.isCustomRange = false;
     }
 
@@ -166,18 +221,206 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   updateSelection(option: ISelectDateOption, input: HTMLInputElement): void {
     this.isDateOptionList = false;
     this.isCustomRange = option.optionType === DATE_OPTION_TYPE.CUSTOM;
-    if (!this.isCustomRange) {
+    if (this.isCustomRange) {
+      resetOptionSelection(this.dateDropDownOptions);
+      selectCustomOption(this.dateDropDownOptions);
+      this.populateEditableForm();
+    } else {
       resetOptionSelection(this.dateDropDownOptions, option);
       this.updateDateOnOptionSelect(option, input);
     }
+    this.syncOptionSelection();
     this.cdref.markForCheck();
   }
 
   /**
-   * Toggles the custom date range selection view visibility.
-   */
+  * Re-emits the options signal after an in-place selection change so the
+  * OnPush views (bound to the `visibleOptions` computed) reliably reflect the
+  * new `isSelected` state - the same notification the initial signal `set`
+  * provides.
+  */
+  private syncOptionSelection(): void {
+    this._dateOptions.update((options) => [...options]);
+  }
+
+
+  /**
+  * Toggles the custom date range selection view visibility.
+  */
   toggleCustomDateRangeView(): void {
     this.isCustomRange = !this.isCustomRange;
+    if (this.isCustomRange) {
+      this.populateEditableForm();
+    }
+  }
+
+  /**
+   * Parses a single editable input value, accepting either a `dateFormat`
+   * date or one of the human formats (ISO 8601 duration, date math).
+   *
+   * @param value - The raw input string.
+   * @returns The parsed Date, or `null` if it cannot be parsed.
+   */
+  private parseInputValue(value: string): Date | null {
+    const trimmed = value?.trim();
+    if (!trimmed) {
+      return null;
+    }
+    return parseDateByFormat(trimmed, this.dateFormat) ?? parseHumanDate(trimmed);
+  }
+
+  /**
+   * Validator for a single editable date control: valid when the value parses
+   * to a date. Empty values are left to the `required` validator.
+   */
+  private validateDateControl(control: AbstractControl): ValidationErrors | null {
+    const value = (control.value ?? '').trim();
+    if (!value) {
+      return null;
+    }
+    return this.parseInputValue(value) ? null : { invalidDate: true };
+  }
+
+  /**
+   * Group validator ensuring the parsed start date is not after the end date.
+   */
+  private validateRange(group: AbstractControl): ValidationErrors | null {
+    const start = this.parseInputValue(group.get('start')?.value ?? '');
+    const end = this.parseInputValue(group.get('end')?.value ?? '');
+    if (start && end && start > end) {
+      return { rangeOrder: true };
+    }
+    return null;
+  }
+
+  /**
+   * Commits the editable inputs to the calendar so the views and the Apply
+   * action reflect the typed values. No-op when editing is disabled or the
+   * form is invalid.
+   *
+   * @param calendar - The calendar component instance from the template.
+   */
+  commitEditableDates(calendar: CalendarComponent): void {
+    if (!this.enableEditableDates || this.editableForm.invalid) {
+      return;
+    }
+    const startRaw = this.editableForm.controls.start.value.trim();
+    const endRaw = this.editableForm.controls.end.value.trim();
+    const start = this.parseInputValue(startRaw);
+    const end = this.parseInputValue(endRaw);
+    if (!start || !end) {
+      return;
+    }
+    // Remember exactly what the user typed so the expression (e.g. `now-7d`)
+    // survives a reopen instead of being shown as a resolved absolute date.
+    this.editableExpr = { start: startRaw, end: endRaw };
+    calendar.selectedDates = new DateRange<Date>(start, end);
+    this.cdref.markForCheck();
+  }
+
+  /**
+   * Reflects a calendar (date-click) selection in the editable inputs as
+   * absolute dates. A calendar pick is an explicit absolute selection, so any
+   * remembered expression is cleared and the inputs show formatted dates.
+   *
+   * @param range - The range emitted by the calendar.
+   */
+  onCalendarSelectionChange(range: DateRange<Date>): void {
+    if (!this.enableEditableDates) {
+      return;
+    }
+    this.editableExpr = null;
+    this.editableForm.setValue({
+      start: range.start ? getDateString(range.start, this.dateFormat) : '',
+      end: range.end ? getDateString(range.end, this.dateFormat) : '',
+    });
+    this.cdref.markForCheck();
+  }
+
+  /**
+   * Commits the editable inputs and applies the range, closing the panel -
+   * the same as clicking Apply. Used for the Enter key. No-op when editing is
+   * disabled or the form is invalid, so Enter never closes with bad input.
+   *
+   * @param input - The main date input element to update.
+   * @param calendar - The calendar component instance from the template.
+   */
+  applyEditableDates(input: HTMLInputElement, calendar: CalendarComponent): void {
+    if (!this.enableEditableDates || this.editableForm.invalid) {
+      return;
+    }
+    this.commitEditableDates(calendar);
+    this.updateCustomRange(input, calendar.selectedDates);
+  }
+
+  /**
+   * Pre-fills the editable inputs from the current selection: relative
+   * expressions for a day-diff option (e.g. `now-7d` .. `now`), otherwise the
+   * absolute formatted dates.
+   */
+  private populateEditableForm(): void {
+    if (!this.enableEditableDates) {
+      return;
+    }
+    const range = this.selectedDates;
+    if (range?.start && range?.end) {
+      const option =
+        this.dateDropDownOptions.find((o) => o.isSelected) ?? null;
+      this.editableForm.setValue(
+        this.resolveDisplayExpr(range.start, range.end, option)
+      );
+    } else {
+      this.editableForm.setValue({ start: '', end: '' });
+    }
+  }
+
+  /**
+   * Resolves the human-readable start/end expressions for a range. Prefers the
+   * user's own committed expression (when it still resolves to this range),
+   * then the relative form of a day-diff option, and finally the absolute
+   * formatted dates. Shared by the editable inputs and the emitted event.
+   *
+   * @param start - Range start date.
+   * @param end - Range end date.
+   * @param opt - The associated date option, if any.
+   * @returns The start and end expression strings.
+   */
+  private resolveDisplayExpr(
+    start: Date,
+    end: Date,
+    opt: ISelectDateOption | null
+  ): { start: string; end: string } {
+    if (this.editableExpr && this.exprMatchesDates(this.editableExpr, start, end)) {
+      return { start: this.editableExpr.start, end: this.editableExpr.end };
+    }
+    const optionExpr = getRelativeExpr(opt);
+    if (optionExpr) {
+      return optionExpr;
+    }
+    return {
+      start: getDateString(start, this.dateFormat),
+      end: getDateString(end, this.dateFormat),
+    };
+  }
+
+  /**
+   * Checks whether a saved expression still resolves (to day precision) to the
+   * given dates, so a stale expression is not reused after the range changed
+   * by other means.
+   */
+  private exprMatchesDates(
+    expr: { start: string; end: string },
+    start: Date,
+    end: Date
+  ): boolean {
+    const exprStart = this.parseInputValue(expr.start);
+    const exprEnd = this.parseInputValue(expr.end);
+    return (
+      !!exprStart &&
+      !!exprEnd &&
+      isSameDay(exprStart, start) &&
+      isSameDay(exprEnd, end)
+    );
   }
 
   /**
@@ -191,11 +434,14 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     this.maxDate = getDateWithOffset(10);
     this.selectedDates = null;
     resetOptionSelection(this.dateDropDownOptions);
+    this.syncOptionSelection();
     this.clearDateInput();
     this.cdref.markForCheck();
     const selectedDateEventData: SelectedDateEvent = {
       range: null,
       selectedOption: null,
+      startExpr: null,
+      endExpr: null,
     };
     this.onDateSelectionChanged.emit(selectedDateEventData);
   }
@@ -302,18 +548,27 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   ): void {
     const range = new DateRange(start, end);
     this.selectedDates = range;
-
+    const expr = this.resolveDisplayExpr(start, end, opt);
     const label = this.displaySelectedLabel ? opt?.optionLabel : null;
     const rangeLabel = `${getDateString(
       start,
       this.dateFormat
     )} - ${getDateString(end, this.dateFormat)}`;
 
-    input.value = label ?? rangeLabel;
+    if (this.displaySelectedLabel && opt?.optionLabel) {
+      input.value = opt.optionLabel;
+    } else if (this.displaySelectedExpression) {
+      input.value = `${expr.start} - ${expr.end}`;
+    } else {
+      input.value = rangeLabel;
+    }
+
     this.onDateSelectionChanged.emit({
       range,
       selectedOption:
         this.dateDropDownOptions.find((o) => o.isSelected) ?? null,
+      startExpr: expr.start,
+      endExpr: expr.end,
     });
     this.cdref.markForCheck();
   }

@@ -48,6 +48,20 @@ export interface ISelectDateOption {
    * Used when optionType requires special handling beyond dateDiff.
    */
   callBackFunction?: () => DateRange<Date>;
+
+  /**
+ * Optional date-math/relative expression shown for the range start when
+ * editable inputs are enabled (e.g. `now-7d`). Overrides the value derived
+ * from `dateDiff`. Must be paired with {@link endExpr}.
+ */
+  startExpr?: string;
+
+  /**
+   * Optional date-math/relative expression shown for the range end when
+   * editable inputs are enabled (e.g. `now`). Must be paired with
+   * {@link startExpr}.
+   */
+  endExpr?: string;
 }
 
 /**

@@ -6,7 +6,7 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -15,15 +15,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CalendarComponent } from './calendar/calendar.component';
 import { NgDatePickerComponent } from './ng-date-picker.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [NgDatePickerComponent, CalendarComponent],
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
@@ -37,4 +38,4 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   ],
   exports: [NgDatePickerComponent],
 })
-export class NgDatePickerModule {}
+export class NgDatePickerModule { }
