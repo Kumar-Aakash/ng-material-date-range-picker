@@ -33,14 +33,15 @@ import { DATE_OPTION_TYPE } from './constant/date-filter-const';
 import { DEFAULT_DATE_OPTIONS } from './data/default-date-options';
 import { ISelectDateOption } from './model/select-date-option.model';
 import {
+  computeOptionDateRange,
   getClone,
   getDateString,
   getDateWithOffset,
   getDaysInMonth,
   getFormattedDateString,
-  getRelativeExpr,
-  isSameDay,
+  getRelativeExpr,  
   parseDateByFormat,
+  isSameDay,
   resetOptionSelection,
   selectCustomOption,
 } from './utils/date-picker-utilities';
@@ -85,6 +86,13 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
   @Input() enableEditableDates = false;
   @Input() cdkConnectedOverlayPush = true;
   @Input() cdkConnectedOverlayPositions = [];
+  @Input() allowSingleDateSelection = true;
+  /**
+   * When true, automatically selects the preset option whose computed date range
+   * matches the provided selectedDates (works with both default and custom options).
+   * Falls back to "Custom Range" if no option matches.
+   */
+  @Input() autoSelectOption: boolean = false;
 
   // default min date is current date - 10 years.
   @Input() minDate = getDateWithOffset(-10);
@@ -192,7 +200,10 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
     input: HTMLInputElement,
     selectedDates: DateRange<Date> | null
   ): void {
-
+    if (this.allowSingleDateSelection && !selectedDates?.end) {
+      const date = selectedDates?.start  ?? new Date();
+      selectedDates = new DateRange<Date>(date, date);
+    }
     if (this.isCustomRange) {
       resetOptionSelection(this.dateDropDownOptions);
       selectCustomOption(this.dateDropDownOptions);
@@ -567,15 +578,28 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
 
   /**
    * Updates the input and internal state with default dates on initialization.
+   * When autoSelectOption is true and selectedDates is provided, attempts to
+   * match against existing options before falling back to Custom Range.
    */
   private updateDefaultDatesValues(): void {
     const input: HTMLInputElement =
       this.el.nativeElement.querySelector('#date-input-field');
+
     if (this.selectedDates?.start && this.selectedDates?.end) {
-      this._dateOptions().find(
-        (option) => option.optionType === DATE_OPTION_TYPE.CUSTOM
-      )!.isSelected = true;
-      input.value = getFormattedDateString(this.selectedDates, this.dateFormat);
+      const matchedOption = this.autoSelectOption
+        ? this.findMatchingOption(this.selectedDates as DateRange<Date>)
+        : null;
+
+      if (matchedOption) {
+        resetOptionSelection(this.dateDropDownOptions, matchedOption);
+        const label = this.displaySelectedLabel ? matchedOption.optionLabel : null;
+        input.value = label ?? getFormattedDateString(this.selectedDates, this.dateFormat);
+      } else {
+        resetOptionSelection(this.dateDropDownOptions);
+        selectCustomOption(this.dateDropDownOptions);
+        input.value = getFormattedDateString(this.selectedDates, this.dateFormat);
+      }
+
       this.cdref.detectChanges();
       return;
     }
@@ -591,6 +615,36 @@ export class NgDatePickerComponent implements OnInit, AfterViewInit {
       this.updatedFromListValueSelection(selectedOptions, input);
       this.cdref.detectChanges();
     }
+  }
+
+  /**
+   * Iterates over all non-custom options and returns the first one whose
+   * computed date range matches the provided selectedDates (day-level comparison).
+   * Works for both default options and consumer-provided options with callBackFunction.
+   *
+   * @param selectedDates The date range to match against
+   * @returns The matching ISelectDateOption, or null if none found
+   */
+  private findMatchingOption(
+    selectedDates: DateRange<Date>
+  ): ISelectDateOption | null {
+    const candidates = this.dateDropDownOptions.filter(
+      (option) => option.optionType !== DATE_OPTION_TYPE.CUSTOM
+    );
+
+    for (const option of candidates) {
+      const range = computeOptionDateRange(option);
+      if (
+        range?.start &&
+        range?.end &&
+        isSameDay(range.start, selectedDates.start!) &&
+        isSameDay(range.end, selectedDates.end!)
+      ) {
+        return option;
+      }
+    }
+
+    return null;
   }
 
   /**
