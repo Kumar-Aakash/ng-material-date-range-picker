@@ -258,21 +258,6 @@ export function getDaysInMonth(date: Date): number {
 }
 
 /**
- * Compares two dates by year, month, and day only (ignores time).
- *
- * @param date1 - First date
- * @param date2 - Second date
- * @returns true if both dates fall on the same calendar day
- */
-export function isSameDay(date1: Date, date2: Date): boolean {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
-}
-
-/**
  * Computes the expected DateRange for a given option, mirroring the
  * logic in updateDateWithSelectedOption. Used for auto-matching a
  * provided selectedDates against the available options list.
